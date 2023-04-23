@@ -5,7 +5,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.HttpURLConnection;

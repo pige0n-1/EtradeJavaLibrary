@@ -2,7 +2,7 @@
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
@@ -12,7 +12,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.SignatureBuilder;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.responses.OauthResponse;
+import blue.etradeJavaLibrary.core.network.oauth.responses.BaseResponse;
 import java.net.MalformedURLException;
 import java.util.Iterator;
 import java.net.URL;
@@ -46,7 +46,7 @@ public abstract class BaseRequest {
         this.tokenSecret = tokenSecret;
     }
     
-    protected abstract OauthResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
+    protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
     
     protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);

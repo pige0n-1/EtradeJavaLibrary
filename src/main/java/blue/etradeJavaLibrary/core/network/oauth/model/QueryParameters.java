@@ -1,8 +1,6 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
-
 public class QueryParameters extends Parameters {
     
     private boolean rfc3986Encoded;

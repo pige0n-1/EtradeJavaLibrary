@@ -8,7 +8,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
 import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.HttpURLConnection;

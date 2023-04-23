@@ -4,7 +4,7 @@ package blue.etradeJavaLibrary.core.network.oauth.requests;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import java.net.URL;
 import java.net.URI;
 import java.net.MalformedURLException;

@@ -6,30 +6,27 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 
-public abstract class OauthResponse {
+public abstract class BaseResponse {
     protected InputStream connectionResponseStream;
     protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
-    public OauthResponse(InputStream connectionResponseStream) {
+    public BaseResponse(InputStream connectionResponseStream) {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    public abstract Parameters parseResponse() throws OauthException ;
+    public abstract Parameters parseResponse() throws OauthException;
     
-    protected static String convertToString(InputStream connectionResponseStream) {
+    protected static String convertToString(InputStream connectionResponseStream) throws OauthException {
         try {
             byte[] responseBytes = connectionResponseStream.readAllBytes();
-            String responseString = new String(responseBytes, "UTF-8");
+            String responseString = new String(responseBytes);
             logger.log("Raw response string", responseString);
             return responseString;
         }
-        catch (UnsupportedEncodingException ex) {
-            return null;
-        }
         catch (IOException ex) {
-            return null;
+            throw new OauthException("Response stream could not be read.");
         }
     }
 }

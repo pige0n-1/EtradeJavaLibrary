@@ -17,4 +17,9 @@ public class Key {
     public String getValue() {
         return value;
     }
+    
+    @Override
+    public String toString() {
+        return "Key: " + getValue();
+    }
 }

@@ -1,7 +1,6 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import java.util.Base64;
 
 public final class OauthParameters extends Parameters {

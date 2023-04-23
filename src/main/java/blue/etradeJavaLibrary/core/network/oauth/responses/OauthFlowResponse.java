@@ -1,14 +1,14 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.responses;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.SimpleParameters;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 
-public class OauthFlowResponse extends OauthResponse {
+public class OauthFlowResponse extends BaseResponse {
     
     public OauthFlowResponse(InputStream connectionResponseStream) {
         super(connectionResponseStream);
@@ -16,7 +16,7 @@ public class OauthFlowResponse extends OauthResponse {
     
     @Override
     public Parameters parseResponse() throws OauthException {
-        String responseString = super.convertToString(connectionResponseStream);
+        String responseString = convertToString(connectionResponseStream);
         
         logger.log("Raw response string", responseString);
         

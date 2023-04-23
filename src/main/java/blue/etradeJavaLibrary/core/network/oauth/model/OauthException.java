@@ -1,5 +1,5 @@
 
-package blue.etradeJavaLibrary.core.network.oauth;
+package blue.etradeJavaLibrary.core.network.oauth.model;
 
 
 public class OauthException extends Exception {

@@ -1,7 +1,6 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
 import java.util.TreeMap;
 import java.util.Map;
