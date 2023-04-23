@@ -12,23 +12,43 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
     // Data fields
     private final TreeMap<String, String> parameters = new TreeMap<>();
     
-    protected void replaceParameter(String key, String value) throws 
-            OauthException {
-        parameters.replace(encode(key), encode(value));
+    protected void replaceParameter(String key, String value) throws OauthException {
+        removeParameter(key);
+        addParameter(key, value);
     }
     
-    protected void addParameter(String key, String value) throws 
-            OauthException {
+    protected void addParameter(String key, String value) throws OauthException {
         parameters.put(encode(key), encode(value));
     }
     
-    public Parameter getDecodedParameter(String key) throws OauthException {
+    protected void removeParameter(String key) throws OauthException {
+        key = Rfc3986.encode(key);
+        parameters.remove(key);
+    }
+    
+    public String getValue(String key) throws OauthException {
+        key = Rfc3986.encode(key);
         String value = parameters.get(key);
         
         if (value == null)
             throw new OauthException("No such parameter");
         
-        value = Rfc3986.decode(value);
+        return value;
+    }
+    
+    public String getDecodedValue(String key) throws OauthException {
+        key = Rfc3986.encode(key);
+        String value = parameters.get(key);
+        
+        if (value == null)
+            throw new OauthException("No such parameter");
+        
+        return Rfc3986.decode(value);
+    }
+    
+    public Parameter getDecodedParameter(String key) throws OauthException {
+        String value = getDecodedValue(key);
+        key = Rfc3986.decode(key);
         
         return new Parameter(key, value);
     }

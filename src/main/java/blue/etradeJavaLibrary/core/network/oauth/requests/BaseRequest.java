@@ -48,15 +48,15 @@ public abstract class BaseRequest {
     
     protected abstract OauthResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
     
-    protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
+    protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
     }
     
-    protected URL buildFullURL(PathParameters pathParameters) throws MalformedURLException {
+    protected URL buildFullURL(PathParameters pathParameters) throws OauthException, MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters);
     }
     
-    protected URL buildFullURL(QueryParameters queryParameters) throws MalformedURLException {
+    protected URL buildFullURL(QueryParameters queryParameters) throws OauthException, MalformedURLException {
         return URLBuilder.buildURL(baseURL, queryParameters);
     }
     
