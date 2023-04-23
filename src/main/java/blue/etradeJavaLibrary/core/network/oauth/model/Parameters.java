@@ -1,7 +1,7 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
 import java.util.TreeMap;
 import java.util.Map;
@@ -13,20 +13,20 @@ public class Parameters implements Iterable<Parameters.Parameter> {
     private final TreeMap<String, String> parameters = new TreeMap<>();
     
     public void replaceParameter(String key, String value) throws 
-            OauthParameterException {
+            OauthException {
         parameters.replace(encode(key), encode(value));
     }
     
     public void addParameter(String key, String value) throws 
-            OauthParameterException {
+            OauthException {
         parameters.put(encode(key), encode(value));
     }
     
-    public Parameter getDecodedParameter(String key) throws OauthParameterException {
+    public Parameter getDecodedParameter(String key) throws OauthException {
         String value = parameters.get(key);
         
         if (value == null)
-            throw new OauthParameterException("No such parameter");
+            throw new OauthException("No such parameter");
         
         value = Rfc3986.decode(value);
         

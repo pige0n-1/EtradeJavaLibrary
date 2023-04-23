@@ -6,7 +6,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 
 public abstract class OauthResponse {
     protected InputStream connectionResponseStream;
@@ -16,7 +16,7 @@ public abstract class OauthResponse {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    public abstract Parameters parseResponse() throws OauthParameterException ;
+    public abstract Parameters parseResponse() throws OauthException ;
     
     protected static String convertToString(InputStream connectionResponseStream) {
         try {

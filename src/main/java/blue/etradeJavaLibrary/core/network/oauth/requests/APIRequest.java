@@ -8,7 +8,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
 import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
-import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -20,14 +20,14 @@ public final class APIRequest extends BaseRequest {
     private PathParameters pathParameters;
     private QueryParameters queryParameters;
     
-    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthParameterException {
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
         super(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
         this.pathParameters = pathParameters;
         this.queryParameters = queryParameters;
     }
     
     @Override
-    public APIResponse sendAndGetResponse() throws MalformedURLException, OauthParameterException, IOException {
+    public APIResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException {
         URL fullURL = buildFullURL(pathParameters, queryParameters);
         
         logger.log("Full URL", fullURL.toString());

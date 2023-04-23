@@ -2,7 +2,7 @@
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
 import blue.etradeJavaLibrary.core.network.oauth.URLBuilder;
-import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
@@ -31,7 +31,7 @@ public abstract class BaseRequest {
     
     protected static final ProgramLogger logger = ProgramLogger.getProgramLogger();
     
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, HttpMethod httpMethod) throws OauthParameterException {
+    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, HttpMethod httpMethod) throws OauthException {
         this.oauthParameters = new OauthParameters(consumerKey);
         this.baseURL = baseURL;
         this.consumerSecret = consumerSecret;
@@ -39,13 +39,13 @@ public abstract class BaseRequest {
         this.tokenSecret = new Key();
     }
     
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthParameterException {
+    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
         this(baseURL, consumerKey, consumerSecret, httpMethod);
         oauthParameters.setToken(token);
         this.tokenSecret = tokenSecret;
     }
     
-    protected abstract OauthResponse sendAndGetResponse() throws MalformedURLException, OauthParameterException, IOException;
+    protected abstract OauthResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
     
     protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
@@ -63,11 +63,11 @@ public abstract class BaseRequest {
         return new URL(baseURL.toString());
     }
     
-    protected HttpURLConnection getConnection(URL fullURL) throws OauthParameterException, IOException {
+    protected HttpURLConnection getConnection(URL fullURL) throws OauthException, IOException {
         return getConnection(fullURL, null);
     }
     
-    protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws OauthParameterException, IOException {
+    protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws OauthException, IOException {
         if (allParameters == null)
             allParameters = oauthParameters;
         else

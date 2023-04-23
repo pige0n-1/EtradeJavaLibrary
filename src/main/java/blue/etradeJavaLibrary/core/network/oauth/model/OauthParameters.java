@@ -1,7 +1,7 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import java.util.Base64;
 
 public final class OauthParameters extends Parameters {
@@ -12,16 +12,16 @@ public final class OauthParameters extends Parameters {
     // Private data fields
     private boolean signatureSet = false;
     
-    public OauthParameters(Key consumerKey) throws OauthParameterException {
+    public OauthParameters(Key consumerKey) throws OauthException {
         initializeParameters(consumerKey);
     }
     
-    public OauthParameters(Key consumerKey, Key token) throws OauthParameterException {
+    public OauthParameters(Key consumerKey, Key token) throws OauthException {
         this(consumerKey);
         setToken(token);
     }
     
-    private void initializeParameters(Key consumerKey) throws OauthParameterException {
+    private void initializeParameters(Key consumerKey) throws OauthException {
         addParameter("oauth_consumer_key", consumerKey.getValue());
         addParameter("oauth_signature_method", "HMAC-SHA1");
         addParameter("oauth_nonce", generateNonce());
@@ -30,7 +30,7 @@ public final class OauthParameters extends Parameters {
         createTimestamp();
     }
     
-    private void createTimestamp() throws OauthParameterException {
+    private void createTimestamp() throws OauthException {
         addParameter("oauth_timestamp", System.currentTimeMillis() / 1000 + "");
     }
     
@@ -39,9 +39,9 @@ public final class OauthParameters extends Parameters {
         return Base64.getEncoder().encodeToString(rawRandomNumberString);
     }
     
-    public void setSignature(String signature) throws OauthParameterException {
+    public void setSignature(String signature) throws OauthException {
         if (signatureSet)
-            throw new OauthParameterException("The signature cannot be"
+            throw new OauthException("The signature cannot be"
                     + "set twice");
 
         addParameter("oauth_signature", signature);
@@ -49,7 +49,7 @@ public final class OauthParameters extends Parameters {
         signatureSet = true;
     }
     
-    public void setToken(Key token) throws OauthParameterException {
+    public void setToken(Key token) throws OauthException {
         addParameter("oauth_token", token.getValue());
     }
 }

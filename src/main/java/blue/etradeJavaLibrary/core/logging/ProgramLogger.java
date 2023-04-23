@@ -11,7 +11,7 @@ public class ProgramLogger {
     private static final boolean APPEND_TO_LOG_FILE = true;
     
     private static final Logger encapsulatedJavaLogger = Logger.getLogger("network");
-    private static ProgramLogger onlyInstanceOfNetworkLogger;
+    private static ProgramLogger onlyInstanceOfProgramLogger;
     
     private ProgramLogger() throws IOException {
         FileHandler fileHandler = new MyFileHandler(LOG_FILE, APPEND_TO_LOG_FILE);
@@ -23,7 +23,7 @@ public class ProgramLogger {
     public static ProgramLogger getProgramLogger() {
         ensureProgramLoggerInstanceHasBeenCreated();
         
-        return onlyInstanceOfNetworkLogger;
+        return onlyInstanceOfProgramLogger;
     }
     
     public void log(String message) {
@@ -41,8 +41,8 @@ public class ProgramLogger {
     
     private static void ensureProgramLoggerInstanceHasBeenCreated() {
         try {
-            if (onlyInstanceOfNetworkLogger == null)
-                onlyInstanceOfNetworkLogger = new ProgramLogger();
+            if (onlyInstanceOfProgramLogger == null)
+                onlyInstanceOfProgramLogger = new ProgramLogger();
         }
         catch (IOException ex) {
             System.out.println("Warning: program logging not functional.");
