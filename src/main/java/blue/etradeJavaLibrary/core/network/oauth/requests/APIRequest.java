@@ -20,8 +20,8 @@ public final class APIRequest extends BaseRequest {
     private PathParameters pathParameters;
     private QueryParameters queryParameters;
     
-    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
+        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, httpMethod);
         this.pathParameters = pathParameters;
         this.queryParameters = queryParameters;
     }

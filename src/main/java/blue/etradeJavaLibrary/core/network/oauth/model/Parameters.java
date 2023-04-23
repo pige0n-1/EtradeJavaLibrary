@@ -7,17 +7,17 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Iterator;
 
-public class Parameters implements Iterable<Parameters.Parameter> {
+public abstract class Parameters implements Iterable<Parameters.Parameter> {
     
     // Data fields
     private final TreeMap<String, String> parameters = new TreeMap<>();
     
-    public void replaceParameter(String key, String value) throws 
+    protected void replaceParameter(String key, String value) throws 
             OauthException {
         parameters.replace(encode(key), encode(value));
     }
     
-    public void addParameter(String key, String value) throws 
+    protected void addParameter(String key, String value) throws 
             OauthException {
         parameters.put(encode(key), encode(value));
     }
@@ -38,7 +38,7 @@ public class Parameters implements Iterable<Parameters.Parameter> {
     }
     
     public static Parameters merge(Parameters... parametersCollection) {
-        Parameters allParameters = new Parameters();
+        Parameters allParameters = new SimpleParameters();
         
         for (Parameters currentParameters : parametersCollection) {
             for (Parameter currentParameter : currentParameters) {

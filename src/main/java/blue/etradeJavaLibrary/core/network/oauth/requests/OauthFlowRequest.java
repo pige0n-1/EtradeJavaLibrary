@@ -11,10 +11,14 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.*;
 
-public class OauthRequest extends BaseRequest {
+public class OauthFlowRequest extends BaseRequest {
     
-    public OauthRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret) throws OauthException {   
+    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret) throws OauthException {   
         super(baseURL, consumerKey, consumerSecret, HttpMethod.GET);
+    }
+    
+    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier) throws OauthException {
+        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, HttpMethod.GET);
     }
     
     @Override

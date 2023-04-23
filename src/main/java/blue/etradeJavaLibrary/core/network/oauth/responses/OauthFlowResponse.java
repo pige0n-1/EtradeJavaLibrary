@@ -3,6 +3,7 @@ package blue.etradeJavaLibrary.core.network.oauth.responses;
 
 import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.SimpleParameters;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public class OauthFlowResponse extends OauthResponse {
         logger.log("Raw response string", responseString);
         
         String[] parametersArray = responseString.split("&");
-        Parameters parameters = new Parameters();
+        SimpleParameters parameters = new SimpleParameters();
         
         for (String parameterString : parametersArray) {
             String[] parameterKeyAndValue = parameterString.split("=");

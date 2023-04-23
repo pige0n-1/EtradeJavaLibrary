@@ -5,11 +5,7 @@ import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import java.util.Base64;
 
 public final class OauthParameters extends Parameters {
-    // Http request types
-    public static final String GET = "GET";
-    public static final String POST = "POST";
     
-    // Private data fields
     private boolean signatureSet = false;
     
     public OauthParameters(Key consumerKey) throws OauthException {
@@ -19,6 +15,11 @@ public final class OauthParameters extends Parameters {
     public OauthParameters(Key consumerKey, Key token) throws OauthException {
         this(consumerKey);
         setToken(token);
+    }
+    
+    public OauthParameters(Key consumerKey, Key token, Key verifier) throws OauthException {
+        this(consumerKey, token);
+        addVerifier(verifier);
     }
     
     private void initializeParameters(Key consumerKey) throws OauthException {
@@ -51,5 +52,9 @@ public final class OauthParameters extends Parameters {
     
     public void setToken(Key token) throws OauthException {
         addParameter("oauth_token", token.getValue());
+    }
+    
+    public void addVerifier(Key verifier) throws OauthException {
+        addParameter("oauth_verifier", verifier.getValue());
     }
 }

@@ -1,10 +1,11 @@
 
-package blue.etradeJavaLibrary.core.network.oauth;
+package blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms;
 
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
+import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import java.net.URL;
 import java.net.MalformedURLException;
 import java.util.Iterator;
@@ -27,18 +28,20 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 public class URLBuilder {
     private static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
-    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters)  throws MalformedURLException {
+    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         String baseURLWithVariables = fillInVariables(baseURL.toString(), pathParameters);
         String fullURLString = addQueryParameters(baseURLWithVariables, queryParameters);
+        
+        ensureAllVariablesFilledIn(baseURLWithVariables);
         
         return new URL(fullURLString);
     }
     
-    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters) throws MalformedURLException {
+    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters) throws OauthException, MalformedURLException {
         return buildURL(baseURL, pathParameters, null);
     }
     
-    public static URL buildURL(BaseURL baseURL, QueryParameters queryParameters) throws MalformedURLException {
+    public static URL buildURL(BaseURL baseURL, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         return buildURL(baseURL, null, queryParameters);
     }
     
@@ -46,7 +49,14 @@ public class URLBuilder {
     // Private helper methods
     
     
-    private static String fillInVariables(String urlString, PathParameters pathParameters) {
+    private static void ensureAllVariablesFilledIn(String urlString) throws OauthException {
+        String variableMismatchRegex = ".+\\{.+\\}.*";
+        
+        if (urlString.matches(variableMismatchRegex))
+            throw new OauthException("Path variables do not match base URL");
+    }
+    
+    private static String fillInVariables(String urlString, PathParameters pathParameters) throws OauthException {
         if (pathParameters == null || pathParameters.isEmpty())
             return urlString;
         

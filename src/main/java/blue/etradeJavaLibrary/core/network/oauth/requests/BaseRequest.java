@@ -1,7 +1,7 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
-import blue.etradeJavaLibrary.core.network.oauth.URLBuilder;
+import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
 import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
@@ -39,9 +39,10 @@ public abstract class BaseRequest {
         this.tokenSecret = new Key();
     }
     
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
+    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
         this(baseURL, consumerKey, consumerSecret, httpMethod);
         oauthParameters.setToken(token);
+        oauthParameters.addVerifier(verifier);
         this.tokenSecret = tokenSecret;
     }
     
