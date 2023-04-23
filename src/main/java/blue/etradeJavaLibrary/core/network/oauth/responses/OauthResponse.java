@@ -10,7 +10,7 @@ import blue.etradeJavaLibrary.core.network.oauth.OauthException;
 
 public abstract class OauthResponse {
     protected InputStream connectionResponseStream;
-    protected ProgramLogger logger = ProgramLogger.getProgramLogger();
+    protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
     public OauthResponse(InputStream connectionResponseStream) {
         this.connectionResponseStream = connectionResponseStream;
@@ -22,6 +22,7 @@ public abstract class OauthResponse {
         try {
             byte[] responseBytes = connectionResponseStream.readAllBytes();
             String responseString = new String(responseBytes, "UTF-8");
+            logger.log("Raw response string", responseString);
             return responseString;
         }
         catch (UnsupportedEncodingException ex) {

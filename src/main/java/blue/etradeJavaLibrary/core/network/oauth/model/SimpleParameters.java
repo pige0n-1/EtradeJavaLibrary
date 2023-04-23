@@ -14,4 +14,9 @@ public final class SimpleParameters extends Parameters {
     public void addParameter(String key, String value) throws OauthException {
         super.addParameter(key, value);
     }
+    
+    @Override
+    public void addParameterWithoutEncoding(String key, String value) {
+        super.addParameterWithoutEncoding(key, value);
+    }
 }

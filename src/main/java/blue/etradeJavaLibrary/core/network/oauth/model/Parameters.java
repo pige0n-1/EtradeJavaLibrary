@@ -44,6 +44,7 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
             throw new OauthException("No such parameter");
         
         return Rfc3986.decode(value);
+        
     }
     
     public Parameter getDecodedParameter(String key) throws OauthException {
@@ -69,8 +70,8 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
         return allParameters;
     }
     
-    protected String addParameterWithoutEncoding(String key, String value) {
-        return parameters.put(key, value);
+    protected void addParameterWithoutEncoding(String key, String value) {
+        parameters.put(key, value);
     }
     
     @Override

@@ -25,7 +25,7 @@ public class OauthFlowResponse extends OauthResponse {
         
         for (String parameterString : parametersArray) {
             String[] parameterKeyAndValue = parameterString.split("=");
-            parameters.addParameter(parameterKeyAndValue[0], parameterKeyAndValue[1]);
+            parameters.addParameterWithoutEncoding(parameterKeyAndValue[0], parameterKeyAndValue[1]);
         }
         
         return parameters;

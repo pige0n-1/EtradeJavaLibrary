@@ -9,7 +9,8 @@ public final class OauthParameters extends Parameters {
     private boolean signatureSet = false;
     
     public OauthParameters(Key consumerKey) throws OauthException {
-        initializeParameters(consumerKey);
+        initializeParameters();
+        setConsumerKey(consumerKey);
     }
     
     public OauthParameters(Key consumerKey, Key token) throws OauthException {
@@ -22,8 +23,7 @@ public final class OauthParameters extends Parameters {
         addVerifier(verifier);
     }
     
-    private void initializeParameters(Key consumerKey) throws OauthException {
-        addParameter("oauth_consumer_key", consumerKey.getValue());
+    private void initializeParameters() throws OauthException {
         addParameter("oauth_signature_method", "HMAC-SHA1");
         addParameter("oauth_nonce", generateNonce());
         addParameter("oauth_version", "1.0");
@@ -50,11 +50,15 @@ public final class OauthParameters extends Parameters {
         signatureSet = true;
     }
     
+    public void setConsumerKey(Key consumerKey) throws OauthException {
+        addParameterWithoutEncoding("oauth_consumer_key", consumerKey.getValue());
+    }
+    
     public void setToken(Key token) throws OauthException {
-        addParameter("oauth_token", token.getValue());
+        addParameterWithoutEncoding("oauth_token", token.getValue());
     }
     
     public void addVerifier(Key verifier) throws OauthException {
-        addParameter("oauth_verifier", verifier.getValue());
+        addParameterWithoutEncoding("oauth_verifier", verifier.getValue());
     }
 }
