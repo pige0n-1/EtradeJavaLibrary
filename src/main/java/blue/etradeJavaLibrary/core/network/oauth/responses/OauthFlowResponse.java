@@ -1,0 +1,32 @@
+
+package blue.etradeJavaLibrary.core.network.oauth.responses;
+
+import blue.etradeJavaLibrary.core.network.oauth.OauthParameterException;
+import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.io.IOException;
+
+public class OauthFlowResponse extends OauthResponse {
+    
+    public OauthFlowResponse(InputStream connectionResponseStream) {
+        super(connectionResponseStream);
+    }
+    
+    @Override
+    public Parameters parseResponse() throws OauthParameterException {
+        String responseString = super.convertToString(connectionResponseStream);
+        
+        logger.log("Raw response string", responseString);
+        
+        String[] parametersArray = responseString.split("&");
+        Parameters parameters = new Parameters();
+        
+        for (String parameterString : parametersArray) {
+            String[] parameterKeyAndValue = parameterString.split("=");
+            parameters.addParameter(parameterKeyAndValue[0], parameterKeyAndValue[1]);
+        }
+        
+        return parameters;
+    }
+}
