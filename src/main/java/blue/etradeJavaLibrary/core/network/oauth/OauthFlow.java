@@ -1,7 +1,6 @@
 
 package blue.etradeJavaLibrary.core.network.oauth;
 
-import blue.etradeJavaLibrary.core.network.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
@@ -56,10 +55,28 @@ public class OauthFlow {
     // Private helper methods
     
     
-    private void performOauthFlowIfRequired() throws MalformedURLException, IOException, OauthException {
-        if (!oauthFlowRequired())
-            return;
+    private void performOauthFlowIfRequired() throws OauthException {
+        if (oauthFlowRequired())
+            performOauthFlow(0);
+    }
+    
+    private void performOauthFlow(int depth) throws OauthException {
+        final int RECURSION_DEPTH_LIMIT = 1;
         
+        try {
+            fetchRequestToken();
+            fetchVerifier();
+            fetchAccessToken();
+        }
+        catch (Exception ex) {
+            if (depth <= RECURSION_DEPTH_LIMIT)
+                performOauthFlow(depth + 1);
+            else
+                throw new OauthException("Oauth flow unsuccessful.");
+        }
+    }
+    
+    private void fetchRequestToken() throws MalformedURLException, IOException, OauthException {
         String urlString = oauthBaseURL + requestTokenURI;
         BaseURL etradeBaseURL = new BaseURL(urlString);
         
@@ -69,18 +86,23 @@ public class OauthFlow {
         
         token = new Key(responseParameters.getDecodedValue("oauth_token"));
         tokenSecret = new Key(responseParameters.getDecodedValue("oauth_token_secret"));
-        
-        etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
+    }
+    
+    private void fetchVerifier() throws MalformedURLException, IOException, OauthException {
+        BaseURL etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
         BrowserRequest br = new BrowserRequest(etradeBaseURL, consumerKey, token);
         
         br.go();
         
         verifier = getVerifierUserInput();
-        etradeBaseURL = new BaseURL(oauthBaseURL + accessTokenURI);
+    }
+    
+    private void fetchAccessToken() throws MalformedURLException, IOException, OauthException {
+        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL + accessTokenURI);
         
-        request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret, verifier);
-        response = request.sendAndGetResponse();
-        responseParameters = response.parseResponse();
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret, verifier);
+        OauthFlowResponse response = request.sendAndGetResponse();
+        Parameters responseParameters = response.parseResponse();
         
         token = new Key(responseParameters.getDecodedValue("oauth_token"));
         tokenSecret = new Key(responseParameters.getDecodedValue("oauth_token_secret"));
