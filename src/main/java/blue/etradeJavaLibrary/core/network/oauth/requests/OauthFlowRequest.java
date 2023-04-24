@@ -17,6 +17,10 @@ public class OauthFlowRequest extends BaseRequest {
         super(baseURL, consumerKey, consumerSecret, HttpMethod.GET);
     }
     
+    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret) throws OauthException {
+        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, HttpMethod.GET);
+    }
+    
     public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier) throws OauthException {
         super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, HttpMethod.GET);
     }

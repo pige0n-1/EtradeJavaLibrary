@@ -10,6 +10,8 @@ public class KeyAndURLExtractor {
     public static final String OAUTH_AUTHORIZATION_BASE_URL = "https://us.etrade.com/e/t/etws/authorize";
     public static final String OAUTH_ACCESS_TOKEN_URI = "/oauth/access_token";
     public static final String OAUTH_REQUEST_TOKEN_URI = "/oauth/request_token";
+    public static final String OAUTH_RENEW_ACCESS_TOKEN_URI = "/oauth/renew_access_token";
+    public static final String OAUTH_REVOKE_ACCESS_TOKEN_URI = "/oauth/revoke_access_token";
     public static final String API_BASE_URL = "https://api.etrade.com";
     public static final String API_ACCOUNT_LIST_URI = "/v1/accounts/list";
     public static final String API_BALANCE_URI = "/v1/accounts/";

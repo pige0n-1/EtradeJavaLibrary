@@ -8,6 +8,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
 import blue.etradeJavaLibrary.core.network.oauth.requests.OauthFlowRequest;
 import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
+import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import java.net.MalformedURLException;
 import java.io.IOException;
 
@@ -17,6 +18,8 @@ public class OauthFlow {
     
     private final String requestTokenURI;
     private final String accessTokenURI;
+    private final String renewAccessTokenURI;
+    private final String revokeAccessTokenURI;
     
     private final Key consumerKey;
     private final Key consumerSecret;
@@ -24,31 +27,61 @@ public class OauthFlow {
     private Key tokenSecret;
     private Key verifier;
     
-    public OauthFlow(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, Key consumerKey, Key consumerSecret) {
+    private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
+    
+    public OauthFlow(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
         this.oauthBaseURL = oauthBaseURL;
         this.authorizeAccountBaseURL = authorizeAccountBaseURL;
         this.requestTokenURI = requestTokenURI;
         this.accessTokenURI = accessTokenURI;
+        this.renewAccessTokenURI = renewAccessTokenURI;
+        this.revokeAccessTokenURI = revokeAccessTokenURI;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;     
     }
     
-    public Key getToken() throws MalformedURLException, IOException, OauthException {
+    public Key getToken() throws OauthException {
         performOauthFlowIfRequired();
         
         return token;
     }
     
-    public Key getTokenSecret() throws MalformedURLException, IOException, OauthException {
+    public Key getTokenSecret() throws OauthException {
         performOauthFlowIfRequired();
         
         return tokenSecret;
     }
     
-    public Key getVerifier() throws MalformedURLException, IOException, OauthException {
+    public void renewAccessToken() throws OauthException {
         performOauthFlowIfRequired();
         
-        return verifier;
+        String urlString = oauthBaseURL + renewAccessTokenURI;
+        BaseURL etradeBaseURL = new BaseURL(urlString);
+        
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        try {
+            request.sendAndGetResponse();
+            logger.log("Access token successfully renewed.");
+        }
+        catch (Exception ex) {
+            throw new OauthException("Unable to renew access token.");
+        }
+    }
+    
+    public void revokeAccessToken() throws OauthException {
+        performOauthFlowIfRequired();
+        
+        String urlString = oauthBaseURL + revokeAccessTokenURI;
+        BaseURL etradeBaseURL = new BaseURL(urlString);
+        
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        try {
+            request.sendAndGetResponse();
+            logger.log("Access token successfully revoked");
+        }
+        catch (Exception ex) {
+            throw new OauthException("Unable to renew access token.");
+        }
     }
     
     
@@ -67,12 +100,15 @@ public class OauthFlow {
             fetchRequestToken();
             fetchVerifier();
             fetchAccessToken();
+            logger.log("Oauth authentication performed successfully.");
         }
         catch (Exception ex) {
             if (depth <= RECURSION_DEPTH_LIMIT)
                 performOauthFlow(depth + 1);
-            else
+            else {
+                logger.log("Oauth authentication flow unsuccessful.");
                 throw new OauthException("Oauth flow unsuccessful.");
+            }      
         }
     }
     

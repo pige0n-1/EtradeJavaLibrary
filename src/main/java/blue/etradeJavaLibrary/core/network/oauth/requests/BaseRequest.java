@@ -39,11 +39,15 @@ public abstract class BaseRequest {
         this.tokenSecret = new Key();
     }
     
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
+    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
         this(baseURL, consumerKey, consumerSecret, httpMethod);
-        oauthParameters.setToken(token);
-        oauthParameters.addVerifier(verifier);
         this.tokenSecret = tokenSecret;
+        oauthParameters.setToken(token);
+    }
+    
+    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+        oauthParameters.addVerifier(verifier);
     }
     
     protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
