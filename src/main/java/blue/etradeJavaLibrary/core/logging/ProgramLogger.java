@@ -4,8 +4,9 @@ package blue.etradeJavaLibrary.core.logging;
 import java.util.logging.*;
 import java.io.IOException;
 import java.util.Date;
+import java.io.Serializable;
 
-public class ProgramLogger {
+public class ProgramLogger implements Serializable {
     private static final String LOG_FILE = "src/main/java/blue/etradeJavaLibrary/core/logging/log.txt";
     private static final Level DEFAULT_LEVEL = Level.FINE;
     private static final boolean APPEND_TO_LOG_FILE = true;

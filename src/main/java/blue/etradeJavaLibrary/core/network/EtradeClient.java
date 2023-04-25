@@ -4,8 +4,15 @@ package blue.etradeJavaLibrary.core.network;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.OauthFlow;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import java.net.MalformedURLException;
+import java.io.Serializable;
+import java.io.ObjectOutputStream;
+import java.io.ObjectInputStream;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 
-public class EtradeClient {
+public class EtradeClient implements Serializable {
     private String mainBaseURL;
     private String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     
@@ -13,6 +20,7 @@ public class EtradeClient {
     private Key consumerSecret = KeyAndURLExtractor.getConsumerSecret();
     private Key token;
     private Key tokenSecret;
+    private OauthFlow oauthFlow;
     
     public final EnvironmentType environmentType;
     private static final ProgramLogger logger = ProgramLogger.getProgramLogger();
@@ -20,7 +28,9 @@ public class EtradeClient {
     private static EtradeClient liveSession;
     private static EtradeClient sandboxSession;
     
-    private EtradeClient(EnvironmentType environmentType) throws OauthException {
+    private static final String FILE_NAME = "etradeSession.dat";
+    
+    private EtradeClient(EnvironmentType environmentType) throws NetworkException {
         this.environmentType = environmentType;
         logger.log("Current environment type", environmentType.name());
         determineBaseURL();
@@ -29,20 +39,54 @@ public class EtradeClient {
     }
     
     public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
-        try {
-            if (environmentType == EnvironmentType.LIVE)
-                return getLiveClient();
-            else
-                return getSandboxClient();
-        }
-        catch (OauthException ex) {
-            throw new NetworkException("Connection to E*Trade was unsuccessful.");
-        }
+        if (environmentType == EnvironmentType.LIVE)
+            return getLiveClient();
+        else
+            return getSandboxClient();
     }
     
     public static enum EnvironmentType {
         LIVE,
         SANDBOX
+    }
+    
+    public void renewSession() throws NetworkException {
+        try {
+            oauthFlow.renewAccessToken();
+        }
+        catch (OauthException ex) {
+            throw new NetworkException("Session could not be renewed.");
+        }
+    }
+    
+    public void endSession() throws NetworkException {
+        try {
+            oauthFlow.revokeAccessToken();
+        }
+        catch (OauthException ex) {
+            throw new NetworkException("Session could not be ended.");
+        }
+    }
+    
+    public void saveSession() throws IOException {
+        FileOutputStream file = new FileOutputStream(FILE_NAME);
+        ObjectOutputStream objectOutput = new ObjectOutputStream(file);
+        objectOutput.writeObject(this);
+        objectOutput.close();
+    }
+    
+    public static EtradeClient loadLastSavedSession() throws IOException {
+        FileInputStream file = new FileInputStream(FILE_NAME);
+        EtradeClient client;
+        try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
+            client = (EtradeClient)objectInput.readObject();
+        }
+        catch (ClassNotFoundException ex) {
+            logger.log("Last session could not be loaded.");
+            return null;
+        }
+        
+        return client;
     }
     
     
@@ -56,8 +100,8 @@ public class EtradeClient {
             mainBaseURL = KeyAndURLExtractor.API_BASE_URL;
     }
     
-    private void performOauthFlow() throws OauthException {
-        OauthFlow oauthFlow = new OauthFlow(
+    private void performOauthFlow() throws NetworkException {
+        oauthFlow = new OauthFlow(
                 mainBaseURL, 
                 authorizeApplicationBaseURL, 
                 KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI, 
@@ -66,18 +110,28 @@ public class EtradeClient {
                 KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
                 consumerKey, 
                 consumerSecret);
-        token = oauthFlow.getToken();
-        tokenSecret = oauthFlow.getToken();
+        
+        try {
+            oauthFlow.setBrowserRequest(new EtradeBrowserRequestChromeAutomation());
+            token = oauthFlow.getToken();
+            tokenSecret = oauthFlow.getToken();
+        }
+        catch (MalformedURLException ex) {
+           throw new NetworkException("One or more of the Etrade URLs are not functional");
+        }
+        catch (OauthException ex) {
+            throw new NetworkException("The oauth flow encountered an issue");
+        }
     }
     
-    private static EtradeClient getLiveClient() throws OauthException {
+    private static EtradeClient getLiveClient() throws NetworkException {
         if (liveSession == null)
             liveSession = new EtradeClient(EnvironmentType.LIVE);
         
         return liveSession;
     }
     
-    private static EtradeClient getSandboxClient() throws OauthException {
+    private static EtradeClient getSandboxClient() throws NetworkException {
         if (sandboxSession == null)
             sandboxSession = new EtradeClient(EnvironmentType.SANDBOX);
         

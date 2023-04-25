@@ -11,8 +11,9 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import java.net.MalformedURLException;
 import java.io.IOException;
+import java.io.Serializable;
 
-public class OauthFlow {
+public class OauthFlow implements Serializable {
     private final String oauthBaseURL;
     private final String authorizeAccountBaseURL;
     
@@ -27,6 +28,8 @@ public class OauthFlow {
     private Key tokenSecret;
     private Key verifier;
     
+    private BrowserRequest browserRequestMethod = new BrowserRequest();
+    
     private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
     public OauthFlow(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
@@ -38,6 +41,10 @@ public class OauthFlow {
         this.revokeAccessTokenURI = revokeAccessTokenURI;
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;     
+    }
+    
+    public void setBrowserRequest(BrowserRequest requestMethod) {
+        browserRequestMethod = requestMethod;
     }
     
     public Key getToken() throws OauthException {
@@ -126,11 +133,9 @@ public class OauthFlow {
     
     private void fetchVerifier() throws MalformedURLException, IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
-        BrowserRequest br = new BrowserRequest(etradeBaseURL, consumerKey, token);
+        browserRequestMethod.configureBrowserRequest(etradeBaseURL, consumerKey, token);
         
-        br.go();
-        
-        verifier = getVerifierUserInput();
+        verifier = browserRequestMethod.go();
     }
     
     private void fetchAccessToken() throws MalformedURLException, IOException, OauthException {
@@ -142,15 +147,6 @@ public class OauthFlow {
         
         token = new Key(responseParameters.getDecodedValue("oauth_token"));
         tokenSecret = new Key(responseParameters.getDecodedValue("oauth_token_secret"));
-    }
-    
-    private static Key getVerifierUserInput() {
-        java.util.Scanner scanner = new java.util.Scanner(System.in);
-        
-        System.out.print("Enter the verifier: ");
-        
-        String verifier = scanner.next();
-        return new Key(verifier);
     }
     
     private boolean oauthFlowRequired() {

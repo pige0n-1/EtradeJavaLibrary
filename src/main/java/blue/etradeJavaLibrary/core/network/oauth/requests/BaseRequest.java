@@ -19,7 +19,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.io.*;
 
-public abstract class BaseRequest {
+public abstract class BaseRequest implements Serializable {
     
     private OauthParameters oauthParameters;
     private BaseURL baseURL;
