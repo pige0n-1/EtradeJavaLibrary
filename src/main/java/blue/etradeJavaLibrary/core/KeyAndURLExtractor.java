@@ -1,5 +1,5 @@
 
-package blue.etradeJavaLibrary.core.network;
+package blue.etradeJavaLibrary.core;
 
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;

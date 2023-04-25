@@ -3,7 +3,9 @@ package blue.etradeJavaLibrary.core.logging;
 
 import java.util.logging.*;
 import java.io.IOException;
-import java.util.Date;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 import java.io.Serializable;
 
 public class ProgramLogger implements Serializable {
@@ -53,18 +55,13 @@ public class ProgramLogger implements Serializable {
     private class SimpleLogFormatter extends Formatter {
         @Override
         public String format(LogRecord record) {
-            StringBuilder messageOutput = new StringBuilder();
-            
-            messageOutput.append(new Date().toString());
-            messageOutput.append(":   ");
-            messageOutput.append(record.getMessage());
-            messageOutput.append("\n");
+            String message = String.format("%20s:   %s%n", formatDate(), record.getMessage());
             
             // This will only be true upon closing the logger
             if (record.getLevel() == Level.INFO)
                 return formatWithoutDate(record);
             
-            return messageOutput.toString();
+            return message;
         }
         
         public String formatWithoutDate(LogRecord record) {
@@ -73,6 +70,36 @@ public class ProgramLogger implements Serializable {
             messageOutput.append(record.getMessage());
             
             return messageOutput.toString();
+        }
+        
+        
+        // Private helper methods
+        
+        
+        private String formatDate() {
+            StringBuilder formattedDate = new StringBuilder();
+            Calendar currentTime = GregorianCalendar.getInstance();
+            
+            formattedDate.append(currentTime.get(Calendar.DAY_OF_MONTH));
+            formattedDate.append(" ");
+            
+            formattedDate.append(currentTime.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, Locale.ENGLISH));
+            formattedDate.append(" ");
+            
+            int hour = currentTime.get(Calendar.HOUR);
+            hour = (hour == 0) ? 12 : hour;
+            formattedDate.append(hour);
+            formattedDate.append(":");
+            
+            formattedDate.append(currentTime.get(Calendar.MINUTE));
+            formattedDate.append(":");
+            
+            formattedDate.append(currentTime.get(Calendar.SECOND));
+            formattedDate.append(" ");
+            
+            formattedDate.append(currentTime.getDisplayName(Calendar.AM_PM, Calendar.SHORT_FORMAT, Locale.ENGLISH));
+            
+            return formattedDate.toString();
         }
     }
     
@@ -88,6 +115,6 @@ public class ProgramLogger implements Serializable {
             publish(newLine);
             
             super.close();
-        } 
+        }
     }
 }
