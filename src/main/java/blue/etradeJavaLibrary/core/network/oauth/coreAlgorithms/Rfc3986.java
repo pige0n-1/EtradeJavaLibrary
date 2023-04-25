@@ -11,7 +11,6 @@ import java.io.UnsupportedEncodingException;
  */
 public final class Rfc3986 {
     
-    /* Prevent instantiation */
     private Rfc3986() {}
     
     public static String encode(String string) {

@@ -93,7 +93,7 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
         return parametersString.toString();
     }
     
-    private String encode(String value) {
+    protected String encode(String value) {
         return Rfc3986.encode(value);
     }
     
@@ -102,7 +102,7 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
         return new ParametersIterator();
     }
     
-    private class ParametersIterator implements Iterator<Parameter> {
+    class ParametersIterator implements Iterator<Parameter> {
         Iterator<Map.Entry<String, String>> treeMapIterator = 
                 parameters.entrySet().iterator();
         

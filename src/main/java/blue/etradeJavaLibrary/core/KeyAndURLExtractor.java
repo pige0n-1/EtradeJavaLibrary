@@ -31,6 +31,10 @@ public class KeyAndURLExtractor {
         return new Key(keyString);
     }
     
+    
+    // Private helper methods
+    
+    
     private static String extractSystemEnvironmentVariable(String identifier) {
         String value = System.getenv(identifier);
         

@@ -14,6 +14,8 @@ import java.util.Base64;
 public class HmacSha1 {
     private static final String ALGORITHM = "HmacSHA1";
     
+    private HmacSha1() {}
+    
     public static String doHmacSha1Base64(String key, String message) {
         try {
             byte[] keyBytes = key.getBytes();

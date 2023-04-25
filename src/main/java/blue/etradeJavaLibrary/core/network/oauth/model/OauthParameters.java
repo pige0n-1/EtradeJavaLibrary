@@ -22,6 +22,10 @@ public final class OauthParameters extends Parameters {
         addVerifier(verifier);
     }
     
+    
+    // Private helper methods
+    
+    
     private void initializeParameters() throws OauthException {
         addParameter("oauth_signature_method", "HMAC-SHA1");
         addParameter("oauth_nonce", generateNonce());

@@ -18,6 +18,8 @@ import java.net.URL;
 public class SignatureBuilder {
     private static final ProgramLogger logger = ProgramLogger.getProgramLogger();
     
+    private SignatureBuilder() {}
+    
     public static String buildSignature(URL url, Parameters parameters, Key consumerSecret, Key tokenSecret, HttpMethod httpMethod) {
         String urlWithoutQuery = getURLWithoutQuery(url);
         
@@ -32,6 +34,10 @@ public class SignatureBuilder {
 
         return HmacSha1.doHmacSha1Base64(key, signatureBaseString);     
     }
+    
+    
+    // Private helper methods
+    
 
     private static String normalizeParameters(Parameters parameters) {
         String normalizedString = "";
