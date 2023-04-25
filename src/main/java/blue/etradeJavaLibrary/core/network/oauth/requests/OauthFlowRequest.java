@@ -33,7 +33,6 @@ public class OauthFlowRequest extends BaseRequest {
         
         HttpURLConnection connection = getConnection(fullURL);
         
-        
         try {
             InputStream connectionResponse = connection.getInputStream();
             return new OauthFlowResponse(connectionResponse);
@@ -41,6 +40,9 @@ public class OauthFlowRequest extends BaseRequest {
         catch (IOException ex) {
             logger.log("Connection to etrade unsuccessful");
             throw new OauthException("Connection to etrade unsuccessful");
+        }
+        finally {
+            logger.log("Connection response", connection.getResponseMessage());
         }
     }
 }
