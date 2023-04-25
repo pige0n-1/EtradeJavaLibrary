@@ -3,7 +3,6 @@ package blue.etradeJavaLibrary.core.network.oauth.responses;
 
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.io.IOException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;

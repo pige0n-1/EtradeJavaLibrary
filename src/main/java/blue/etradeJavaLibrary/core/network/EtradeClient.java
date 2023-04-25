@@ -5,7 +5,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.OauthFlow;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 
-public class EtradeClientWrapper {
+public class EtradeClient {
     private String mainBaseURL;
     private String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     
@@ -15,10 +15,12 @@ public class EtradeClientWrapper {
     private Key tokenSecret;
     
     public final EnvironmentType environmentType;
+    private static final ProgramLogger logger = ProgramLogger.getProgramLogger();
     
-    private final ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private static EtradeClient liveSession;
+    private static EtradeClient sandboxSession;
     
-    public EtradeClientWrapper(EnvironmentType environmentType) throws OauthException {
+    private EtradeClient(EnvironmentType environmentType) throws OauthException {
         this.environmentType = environmentType;
         logger.log("Current environment type", environmentType.name());
         determineBaseURL();
@@ -26,7 +28,19 @@ public class EtradeClientWrapper {
         logger.log("Logged into Etrade successfully");
     }
     
-    public enum EnvironmentType {
+    public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
+        try {
+            if (environmentType == EnvironmentType.LIVE)
+                return getLiveClient();
+            else
+                return getSandboxClient();
+        }
+        catch (OauthException ex) {
+            throw new NetworkException("Connection to E*Trade was unsuccessful.");
+        }
+    }
+    
+    public static enum EnvironmentType {
         LIVE,
         SANDBOX
     }
@@ -54,5 +68,19 @@ public class EtradeClientWrapper {
                 consumerSecret);
         token = oauthFlow.getToken();
         tokenSecret = oauthFlow.getToken();
+    }
+    
+    private static EtradeClient getLiveClient() throws OauthException {
+        if (liveSession == null)
+            liveSession = new EtradeClient(EnvironmentType.LIVE);
+        
+        return liveSession;
+    }
+    
+    private static EtradeClient getSandboxClient() throws OauthException {
+        if (sandboxSession == null)
+            sandboxSession = new EtradeClient(EnvironmentType.SANDBOX);
+        
+        return sandboxSession;
     }
 }
