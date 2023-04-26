@@ -2,6 +2,7 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 import java.util.Base64;
+import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
 
 public final class OauthParameters extends Parameters {
     
@@ -40,7 +41,8 @@ public final class OauthParameters extends Parameters {
     
     private String generateNonce() {
         byte[] rawRandomNumberString = ((int)(this.hashCode() * Math.random()) + "").getBytes();
-        return Base64.getEncoder().encodeToString(rawRandomNumberString);
+        String base64String = Base64.getEncoder().encodeToString(rawRandomNumberString);
+        return Rfc3986.encode(base64String);
     }
     
     public void setSignature(String signature) throws OauthException {
