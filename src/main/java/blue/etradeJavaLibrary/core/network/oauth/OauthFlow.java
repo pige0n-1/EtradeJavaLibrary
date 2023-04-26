@@ -31,7 +31,7 @@ public class OauthFlow implements Serializable {
     private BrowserRequest browserRequestMethod = new BrowserRequest();
     
     private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
-    private final int OAUTH_ATTEMPTS_LIMIT = 3;
+    private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
     public OauthFlow(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
         this.oauthBaseURL = oauthBaseURL;
