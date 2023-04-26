@@ -113,12 +113,8 @@ public class EtradeClient implements Serializable {
                 consumerSecret);
         
         try {
-            oauthFlow.setBrowserRequest(new EtradeBrowserRequestChromeAutomation());
             token = oauthFlow.getToken();
             tokenSecret = oauthFlow.getToken();
-        }
-        catch (MalformedURLException ex) {
-           throw new NetworkException("One or more of the Etrade URLs are not functional");
         }
         catch (OauthException ex) {
             throw new NetworkException("The oauth flow encountered an issue");
