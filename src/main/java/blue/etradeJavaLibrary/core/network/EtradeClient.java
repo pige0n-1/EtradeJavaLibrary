@@ -14,21 +14,21 @@ import java.io.Serializable;
 
 public class EtradeClient 
         implements Serializable, AutoCloseable {
-    private String mainBaseURL;
-    private String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     
-    private Key consumerKey = KeyAndURLExtractor.getConsumerKey();
-    private Key consumerSecret = KeyAndURLExtractor.getConsumerSecret();
+    // Instance data fields
+    public final EnvironmentType environmentType;
+    private String oauthBaseURL;
+    private final String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
+    private final Key consumerKey = KeyAndURLExtractor.getConsumerKey();
+    private final Key consumerSecret = KeyAndURLExtractor.getConsumerSecret();
     private Key token;
     private Key tokenSecret;
     private OauthFlow oauthFlow;
     
-    public final EnvironmentType environmentType;
+    // Static data fields
     private transient static final ProgramLogger logger = ProgramLogger.getProgramLogger();
-    
-    private static EtradeClient session;
-    
-    private static final String FILE_NAME = "etradeSession.dat";
+    private static EtradeClient currentSession;
+    private static final String SAVE_FILE_NAME = "etradeSession.dat";
     
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
         this.environmentType = environmentType;
@@ -36,9 +36,13 @@ public class EtradeClient
         determineBaseURL();
         performOauthFlow();
         logger.log("Logged into Etrade successfully");
+        currentSession = this;
     }
     
     public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
+        if (currentSession != null && currentSession.environmentType == environmentType)
+            return currentSession;
+        
         try {
             EtradeClient previousSession = loadLastSession();
             
@@ -48,7 +52,7 @@ public class EtradeClient
             else
                 logger.log("Saved EtradeClient object found, but different environment type");
         }
-        catch (Exception ex) {
+        catch (IOException ex) {
             logger.log("No saved EtradeClient to retrieve. Creating new instance.");   
         }
         
@@ -107,14 +111,15 @@ public class EtradeClient
     
     
     private void saveSession() throws IOException {
-        FileOutputStream file = new FileOutputStream(FILE_NAME);
-        ObjectOutputStream objectOutput = new ObjectOutputStream(file);
-        objectOutput.writeObject(this);
-        objectOutput.close();
+        FileOutputStream file = new FileOutputStream(SAVE_FILE_NAME);
+        
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
+            objectOutput.writeObject(this);
+        }
     }
     
     private static EtradeClient loadLastSession() throws IOException {
-        FileInputStream file = new FileInputStream(FILE_NAME);
+        FileInputStream file = new FileInputStream(SAVE_FILE_NAME);
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
             var client = objectInput.readObject();
             logger.log("Last EtradeClient session loaded successfully.");
@@ -128,14 +133,14 @@ public class EtradeClient
     
     private void determineBaseURL() {
         if (environmentType == EnvironmentType.SANDBOX)
-            mainBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
+            oauthBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
         else
-            mainBaseURL = KeyAndURLExtractor.API_BASE_URL;
+            oauthBaseURL = KeyAndURLExtractor.API_BASE_URL;
     }
     
     private void performOauthFlow() throws NetworkException {
         oauthFlow = new OauthFlow(
-                mainBaseURL, 
+                oauthBaseURL, 
                 authorizeApplicationBaseURL, 
                 KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
