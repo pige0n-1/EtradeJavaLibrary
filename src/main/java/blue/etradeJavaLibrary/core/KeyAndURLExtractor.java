@@ -31,6 +31,14 @@ public class KeyAndURLExtractor {
         return new Key(keyString);
     }
     
+    public static String getEtradeUsername() {
+        return extractSystemEnvironmentVariable("etradeUsername");
+    }
+    
+    public static String getEtradePassword() {
+        return extractSystemEnvironmentVariable("etradePassword");
+    }
+    
     
     // Private helper methods
     

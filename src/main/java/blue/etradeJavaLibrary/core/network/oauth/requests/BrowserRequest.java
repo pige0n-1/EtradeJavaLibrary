@@ -70,7 +70,7 @@ public class BrowserRequest {
         catch (URISyntaxException ex) {}
     }
     
-    private static Key getVerifierUserInput() {
+    protected static Key getVerifierUserInput() {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
         
         System.out.print("Enter the verifier: ");

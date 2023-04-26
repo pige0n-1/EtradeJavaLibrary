@@ -1,20 +1,21 @@
 
 package blue.etradeJavaLibrary.core.network;
 
-import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
+import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
+import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import java.io.Serializable;
-import org.openqa.selenium.support.ui.*;
-import java.time.Duration;
 
 /**
  * Current work of progress. Not functional.
  * @author Hunter
  */
-public class EtradeBrowserRequestChromeAutomation extends BrowserRequest implements Serializable {
+public class EtradeBrowserRequestChromeAutomation extends BrowserRequest 
+        implements Serializable {
     
     private transient WebDriver chromeBrowser;
     
@@ -24,17 +25,14 @@ public class EtradeBrowserRequestChromeAutomation extends BrowserRequest impleme
         super(baseURL, consumerKey, token);
     }
     
-    /**
     @Override
-    public Key go() throws OauthException {
+    public Key go() throws OauthException, IOException {
         try {
             openBrowser();
-            
-            new WebDriverWait(chromeBrowser, Duration.ofSeconds(100)).until(ExpectedConditions.elementToBeClickable(By.name("submit"))).click();
-            //waitForUserToLogin();
-            return BrowserRequest.getVerifierUserInput();
-            //clickAccept();
-            //return getVerifierCode();
+            enterUsernameAndPassword();
+            waitForUserToInputSecurityCode();
+            clickAccept();
+            return copyVerifierFromBrowser();
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -42,7 +40,6 @@ public class EtradeBrowserRequestChromeAutomation extends BrowserRequest impleme
             return null;
         }
     }
-    **/
     
     
     // Private helper methods
@@ -60,13 +57,21 @@ public class EtradeBrowserRequestChromeAutomation extends BrowserRequest impleme
         chromeBrowser.get(browserURL);
     }
     
-    private void waitForUserToLogin() throws OauthException {
-        final String LOGIN_TITLE = "Log On to E*TRADE | E*TRADE";
+    private void enterUsernameAndPassword() {
+        final String USERNAME_FIELD_NAME = "USER";
+        final String PASSWORD_FIELD_NAME = "PASSWORD";
+        final String USERNAME = KeyAndURLExtractor.getEtradeUsername();
+        final String PASSWORD = KeyAndURLExtractor.getEtradePassword();
         
-        do {
-            sleep(1500);
-            
-        } while (chromeBrowser.getTitle().equals(LOGIN_TITLE));
+        WebElement usernameInputBox = chromeBrowser.findElement(By.name(USERNAME_FIELD_NAME));
+        WebElement passwordInputBox = chromeBrowser.findElement(By.name(PASSWORD_FIELD_NAME));
+        
+        usernameInputBox.sendKeys(USERNAME);
+        passwordInputBox.sendKeys(PASSWORD);
+    }
+    
+    private void waitForUserToInputSecurityCode() {
+        sleep(10000);
     }
     
     private void clickAccept() throws OauthException {
@@ -76,8 +81,7 @@ public class EtradeBrowserRequestChromeAutomation extends BrowserRequest impleme
         acceptButton.click();
     }
     
-    private Key getVerifierCode() throws OauthException {
-        sleep(1000);
+    private Key copyVerifierFromBrowser() {
         return null;
     }
     
