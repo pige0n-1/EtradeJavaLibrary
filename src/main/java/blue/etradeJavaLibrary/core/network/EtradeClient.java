@@ -5,15 +5,15 @@ import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.OauthFlow;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import java.net.MalformedURLException;
-import java.io.Serializable;
-import java.io.ObjectOutputStream;
-import java.io.ObjectInputStream;
-import java.io.FileOutputStream;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 
-public class EtradeClient implements Serializable {
+public class EtradeClient 
+        implements Serializable, AutoCloseable {
     private String mainBaseURL;
     private String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     
@@ -24,10 +24,9 @@ public class EtradeClient implements Serializable {
     private OauthFlow oauthFlow;
     
     public final EnvironmentType environmentType;
-    private static final ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private transient static final ProgramLogger logger = ProgramLogger.getProgramLogger();
     
-    private static EtradeClient liveSession;
-    private static EtradeClient sandboxSession;
+    private static EtradeClient session;
     
     private static final String FILE_NAME = "etradeSession.dat";
     
@@ -40,10 +39,28 @@ public class EtradeClient implements Serializable {
     }
     
     public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
-        if (environmentType == EnvironmentType.LIVE)
-            return getLiveClient();
-        else
-            return getSandboxClient();
+        try {
+            EtradeClient previousSession = loadLastSession();
+            
+            if (previousSession.environmentType == environmentType)
+                return previousSession;
+            
+            else
+                logger.log("Saved EtradeClient object found, but different environment type");
+        }
+        catch (Exception ex) {
+            logger.log("No saved EtradeClient to retrieve. Creating new instance.");   
+        }
+        
+        return new EtradeClient(environmentType);
+    }
+    
+    public static EtradeClient getLiveClient() throws NetworkException {
+        return getClient(EnvironmentType.LIVE);
+    }
+    
+    public static EtradeClient getSandboxClient() throws NetworkException {
+        return getClient(EnvironmentType.SANDBOX);
     }
     
     public static enum EnvironmentType {
@@ -69,30 +86,45 @@ public class EtradeClient implements Serializable {
         }
     }
     
-    public void saveSession() throws IOException {
+    @Override
+    public void close() {
+        try {
+            saveSession();
+            logger.log("Saved current EtradeClient session successfully.");
+        }
+        catch (IOException ex) {
+            logger.log("Could not save current EtradeClient session.");
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return "EtradeClient session: " + environmentType.name();
+    }
+    
+    
+    // Private helper methods
+    
+    
+    private void saveSession() throws IOException {
         FileOutputStream file = new FileOutputStream(FILE_NAME);
         ObjectOutputStream objectOutput = new ObjectOutputStream(file);
         objectOutput.writeObject(this);
         objectOutput.close();
     }
     
-    public static EtradeClient loadLastSavedSession() throws IOException {
+    private static EtradeClient loadLastSession() throws IOException {
         FileInputStream file = new FileInputStream(FILE_NAME);
-        EtradeClient client;
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
-            client = (EtradeClient)objectInput.readObject();
+            var client = objectInput.readObject();
+            logger.log("Last EtradeClient session loaded successfully.");
+            return (EtradeClient) client;
         }
         catch (ClassNotFoundException ex) {
-            logger.log("Last session could not be loaded.");
-            return null;
+            logger.log("Last EtradeClient session could not be loaded.");
+            throw new IOException("Last EtradeClient session could not be loaded.");
         }
-        
-        return client;
-    }
-    
-    
-    // Private helper methods
-    
+    }    
     
     private void determineBaseURL() {
         if (environmentType == EnvironmentType.SANDBOX)
@@ -119,19 +151,5 @@ public class EtradeClient implements Serializable {
         catch (OauthException ex) {
             throw new NetworkException("The oauth flow encountered an issue");
         }
-    }
-    
-    private static EtradeClient getLiveClient() throws NetworkException {
-        if (liveSession == null)
-            liveSession = new EtradeClient(EnvironmentType.LIVE);
-        
-        return liveSession;
-    }
-    
-    private static EtradeClient getSandboxClient() throws NetworkException {
-        if (sandboxSession == null)
-            sandboxSession = new EtradeClient(EnvironmentType.SANDBOX);
-        
-        return sandboxSession;
     }
 }

@@ -9,6 +9,9 @@ import java.util.Locale;
 import java.io.Serializable;
 
 public class ProgramLogger implements Serializable {
+    
+    public static boolean loggingAllowed = true;
+    
     private static final String LOG_FILE = "src/main/java/blue/etradeJavaLibrary/core/logging/log.txt";
     private static final Level DEFAULT_LEVEL = Level.FINE;
     private static final boolean APPEND_TO_LOG_FILE = true;
@@ -30,12 +33,15 @@ public class ProgramLogger implements Serializable {
     }
     
     public void log(String message) {
-        encapsulatedJavaLogger.fine(message);
+        if (loggingAllowed)
+            encapsulatedJavaLogger.fine(message);
     }
     
-    public void log(String label, String message) {    
-        String newMessage = String.format("%s: %s", label, message);
-        encapsulatedJavaLogger.fine(newMessage);
+    public void log(String label, String message) {
+        if (loggingAllowed) {
+            String newMessage = String.format("%s: %s", label, message);
+            encapsulatedJavaLogger.fine(newMessage);
+        }
     }
     
     
