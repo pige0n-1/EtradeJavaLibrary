@@ -6,6 +6,7 @@ import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import java.awt.Desktop;
 import java.io.IOException;
+import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -17,7 +18,7 @@ import java.net.URL;
  * provider. No authorization header is set; only a URL is called with the
  * base URL and query parameters
  */
-public class BrowserRequest {
+public class BrowserRequest implements Serializable {
     private static final boolean RFC3986_ENCODED = false;
     protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
