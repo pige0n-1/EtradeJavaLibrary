@@ -73,13 +73,6 @@ public class EtradeClient
         return getClient(EnvironmentType.SANDBOX);
     }
     
-    public static enum EnvironmentType {
-        LIVE,
-        SANDBOX
-    }
-    
-    
-    
     @Override
     public void close() {
         try {
@@ -184,8 +177,10 @@ public class EtradeClient
     
     private boolean hasBeenTwoHoursSinceLastRenewal() {
         Instant now = Instant.now();
+        Duration twoHours = Duration.ofHours(2);
+        Duration timeSinceLastRenewal = Duration.between(timeOfLastAccessTokenRenewal, now);
         
-        return Duration.between(timeOfLastAccessTokenRenewal, now).compareTo(Duration.ofHours(2)) > 0;
+        return timeSinceLastRenewal.compareTo(twoHours) > 0;
     }
     
     private boolean accessTokenExpired() {
@@ -195,8 +190,9 @@ public class EtradeClient
         var now = Instant.now().atZone(EST_ZONE_ID);
         
         var daysBetweenTime = Period.between(lastRenewalTimeEST.toLocalDate(), now.toLocalDate());
+        int numberOfDays = daysBetweenTime.getDays();
         
-        return !daysBetweenTime.isZero();  
+        return numberOfDays >= 1;  
     }
     
     private void renewAccessToken() throws NetworkException {
