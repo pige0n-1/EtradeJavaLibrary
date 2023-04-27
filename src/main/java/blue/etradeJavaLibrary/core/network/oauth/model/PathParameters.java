@@ -4,6 +4,8 @@ package blue.etradeJavaLibrary.core.network.oauth.model;
 
 public class PathParameters extends Parameters {
     
+    public PathParameters() {}
+    
     public PathParameters(String key, String value) {
         addParameter(key, value);
     }

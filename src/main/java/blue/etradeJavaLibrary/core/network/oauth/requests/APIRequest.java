@@ -24,10 +24,22 @@ public class APIRequest extends BaseRequest {
     // Static data fields
     protected static final int MAX_ATTEMPTS = 3;
     
-    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
-        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, httpMethod);
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
+        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
         this.pathParameters = pathParameters;
         this.queryParameters = queryParameters;
+    }
+    
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, pathParameters, new QueryParameters(), consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    }
+    
+    public APIRequest(BaseURL baseURL, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, new PathParameters(), queryParameters, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    }
+    
+    public APIRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, new PathParameters(), new QueryParameters(), consumerKey, consumerSecret, token, tokenSecret, httpMethod);
     }
     
     @Override

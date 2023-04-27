@@ -28,7 +28,6 @@ public class OauthFlowManager implements Serializable {
     private Key tokenSecret;
     private Key verifier;
     private BrowserRequest browserRequestMethod = new BrowserRequest();
-    private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
     // Static data fields
     private final static ProgramLogger logger = ProgramLogger.getNetworkLogger();

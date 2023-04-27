@@ -15,7 +15,7 @@ public abstract class BaseResponse {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    public abstract Parameters parseResponse() throws OauthException;
+    public abstract Object parseResponse() throws OauthException;
     
     protected static String convertToString(InputStream connectionResponseStream) throws OauthException {
         try {

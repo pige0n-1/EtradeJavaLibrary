@@ -4,6 +4,8 @@ package blue.etradeJavaLibrary.core.network;
 import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.*;
+import blue.etradeJavaLibrary.core.network.oauth.requests.*;
+import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,36 +15,37 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.*;
 
-public class EtradeClient extends APIManager
+public class EtradeClient
         implements Serializable, AutoCloseable {
     
     // Instance data fields
-    private String oauthBaseURL;
-    private final String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     private final Key consumerKey = KeyAndURLExtractor.getConsumerKey();
     private final Key consumerSecret = KeyAndURLExtractor.getConsumerSecret();
     private Key token;
     private Key tokenSecret;
     private OauthFlowManager oauthFlow;
     private Instant timeOfLastAccessTokenRenewal;
+    private final EnvironmentType environmentType;
+    private String SAVE_FILE_NAME;
+    private String oauthBaseURL;
     
     // Static data fields
-    private static EnvironmentType environmentType;
-    private static String SAVE_FILE_NAME;
+    private static int numberOfInstances = 0;
+    private static EtradeClient currentSession;
     private transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
     private transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
-    private static EtradeClient currentSession;
     
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
-        EtradeClient.environmentType = environmentType;
-        setSaveFileName(environmentType);
+        this.environmentType = environmentType;
+        setSaveFileName();
         networkLogger.log("Current environment type", environmentType.name());
         
-        determineBaseURL();
+        determineBaseURL(environmentType);
         performOauthFlow();
         networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
         networkLogger.log("Logged into Etrade successfully");
         
+        numberOfInstances++;
         currentSession = this;
     }
     
@@ -58,9 +61,7 @@ public class EtradeClient extends APIManager
      * E*trade servers
      * @return The only current instance of EtradeClient
      */
-    public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
-        setSaveFileName(environmentType);
-        
+    public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {   
         if (currentSessionMatches(environmentType))
             return currentSession;
         else
@@ -75,6 +76,23 @@ public class EtradeClient extends APIManager
     
     public static EtradeClient getSandboxClient() throws NetworkException {
         return getClient(EnvironmentType.SANDBOX);
+    }
+    
+    public String getAccountsList() throws NetworkException {
+        renewAccessTokenIfNeeded();
+        
+        try {
+            BaseURL requestBaseURL = new BaseURL(oauthBaseURL + KeyAndURLExtractor.API_ACCOUNT_LIST_URI);
+            APIRequest request = new APIRequest(requestBaseURL, consumerKey, consumerSecret, token, tokenSecret, HttpMethod.GET);
+            String response =  request.sendAndGetResponse().parseResponse();
+            apiLogger.log("Accounts list retrieved successfully");
+            
+            return response;
+        }
+        catch (IOException ex) {
+            apiLogger.log("Accounts list could not be retrieved");
+            throw new NetworkException("");
+        }
     }
     
     @Override
@@ -99,7 +117,7 @@ public class EtradeClient extends APIManager
     
     private static void establishNewCurrentSession(EnvironmentType environmentType) throws NetworkException {
         try {
-            currentSession = loadLastSession();
+            currentSession = loadLastSession(environmentType);
             networkLogger.log("Current environment type", environmentType.name());
         }
         catch (IOException ex) {
@@ -116,8 +134,8 @@ public class EtradeClient extends APIManager
         }
     }
     
-    private static EtradeClient loadLastSession() throws IOException {
-        FileInputStream file = new FileInputStream(SAVE_FILE_NAME);
+    private static EtradeClient loadLastSession(EnvironmentType environmentType) throws IOException {
+        FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
         
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
             var client = objectInput.readObject();
@@ -132,7 +150,7 @@ public class EtradeClient extends APIManager
         }
     }    
     
-    private void determineBaseURL() {
+    private void determineBaseURL(EnvironmentType environmentType) {
         if (environmentType == EnvironmentType.SANDBOX)
             oauthBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
         else
@@ -142,7 +160,7 @@ public class EtradeClient extends APIManager
     private void performOauthFlow() throws NetworkException {
         oauthFlow = new OauthFlowManager(
                 oauthBaseURL, 
-                authorizeApplicationBaseURL, 
+                KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL, 
                 KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI,
@@ -153,7 +171,7 @@ public class EtradeClient extends APIManager
         try {
             token = oauthFlow.getToken();
             timeOfLastAccessTokenRenewal = Instant.now();
-            tokenSecret = oauthFlow.getToken();
+            tokenSecret = oauthFlow.getTokenSecret();
         }
         catch (OauthException ex) {
             throw new NetworkException("The oauth flow encountered an issue");
@@ -205,7 +223,11 @@ public class EtradeClient extends APIManager
         return currentSession != null && currentSession.environmentType == environmentType;
     }
     
-    private static void setSaveFileName(EnvironmentType environmentType) {
-        SAVE_FILE_NAME = environmentType.name().toLowerCase() + "save.dat";
+    private void setSaveFileName() {
+        SAVE_FILE_NAME = getSaveFileName(environmentType);
+    }
+    
+    private static String getSaveFileName(EnvironmentType environmentType) {
+        return environmentType.name().toLowerCase() + "save.dat";
     }
 }

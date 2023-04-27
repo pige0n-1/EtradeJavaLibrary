@@ -10,7 +10,8 @@ public class APIResponse extends BaseResponse {
         super(connectionResponseStream);
     }
     
-    public Parameters parseResponse() throws OauthException {
-        return null;
+    @Override
+    public String parseResponse() throws OauthException {
+        return convertToString(connectionResponseStream);
     }
 }
