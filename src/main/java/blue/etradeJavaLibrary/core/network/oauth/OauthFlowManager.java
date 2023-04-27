@@ -13,7 +13,7 @@ import java.net.MalformedURLException;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class OauthFlow implements Serializable {
+public class OauthFlowManager implements Serializable {
     private final String oauthBaseURL;
     private final String authorizeAccountBaseURL;
     
@@ -33,7 +33,7 @@ public class OauthFlow implements Serializable {
     private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
     private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
-    public OauthFlow(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
+    public OauthFlowManager(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
         this.oauthBaseURL = oauthBaseURL;
         this.authorizeAccountBaseURL = authorizeAccountBaseURL;
         this.requestTokenURI = requestTokenURI;
