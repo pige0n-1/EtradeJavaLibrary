@@ -6,28 +6,42 @@ import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
 
 public final class OauthParameters extends Parameters {
     
-    private boolean signatureSet = false;
-    
-    public OauthParameters(Key consumerKey) throws OauthException {
+    public OauthParameters(Key consumerKey) {
         initializeParameters();
         setConsumerKey(consumerKey);
     }
     
-    public OauthParameters(Key consumerKey, Key token) throws OauthException {
+    public OauthParameters(Key consumerKey, Key token) {
         this(consumerKey);
         setToken(token);
     }
     
-    public OauthParameters(Key consumerKey, Key token, Key verifier) throws OauthException {
+    public OauthParameters(Key consumerKey, Key token, Key verifier) {
         this(consumerKey, token);
         addVerifier(verifier);
+    }
+    
+    public void setSignature(String signature) {
+        addParameter("oauth_signature", signature);
+    }
+    
+    public void setConsumerKey(Key consumerKey) {
+        addParameter("oauth_consumer_key", consumerKey.getValue());
+    }
+    
+    public void setToken(Key token) {
+        addParameter("oauth_token", token.getValue());
+    }
+    
+    public void addVerifier(Key verifier) {
+        addParameter("oauth_verifier", verifier.getValue());
     }
     
     
     // Private helper methods
     
     
-    private void initializeParameters() throws OauthException {
+    private void initializeParameters() {
         addParameter("oauth_signature_method", "HMAC-SHA1");
         addParameter("oauth_nonce", generateNonce());
         addParameter("oauth_version", "1.0");
@@ -35,7 +49,7 @@ public final class OauthParameters extends Parameters {
         createTimestamp();
     }
     
-    private void createTimestamp() throws OauthException {
+    private void createTimestamp() {
         addParameter("oauth_timestamp", System.currentTimeMillis() / 1000 + "");
     }
     
@@ -43,27 +57,5 @@ public final class OauthParameters extends Parameters {
         byte[] rawRandomNumberString = ((int)(this.hashCode() * Math.random()) + "").getBytes();
         String base64String = Base64.getEncoder().encodeToString(rawRandomNumberString);
         return Rfc3986.encode(base64String);
-    }
-    
-    public void setSignature(String signature) throws OauthException {
-        if (signatureSet)
-            throw new OauthException("The signature cannot be"
-                    + "set twice");
-
-        addParameter("oauth_signature", signature);
-        
-        signatureSet = true;
-    }
-    
-    public void setConsumerKey(Key consumerKey) throws OauthException {
-        addParameterWithoutEncoding("oauth_consumer_key", consumerKey.getValue());
-    }
-    
-    public void setToken(Key token) throws OauthException {
-        addParameterWithoutEncoding("oauth_token", token.getValue());
-    }
-    
-    public void addVerifier(Key verifier) throws OauthException {
-        addParameterWithoutEncoding("oauth_verifier", verifier.getValue());
     }
 }

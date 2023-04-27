@@ -106,8 +106,10 @@ public class EtradeClient
                 currentSession = previousSession;
             }
             
-            else
+            else {
                 logger.log("Saved EtradeClient object found, but different environment type");
+                currentSession = new EtradeClient(environmentType);
+            }
         }
         catch (IOException ex) {
             logger.log("No saved EtradeClient to retrieve. Creating new instance.");

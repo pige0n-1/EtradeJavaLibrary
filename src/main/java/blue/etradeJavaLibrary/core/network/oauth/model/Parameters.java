@@ -6,51 +6,33 @@ import java.util.TreeMap;
 import java.util.Map;
 import java.util.Iterator;
 
-public abstract class Parameters implements Iterable<Parameters.Parameter> {
+public class Parameters implements Iterable<Parameters.Parameter> {
     
     // Data fields
     private final TreeMap<String, String> parameters = new TreeMap<>();
+    private final boolean rfc3986Encoded;
     
-    protected void replaceParameter(String key, String value) throws OauthException {
-        removeParameter(key);
-        addParameter(key, value);
+    public Parameters() {
+        rfc3986Encoded = true;
     }
     
-    protected void addParameter(String key, String value) throws OauthException {
-        parameters.put(encode(key), encode(value));
+    public Parameters(boolean rfc3986Encoded) {
+        this.rfc3986Encoded = rfc3986Encoded;
     }
     
-    protected void removeParameter(String key) throws OauthException {
-        key = Rfc3986.encode(key);
+    public void addParameter(String key, String value) {
+        if (rfc3986Encoded)
+            parameters.put(encode(key), encode(value));
+        else
+            parameters.put(key, value);
+    }
+    
+    public void removeParameter(String key) {
         parameters.remove(key);
     }
     
-    public String getValue(String key) throws OauthException {
-        key = Rfc3986.encode(key);
-        String value = parameters.get(key);
-        
-        if (value == null)
-            throw new OauthException("No such parameter");
-        
-        return value;
-    }
-    
-    public String getDecodedValue(String key) throws OauthException {
-        key = Rfc3986.encode(key);
-        String value = parameters.get(key);
-        
-        if (value == null)
-            throw new OauthException("No such parameter");
-        
-        return Rfc3986.decode(value);
-        
-    }
-    
-    public Parameter getDecodedParameter(String key) throws OauthException {
-        String value = getDecodedValue(key);
-        key = Rfc3986.decode(key);
-        
-        return new Parameter(key, value);
+    public String getValue(String key) {
+        return parameters.get(key);
     }
     
     public boolean isEmpty() {
@@ -58,19 +40,13 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
     }
     
     public static Parameters merge(Parameters... parametersCollection) {
-        Parameters allParameters = new SimpleParameters();
+        Parameters allParameters = new Parameters(false);
         
-        for (Parameters currentParameters : parametersCollection) {
-            for (Parameter currentParameter : currentParameters) {
-                allParameters.addParameterWithoutEncoding(currentParameter.getKey(), currentParameter.getValue());
-            }
-        }
+        for (Parameters currentParameters : parametersCollection)
+            for (Parameter currentParameter : currentParameters)
+                allParameters.addParameter(currentParameter.getKey(), currentParameter.getValue());
         
         return allParameters;
-    }
-    
-    protected void addParameterWithoutEncoding(String key, String value) {
-        parameters.put(key, value);
     }
     
     @Override
@@ -81,9 +57,9 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
         while (iterator.hasNext()) {
             Parameter parameter = iterator.next();
             
-            parametersString.append(parameter.getDecodedKey());
+            parametersString.append(parameter.getKey());
             parametersString.append("=");
-            parametersString.append(parameter.getDecodedValue());
+            parametersString.append(parameter.getValue());
             
             if (iterator.hasNext())
                 parametersString.append(", ");
@@ -102,15 +78,13 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
         return new ParametersIterator();
     }
     
-    class ParametersIterator implements Iterator<Parameter> {
-        Iterator<Map.Entry<String, String>> treeMapIterator = 
-                parameters.entrySet().iterator();
+    public class ParametersIterator implements Iterator<Parameter> {
+        Iterator<Map.Entry<String, String>> treeMapIterator = parameters.entrySet().iterator();
         
         @Override
         public Parameter next() {
             Map.Entry<String, String> currentEntry = treeMapIterator.next();
-            return new Parameter(currentEntry.getKey(), 
-                    currentEntry.getValue());
+            return new Parameter(currentEntry.getKey(), currentEntry.getValue());
         }
         
         @Override
@@ -132,16 +106,8 @@ public abstract class Parameters implements Iterable<Parameters.Parameter> {
             return key;
         }
 
-        public String getDecodedKey() {
-            return Rfc3986.decode(key);
-        }
-
         public String getValue() {
             return value;
-        }
-
-        public String getDecodedValue() {
-            return Rfc3986.decode(value);
         }
     }
 }

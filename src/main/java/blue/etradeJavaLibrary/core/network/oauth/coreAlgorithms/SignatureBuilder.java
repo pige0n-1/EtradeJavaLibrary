@@ -25,7 +25,7 @@ public class SignatureBuilder {
         
         String normalizedParameters = normalizeParameters(parameters);
         String signatureBaseString = getSignatureBaseString(normalizedParameters, httpMethod, urlWithoutQuery);
-        String key = consumerSecret.getValue() + "&" + tokenSecret.getValue();
+        String key = buildKey(consumerSecret, tokenSecret);
         
         logger.log("All parameters", parameters.toString());
         logger.log("Key for building oauth signature", key);
@@ -38,6 +38,13 @@ public class SignatureBuilder {
     
     // Private helper methods
     
+    
+    private static String buildKey(Key consumerSecret, Key tokenSecret) {
+        String consumerSecretString = Rfc3986.encode(consumerSecret.getValue());
+        String tokenSecretString = Rfc3986.encode(tokenSecret.getValue());
+        
+        return consumerSecretString + "&" + tokenSecretString;
+    }
 
     private static String normalizeParameters(Parameters parameters) {
         String normalizedString = "";

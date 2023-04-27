@@ -16,22 +16,19 @@ import java.io.Serializable;
 public class OauthFlowManager implements Serializable {
     private final String oauthBaseURL;
     private final String authorizeAccountBaseURL;
-    
     private final String requestTokenURI;
     private final String accessTokenURI;
     private final String renewAccessTokenURI;
     private final String revokeAccessTokenURI;
-    
     private final Key consumerKey;
     private final Key consumerSecret;
     private Key token;
     private Key tokenSecret;
     private Key verifier;
-    
     private BrowserRequest browserRequestMethod = new BrowserRequest();
+    private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
     private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
-    private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
     public OauthFlowManager(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
         this.oauthBaseURL = oauthBaseURL;
@@ -143,8 +140,8 @@ public class OauthFlowManager implements Serializable {
         OauthFlowResponse response = request.sendAndGetResponse();
         Parameters responseParameters = response.parseResponse();
         
-        token = new Key(responseParameters.getDecodedValue("oauth_token"));
-        tokenSecret = new Key(responseParameters.getDecodedValue("oauth_token_secret"));
+        token = new Key(responseParameters.getValue("oauth_token"));
+        tokenSecret = new Key(responseParameters.getValue("oauth_token_secret"));
     }
     
     private void fetchVerifier() throws MalformedURLException, IOException, OauthException {
@@ -161,8 +158,8 @@ public class OauthFlowManager implements Serializable {
         OauthFlowResponse response = request.sendAndGetResponse();
         Parameters responseParameters = response.parseResponse();
         
-        token = new Key(responseParameters.getDecodedValue("oauth_token"));
-        tokenSecret = new Key(responseParameters.getDecodedValue("oauth_token_secret"));
+        token = new Key(responseParameters.getValue("oauth_token"));
+        tokenSecret = new Key(responseParameters.getValue("oauth_token_secret"));
     }
     
     private boolean oauthFlowRequired() {
