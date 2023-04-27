@@ -60,8 +60,6 @@ public class EtradeClient
         else
             establishNewCurrentSession(environmentType);
         
-        logger.log("Last access token renewal for current session", currentSession.timeOfLastAccessTokenRenewal.atZone(ZoneId.of("America/Chicago")).toString());
-        
         return currentSession;
     }
     
@@ -87,10 +85,6 @@ public class EtradeClient
     @Override
     public String toString() {
         return "EtradeClient session: " + environmentType.name();
-    }
-    
-    public static void main(String[] args) {
-        
     }
     
     

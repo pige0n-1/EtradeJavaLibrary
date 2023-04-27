@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.Serializable;
 
 public class OauthFlowManager implements Serializable {
+    
+    // Instance data fields
     private final String oauthBaseURL;
     private final String authorizeAccountBaseURL;
     private final String requestTokenURI;
@@ -28,8 +30,20 @@ public class OauthFlowManager implements Serializable {
     private BrowserRequest browserRequestMethod = new BrowserRequest();
     private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
+    // Static data fields
     private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
+    /**
+     * Standard constructor of an OauthFlowManager.
+     * @param oauthBaseURL
+     * @param authorizeAccountBaseURL
+     * @param requestTokenURI
+     * @param accessTokenURI
+     * @param renewAccessTokenURI
+     * @param revokeAccessTokenURI
+     * @param consumerKey
+     * @param consumerSecret 
+     */
     public OauthFlowManager(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
         this.oauthBaseURL = oauthBaseURL;
         this.authorizeAccountBaseURL = authorizeAccountBaseURL;
@@ -41,6 +55,14 @@ public class OauthFlowManager implements Serializable {
         this.consumerSecret = consumerSecret;     
     }
     
+    /**
+     * This optional method is for customization of the authorize application
+     * step of the Oauth authentication flow. Some applications open a browser
+     * window to display a verifier code, but others send the verifier code 
+     * through other means. To customize, create a class that extends 
+     * BrowserRequest and pass it to this method.
+     * @param requestMethod an instance of BrowserRequest
+     */
     public void setBrowserRequest(BrowserRequest requestMethod) {
         browserRequestMethod = requestMethod;
     }

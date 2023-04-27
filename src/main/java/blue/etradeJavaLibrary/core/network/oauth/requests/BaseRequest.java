@@ -1,34 +1,35 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
-import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
-import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
-import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.SignatureBuilder;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
+import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.SignatureBuilder;
+import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
+import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
+import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
+import blue.etradeJavaLibrary.core.network.oauth.model.Key;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
 import blue.etradeJavaLibrary.core.network.oauth.responses.BaseResponse;
-import java.net.MalformedURLException;
-import java.util.Iterator;
-import java.net.URL;
-import java.net.HttpURLConnection;
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
 
 public abstract class BaseRequest implements Serializable {
     
+    // Instance data fields
     private OauthParameters oauthParameters;
     private BaseURL baseURL;
     private Key consumerSecret;
     private Key tokenSecret;
     private HttpMethod httpMethod;
-    
     private HttpURLConnection connection;
     
+    // Static data fields
     protected static final ProgramLogger logger = ProgramLogger.getProgramLogger();
     
     protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, HttpMethod httpMethod) throws OauthException {
