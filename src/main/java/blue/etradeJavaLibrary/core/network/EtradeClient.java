@@ -19,8 +19,8 @@ public class EtradeClient
         implements Serializable, AutoCloseable {
     
     // Instance data fields
-    private final Key consumerKey = KeyAndURLExtractor.getConsumerKey();
-    private final Key consumerSecret = KeyAndURLExtractor.getConsumerSecret();
+    private Key consumerKey;
+    private Key consumerSecret;
     private Key token;
     private Key tokenSecret;
     private OauthFlowManager oauthFlow;
@@ -28,6 +28,7 @@ public class EtradeClient
     private final EnvironmentType environmentType;
     private String SAVE_FILE_NAME;
     private String oauthBaseURL;
+    public static boolean loadFromSave = true;
     
     // Static data fields
     private static int numberOfInstances = 0;
@@ -40,6 +41,7 @@ public class EtradeClient
         setSaveFileName();
         networkLogger.log("Current environment type", environmentType.name());
         
+        setConsumerKeyAndSecret();
         determineBaseURL(environmentType);
         performOauthFlow();
         networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
@@ -138,6 +140,9 @@ public class EtradeClient
         FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
         
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
+            if (loadFromSave == false)
+                throw new IOException();
+            
             var client = objectInput.readObject();
             networkLogger.log("Last EtradeClient session loaded successfully.");
             
@@ -229,5 +234,16 @@ public class EtradeClient
     
     private static String getSaveFileName(EnvironmentType environmentType) {
         return environmentType.name().toLowerCase() + "save.dat";
+    }
+    
+    private void setConsumerKeyAndSecret() {
+        if (environmentType == EnvironmentType.LIVE) {
+            consumerKey = KeyAndURLExtractor.getConsumerKey();
+            consumerSecret = KeyAndURLExtractor.getConsumerSecret();
+        }
+        else {
+            consumerKey = KeyAndURLExtractor.getSandboxConsumerKey();
+            consumerSecret = KeyAndURLExtractor.getSandboxConsumerSecret();
+        }
     }
 }

@@ -31,6 +31,16 @@ public class KeyAndURLExtractor {
         return new Key(keyString);
     }
     
+    public static Key getSandboxConsumerKey() {
+        String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerKey");
+        return new Key(keyString);
+    }
+    
+    public static Key getSandboxConsumerSecret() {
+        String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerSecret");
+        return new Key(keyString);
+    }
+    
     public static String getEtradeUsername() {
         return extractSystemEnvironmentVariable("etradeUsername");
     }
