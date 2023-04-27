@@ -47,7 +47,7 @@ public class KeyAndURLExtractor {
         String value = System.getenv(identifier);
         
         if (value == null || value.equals(""))
-            ProgramLogger.getProgramLogger().log("The following environment variable is empty", identifier);
+            ProgramLogger.getNetworkLogger().log("The following environment variable is empty", identifier);
         
         return value;
     }

@@ -10,49 +10,78 @@ import java.io.Serializable;
 
 public class ProgramLogger implements Serializable {
     
-    public static boolean loggingAllowed = true;
+    // Instance data fields
+    private final Logger javaLogger;
     
-    private static final String LOG_FILE = "src/main/java/blue/etradeJavaLibrary/core/logging/log.txt";
+    // Static data fields
+    public static boolean loggingAllowed = true;
+    private static final String NETWORK_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/network_log.txt";
+    private static final String API_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/api_log.txt";
     private static final Level DEFAULT_LEVEL = Level.FINE;
     private static final boolean APPEND_TO_LOG_FILE = true;
+    private static ProgramLogger networkInstanceOfProgramLogger;
+    private static ProgramLogger apiInstanceOfProgramLogger;
     
-    private static final Logger encapsulatedJavaLogger = Logger.getLogger("network");
-    private static ProgramLogger onlyInstanceOfProgramLogger;
-    
-    private ProgramLogger() throws IOException {
-        FileHandler fileHandler = new MyFileHandler(LOG_FILE, APPEND_TO_LOG_FILE);
+    private ProgramLogger(LoggerType loggerType) throws IOException {
+        String fileName = NETWORK_LOG_FILE_NAME;
+        if (loggerType == loggerType.API)
+            fileName = API_LOG_FILE_NAME;
+        
+        FileHandler fileHandler = new MyFileHandler(fileName, APPEND_TO_LOG_FILE);
         fileHandler.setFormatter(new SimpleLogFormatter());
-        encapsulatedJavaLogger.setLevel(DEFAULT_LEVEL);
-        encapsulatedJavaLogger.addHandler(fileHandler);
+        
+        javaLogger = Logger.getLogger(loggerType.name().toLowerCase());
+        javaLogger.setLevel(DEFAULT_LEVEL);
+        javaLogger.addHandler(fileHandler);
     }
     
-    public static ProgramLogger getProgramLogger() {
-        ensureProgramLoggerInstanceHasBeenCreated();
+    public static ProgramLogger getNetworkLogger() {
+        return getProgramLogger(LoggerType.NETWORK);
+    }
+    
+    public static ProgramLogger getAPILogger() {
+        return getProgramLogger(LoggerType.API);
+    }
+    
+    public static ProgramLogger getProgramLogger(LoggerType loggerType) {
+        ensureInstantiationHasOccurred();
         
-        return onlyInstanceOfProgramLogger;
+        if (loggerType == LoggerType.NETWORK)
+            return networkInstanceOfProgramLogger;
+        else
+            return apiInstanceOfProgramLogger;
     }
     
     public void log(String message) {
         if (loggingAllowed)
-            encapsulatedJavaLogger.fine(message);
+            javaLogger.fine(message);
     }
     
     public void log(String label, String message) {
         if (loggingAllowed) {
             String newMessage = String.format("%s: %s", label, message);
-            encapsulatedJavaLogger.fine(newMessage);
+            javaLogger.fine(newMessage);
         }
+    }
+    
+    public enum LoggerType {
+        NETWORK,
+        API
     }
     
     
     // Private helper methods
     
     
-    private static void ensureProgramLoggerInstanceHasBeenCreated() {
+    private static void ensureInstantiationHasOccurred() {
         try {
-            if (onlyInstanceOfProgramLogger == null)
-                onlyInstanceOfProgramLogger = new ProgramLogger();
+            if (networkInstanceOfProgramLogger == null)
+                networkInstanceOfProgramLogger = new ProgramLogger(LoggerType.NETWORK);
+            
+            if (apiInstanceOfProgramLogger == null)
+                apiInstanceOfProgramLogger = new ProgramLogger(LoggerType.API);
         }
+        
         catch (IOException ex) {
             System.out.println("Warning: program logging not functional.");
         }

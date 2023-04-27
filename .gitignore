@@ -1,5 +1,8 @@
-/src/main/java/blue/etradeJavaLibrary/core/logging/log.txt
 /src/test/java/
 /target/
 /etradeSession.dat
 /nb-configuration.xml
+/src/main/java/blue/etradeJavaLibrary/core/logging/api_log.txt*
+/src/main/java/blue/etradeJavaLibrary/core/logging/network_log.txt*
+/sandboxsave.dat
+/livesave.dat

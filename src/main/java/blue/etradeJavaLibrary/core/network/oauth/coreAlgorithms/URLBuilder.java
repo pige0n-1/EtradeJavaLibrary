@@ -26,7 +26,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
  * @author Hunter
  */
 public class URLBuilder {
-    private static ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         String baseURLWithVariables = fillInVariables(baseURL.toString(), pathParameters);

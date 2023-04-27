@@ -22,7 +22,7 @@ public class BrowserRequest
         implements Serializable {
     
     private static final boolean RFC3986_ENCODED = false;
-    protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
+    protected static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     private URI fullURI;
     private boolean configured = false;

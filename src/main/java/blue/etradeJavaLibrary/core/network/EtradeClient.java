@@ -17,7 +17,6 @@ public class EtradeClient extends APIManager
         implements Serializable, AutoCloseable {
     
     // Instance data fields
-    public final EnvironmentType environmentType;
     private String oauthBaseURL;
     private final String authorizeApplicationBaseURL = KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL;
     private final Key consumerKey = KeyAndURLExtractor.getConsumerKey();
@@ -28,17 +27,22 @@ public class EtradeClient extends APIManager
     private Instant timeOfLastAccessTokenRenewal;
     
     // Static data fields
-    private transient static final ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private static EnvironmentType environmentType;
+    private static String SAVE_FILE_NAME;
+    private transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
+    private transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     private static EtradeClient currentSession;
-    private static final String SAVE_FILE_NAME = "etradeSession.dat";
     
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
-        this.environmentType = environmentType;
-        logger.log("Current environment type", environmentType.name());
+        EtradeClient.environmentType = environmentType;
+        setSaveFileName(environmentType);
+        networkLogger.log("Current environment type", environmentType.name());
+        
         determineBaseURL();
         performOauthFlow();
-        logger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
-        logger.log("Logged into Etrade successfully");
+        networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
+        networkLogger.log("Logged into Etrade successfully");
+        
         currentSession = this;
     }
     
@@ -55,6 +59,8 @@ public class EtradeClient extends APIManager
      * @return The only current instance of EtradeClient
      */
     public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {
+        setSaveFileName(environmentType);
+        
         if (currentSessionMatches(environmentType))
             return currentSession;
         else
@@ -75,10 +81,10 @@ public class EtradeClient extends APIManager
     public void close() {
         try {
             saveSession();
-            logger.log("Saved current EtradeClient session successfully.");
+            networkLogger.log("Saved current EtradeClient session successfully.");
         }
         catch (IOException ex) {
-            logger.log("Could not save current EtradeClient session.");
+            networkLogger.log("Could not save current EtradeClient session.");
         }
     }
     
@@ -93,20 +99,11 @@ public class EtradeClient extends APIManager
     
     private static void establishNewCurrentSession(EnvironmentType environmentType) throws NetworkException {
         try {
-            EtradeClient previousSession = loadLastSession();
-            
-            if (previousSession.environmentType == environmentType) {
-                previousSession.renewAccessTokenIfNeeded();
-                currentSession = previousSession;
-            }
-            
-            else {
-                logger.log("Saved EtradeClient object found, but different environment type");
-                currentSession = new EtradeClient(environmentType);
-            }
+            currentSession = loadLastSession();
+            networkLogger.log("Current environment type", environmentType.name());
         }
         catch (IOException ex) {
-            logger.log("No saved EtradeClient to retrieve. Creating new instance.");
+            networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
             currentSession = new EtradeClient(environmentType);
         }
     }
@@ -121,13 +118,16 @@ public class EtradeClient extends APIManager
     
     private static EtradeClient loadLastSession() throws IOException {
         FileInputStream file = new FileInputStream(SAVE_FILE_NAME);
+        
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
             var client = objectInput.readObject();
-            logger.log("Last EtradeClient session loaded successfully.");
+            networkLogger.log("Last EtradeClient session loaded successfully.");
+            
             return (EtradeClient) client;
         }
+        
         catch (ClassNotFoundException ex) {
-            logger.log("Last EtradeClient session could not be loaded.");
+            networkLogger.log("Last EtradeClient session could not be loaded.");
             throw new IOException("Last EtradeClient session could not be loaded.");
         }
     }    
@@ -162,11 +162,11 @@ public class EtradeClient extends APIManager
     
     private void renewAccessTokenIfNeeded() throws NetworkException {
         if (accessTokenExpired()) {
-            logger.log("Access token is expired. Re-performing Oauth flow...");
+            networkLogger.log("Access token is expired. Re-performing Oauth flow...");
             performOauthFlow();
         }
         else if (hasBeenTwoHoursSinceLastRenewal()) {
-            logger.log("Access token is inactive. Renewing access token...");
+            networkLogger.log("Access token is inactive. Renewing access token...");
             renewAccessToken();
         }
     }
@@ -203,5 +203,9 @@ public class EtradeClient extends APIManager
     
     private static boolean currentSessionMatches(EnvironmentType environmentType) {
         return currentSession != null && currentSession.environmentType == environmentType;
+    }
+    
+    private static void setSaveFileName(EnvironmentType environmentType) {
+        SAVE_FILE_NAME = environmentType.name().toLowerCase() + "save.dat";
     }
 }

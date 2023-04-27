@@ -9,7 +9,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 
 public abstract class BaseResponse {
     protected InputStream connectionResponseStream;
-    protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
+    protected static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     public BaseResponse(InputStream connectionResponseStream) {
         this.connectionResponseStream = connectionResponseStream;

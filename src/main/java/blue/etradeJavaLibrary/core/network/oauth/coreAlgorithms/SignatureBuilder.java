@@ -16,7 +16,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.net.URL;
 
 public class SignatureBuilder {
-    private static final ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     private SignatureBuilder() {}
     

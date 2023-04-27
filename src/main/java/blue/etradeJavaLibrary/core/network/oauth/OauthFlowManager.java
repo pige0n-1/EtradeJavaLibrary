@@ -31,7 +31,7 @@ public class OauthFlowManager implements Serializable {
     private final int OAUTH_ATTEMPTS_LIMIT = 10;
     
     // Static data fields
-    private final static ProgramLogger logger = ProgramLogger.getProgramLogger();
+    private final static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     /**
      * Standard constructor of an OauthFlowManager.

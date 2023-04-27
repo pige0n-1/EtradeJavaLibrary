@@ -37,6 +37,13 @@ public final class OauthParameters extends Parameters {
         addParameter("oauth_verifier", verifier.getValue());
     }
     
+    public void reset() {
+        createTimestamp();
+        
+        removeParameter("oauth_nonce");
+        addParameter("oauth_nonce", generateNonce());
+    }
+    
     
     // Private helper methods
     
@@ -50,6 +57,7 @@ public final class OauthParameters extends Parameters {
     }
     
     private void createTimestamp() {
+        removeParameter("oauth_timestamp");
         addParameter("oauth_timestamp", System.currentTimeMillis() / 1000 + "");
     }
     

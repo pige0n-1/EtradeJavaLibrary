@@ -31,7 +31,7 @@ public abstract class BaseRequest
     private HttpURLConnection connection;
     
     // Static data fields
-    protected static final ProgramLogger logger = ProgramLogger.getProgramLogger();
+    protected static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, HttpMethod httpMethod) throws OauthException {
         this.oauthParameters = new OauthParameters(consumerKey);
@@ -75,6 +75,8 @@ public abstract class BaseRequest
     }
     
     protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws OauthException, IOException {
+        oauthParameters.reset();
+        
         if (allParameters == null)
             allParameters = oauthParameters;
         else
