@@ -1,12 +1,11 @@
 
-package blue.etradeJavaLibrary.core.network;
+package blue.etradeJavaLibrary.core;
 
-import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
+import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
-import blue.etradeJavaLibrary.core.network.oauth.requests.*;
-import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import blue.etradeJavaLibrary.core.network.oauth.requests.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -28,7 +27,7 @@ public class EtradeClient
     private final EnvironmentType environmentType;
     private String SAVE_FILE_NAME;
     private String oauthBaseURL;
-    public static boolean loadFromSave = true;
+    public transient static boolean loadFromSave = true;
     
     // Static data fields
     private static int numberOfInstances = 0;
@@ -172,6 +171,7 @@ public class EtradeClient
                 KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
                 consumerKey, 
                 consumerSecret);
+        oauthFlow.setBrowserRequest(new EtradeBrowserRequest());
         
         try {
             token = oauthFlow.getToken();
