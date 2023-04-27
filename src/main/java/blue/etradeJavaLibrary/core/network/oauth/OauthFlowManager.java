@@ -121,40 +121,17 @@ public class OauthFlowManager implements Serializable {
     }
     
     private void performOauthFlow() throws OauthException {
-        performFirstHalf(1);
-        performSecondHalf(1);
-    }
-    
-    private void performFirstHalf(int attemptNumber) throws OauthException {
         try {
             fetchRequestToken();
             fetchVerifier();
-        }
-        catch (Exception ex) {
-            if (attemptNumber > OAUTH_ATTEMPTS_LIMIT) {
-                logger.log("First half of Oauth flow unsuccessful after maximum attempts");
-                throw new OauthException("Oauth flow unsuccessful.");
-            }
-            else
-                performFirstHalf(attemptNumber + 1);
-        }
-    }
-    
-    private void performSecondHalf(int attemptNumber) throws OauthException {
-        try {
             fetchAccessToken();
         }
-        catch (Exception ex) {
-            if (attemptNumber > OAUTH_ATTEMPTS_LIMIT) {
-                logger.log("Second half of oauth flow unsuccessful after maximum attempts");
-                throw new OauthException("Oauth flow unsuccessful.");
-            }
-            else
-                performSecondHalf(attemptNumber + 1);
+        catch (IOException ex) {
+            throw new OauthException(ex.getMessage());
         }
     }
     
-    private void fetchRequestToken() throws MalformedURLException, IOException, OauthException {
+    private void fetchRequestToken() throws IOException, OauthException {
         String urlString = oauthBaseURL + requestTokenURI;
         BaseURL etradeBaseURL = new BaseURL(urlString);
         
@@ -166,14 +143,14 @@ public class OauthFlowManager implements Serializable {
         tokenSecret = new Key(responseParameters.getValue("oauth_token_secret"));
     }
     
-    private void fetchVerifier() throws MalformedURLException, IOException, OauthException {
+    private void fetchVerifier() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
         browserRequestMethod.configureBrowserRequest(etradeBaseURL, consumerKey, token);
         
         verifier = browserRequestMethod.go();
     }
     
-    private void fetchAccessToken() throws MalformedURLException, IOException, OauthException {
+    private void fetchAccessToken() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL + accessTokenURI);
         
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret, verifier);

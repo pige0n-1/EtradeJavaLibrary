@@ -19,7 +19,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 
-public abstract class BaseRequest implements Serializable {
+public abstract class BaseRequest 
+        implements Serializable {
     
     // Instance data fields
     private OauthParameters oauthParameters;

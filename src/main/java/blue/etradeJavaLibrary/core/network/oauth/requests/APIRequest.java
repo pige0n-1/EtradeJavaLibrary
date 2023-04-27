@@ -15,10 +15,14 @@ import java.net.HttpURLConnection;
 import java.io.InputStream;
 import java.io.IOException;
 
-public final class APIRequest extends BaseRequest {
+public class APIRequest extends BaseRequest {
     
-    private PathParameters pathParameters;
-    private QueryParameters queryParameters;
+    // Instance data fields
+    private final PathParameters pathParameters;
+    private final QueryParameters queryParameters;
+    
+    // Static data fields
+    protected static final int MAX_ATTEMPTS = 3;
     
     public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
         super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, httpMethod);
@@ -27,16 +31,44 @@ public final class APIRequest extends BaseRequest {
     }
     
     @Override
-    public APIResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException {
-        URL fullURL = buildFullURL(pathParameters, queryParameters);
+    public APIResponse sendAndGetResponse() throws IOException, OauthException {
+        return sendAndGetResponse(1);
+    }
+    
+    
+    // Private helper methods
+    
+    
+    private APIResponse sendAndGetResponse(int attemptNumber) throws IOException, OauthException {
+        HttpURLConnection connection = null;
         
-        logger.log("Full URL", fullURL.toString());
+        try {
+            URL fullURL = buildFullURL(pathParameters, queryParameters);
+
+            logger.log("Full URL", fullURL.toString());
+
+            Parameters allParameters = Parameters.merge(pathParameters, queryParameters);
+            connection = getConnection(fullURL, allParameters);
+
+            InputStream connectionResponse = connection.getInputStream();
+            logger.log("Connection response", connection.getResponseMessage());
+
+            return new APIResponse(connectionResponse);
+        }
         
-        Parameters allParameters = Parameters.merge(pathParameters, queryParameters);
-        HttpURLConnection connection = getConnection(fullURL, allParameters);
+        catch (MalformedURLException ex) {
+            logger.log("The provided URL was malformed.");
+            throw new OauthException("the provided URL was malformed.");
+        }
         
-        InputStream connectionResponse = connection.getInputStream();
-        
-        return new APIResponse(connectionResponse);
+        catch (IOException ex) {
+            logger.log("Connection to etrade unsuccessful");
+            logger.log("Connection response", connection.getResponseCode() + "");
+            
+            if (attemptNumber < MAX_ATTEMPTS)
+                return sendAndGetResponse(attemptNumber + 1);
+            else
+                throw new OauthException("Connection to etrade unsuccessful.");
+        }
     }
 }

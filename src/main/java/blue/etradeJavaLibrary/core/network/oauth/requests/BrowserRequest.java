@@ -18,7 +18,9 @@ import java.net.URL;
  * provider. No authorization header is set; only a URL is called with the
  * base URL and query parameters
  */
-public class BrowserRequest implements Serializable {
+public class BrowserRequest 
+        implements Serializable {
+    
     private static final boolean RFC3986_ENCODED = false;
     protected static ProgramLogger logger = ProgramLogger.getProgramLogger();
     
@@ -27,11 +29,11 @@ public class BrowserRequest implements Serializable {
     
     public BrowserRequest() {}
     
-    public BrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws MalformedURLException, OauthException {
+    public BrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
         configure(baseURL, consumerKey, token);
     }
     
-    public void configureBrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws MalformedURLException, OauthException {
+    public void configureBrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
         configure(baseURL, consumerKey, token);
     }
     
@@ -56,19 +58,22 @@ public class BrowserRequest implements Serializable {
     // Private helper methods
     
     
-    private void configure(BaseURL baseURL, Key consumerKey, Key token) throws MalformedURLException, OauthException {
+    private void configure(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
         QueryParameters queryParameters = new QueryParameters(RFC3986_ENCODED);
         queryParameters.addParameter("key", consumerKey.getValue());
         queryParameters.addParameter("token", token.getValue());
         
-        URL fullURL = URLBuilder.buildURL(baseURL, queryParameters);
-        
         try {
+            URL fullURL = URLBuilder.buildURL(baseURL, queryParameters);
+            
             fullURI = fullURL.toURI();
             logger.log("Browser authentication URI", fullURI.toString());
             configured = true;
         }
-        catch (URISyntaxException ex) {}
+        catch (MalformedURLException | URISyntaxException ex) {
+            logger.log("Browser request unsuccessful due to problem with URL", fullURI.toString());
+            throw new OauthException("There was a problem with the URL");
+        }
     }
     
     protected static Key getVerifierUserInput() {

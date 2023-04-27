@@ -3,7 +3,7 @@ package blue.etradeJavaLibrary.core.network;
 
 import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.OauthFlowManager;
+import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,7 +13,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.*;
 
-public class EtradeClient 
+public class EtradeClient extends APIManager
         implements Serializable, AutoCloseable {
     
     // Instance data fields
