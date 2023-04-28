@@ -14,4 +14,8 @@ public class OauthException extends IOException {
     public OauthException(String message) {
         super(message);
     }
+    
+    public OauthException(String message, Exception ex) {
+        super(message, ex);
+    }
 }

@@ -28,7 +28,7 @@ public abstract class BaseResponse {
             return responseString;
         }
         catch (IOException ex) {
-            throw new OauthException("Response stream could not be read.");
+            throw new OauthException("Response stream could not be read.", ex);
         }
     }
 }

@@ -83,7 +83,7 @@ public class BrowserRequest
         }
         catch (MalformedURLException | URISyntaxException ex) {
             logger.log("Browser request unsuccessful due to problem with URL", fullURI.toString());
-            throw new OauthException("There was a problem with the URL");
+            throw new OauthException("There was a problem with the URL", ex);
         }
     }
     

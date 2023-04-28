@@ -1,10 +1,7 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthKeySet;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -17,6 +14,11 @@ public final class OauthFlowRequest extends BaseRequest {
     
     public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {   
         super(baseURL, keys, HttpMethod.GET);
+    }
+    
+    public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys, Key verifier) throws OauthException {
+        super(baseURL, keys, HttpMethod.GET);
+        setVerifier(verifier);
     }
     
     @Override
@@ -44,7 +46,7 @@ public final class OauthFlowRequest extends BaseRequest {
         
         catch (MalformedURLException ex) {
             logger.log("The provided URL was malformed.");
-            throw new OauthException("the provided URL was malformed.");
+            throw new OauthException("the provided URL was malformed.", ex);
         }
         
         catch (IOException ex) {
@@ -54,7 +56,7 @@ public final class OauthFlowRequest extends BaseRequest {
             if (attemptNumber < MAX_ATTEMPTS)
                 return sendAndGetResponse(attemptNumber + 1);
             else
-                throw new OauthException("Connection to etrade unsuccessful.");
+                throw new OauthException("Connection to etrade unsuccessful.", ex);
         }
     }
 }

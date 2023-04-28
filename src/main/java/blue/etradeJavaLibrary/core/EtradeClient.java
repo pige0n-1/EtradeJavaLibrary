@@ -37,9 +37,9 @@ public class EtradeClient
         networkLogger.log("Current environment type", environmentType.name());
         
         setKeys();
-        determineBaseURL(environmentType);
+        setBaseURL();
         performOauthFlow();
-        networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
+        networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.atZone(ZoneId.of("America/Chicago")).toString());
         networkLogger.log("Logged into Etrade successfully");
         
         currentSession = this;
@@ -87,7 +87,7 @@ public class EtradeClient
         }
         catch (IOException ex) {
             apiLogger.log("Accounts list could not be retrieved");
-            throw new NetworkException("Accounts list could not be retrieved");
+            throw new NetworkException("Accounts list could not be retrieved", ex);
         }
     }
     
@@ -145,11 +145,11 @@ public class EtradeClient
         
         catch (ClassNotFoundException ex) {
             networkLogger.log("Last EtradeClient session could not be loaded.");
-            throw new IOException("Last EtradeClient session could not be loaded.");
+            throw new IOException("Last EtradeClient session could not be loaded.", ex);
         }
     }    
     
-    private void determineBaseURL(EnvironmentType environmentType) {
+    private void setBaseURL() {
         if (environmentType == EnvironmentType.SANDBOX)
             oauthBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
         else
@@ -172,7 +172,7 @@ public class EtradeClient
             timeOfLastAccessTokenRenewal = Instant.now();
         }
         catch (OauthException ex) {
-            throw new NetworkException("The oauth flow encountered an issue");
+            throw new NetworkException("The oauth flow encountered an issue", ex);
         }
     }
     
@@ -214,7 +214,9 @@ public class EtradeClient
             timeOfLastAccessTokenRenewal = Instant.now();
         }
         catch (OauthException ex) {
-            throw new NetworkException("Session could not be renewed.");
+            networkLogger.log("Session could not be renewed. Reperforming Oauth flow...");
+            setKeys();
+            performOauthFlow();
         }
     }
     

@@ -15,7 +15,6 @@ public class OauthKeySet
     public final Key consumerSecret;
     private Key token;
     private Key tokenSecret;
-    private Key verifier;
     private boolean retrievedAccessToken = false;
     
     public OauthKeySet(Key consumerKey, Key consumerSecret) {
@@ -23,7 +22,6 @@ public class OauthKeySet
         this.consumerSecret = consumerSecret;
         this.token = new Key();
         this.tokenSecret = new Key();
-        this.verifier = new Key();
     }
     
     public OauthKeySet(Key consumerKey, Key consumerSecret, Key token, Key tokenSecret) {
@@ -39,20 +37,12 @@ public class OauthKeySet
         retrievedAccessToken = true;
     }
     
-    public void setVerifier(Key verifier) {
-        this.verifier = verifier;
-    }
-    
     public Key getToken() {
         return token;
     }
     
     public Key getTokenSecret() {
         return tokenSecret;
-    }
-    
-    public Key getVerifier() {
-        return verifier;
     }
     
     public boolean hasRetrievedAToken() {

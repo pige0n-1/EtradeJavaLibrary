@@ -64,7 +64,7 @@ public class APIRequest extends BaseRequest {
         
         catch (MalformedURLException ex) {
             logger.log("The provided URL was malformed.");
-            throw new OauthException("the provided URL was malformed.");
+            throw new OauthException("the provided URL was malformed.", ex);
         }
         
         catch (IOException ex) {
@@ -74,7 +74,7 @@ public class APIRequest extends BaseRequest {
             if (attemptNumber < MAX_ATTEMPTS)
                 return sendAndGetResponse(attemptNumber + 1);
             else
-                throw new OauthException("Connection to etrade unsuccessful.");
+                throw new OauthException("Connection to etrade unsuccessful.", ex);
         }
     }
 }

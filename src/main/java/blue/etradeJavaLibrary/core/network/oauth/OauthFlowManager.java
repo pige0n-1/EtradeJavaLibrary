@@ -75,7 +75,7 @@ public class OauthFlowManager implements Serializable {
         }
         catch (IOException ex) {
             logger.log("Attempt to renew access token failed.");
-            throw new OauthException("Unable to renew access token.");
+            throw new OauthException("Unable to renew access token.", ex);
         }
     }
     
@@ -91,7 +91,7 @@ public class OauthFlowManager implements Serializable {
         }
         catch (IOException ex) {
             logger.log("Attempt to revoke access token failed.");
-            throw new OauthException("Unable to renew access token.");
+            throw new OauthException("Unable to renew access token.", ex);
         }
     }
     
@@ -107,12 +107,12 @@ public class OauthFlowManager implements Serializable {
     private void performOauthFlow() throws OauthException {
         try {
             fetchRequestToken();
-            fetchVerifier();
-            fetchAccessToken();
+            Key verifier = fetchVerifier();
+            fetchAccessToken(verifier);
         }
         catch (IOException ex) {
             logger.log("The oauth flow was unsuccessful after maximum attempts.");
-            throw new OauthException("The oauth flow was unsuccessful.");
+            throw new OauthException("The oauth flow was unsuccessful.", ex);
         }
     }
     
@@ -128,19 +128,19 @@ public class OauthFlowManager implements Serializable {
         keys.setToken(token, tokenSecret);
     }
     
-    private void fetchVerifier() throws IOException, OauthException {
+    private Key fetchVerifier() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
         browserRequestMethod.configureBrowserRequest(etradeBaseURL, keys);
         
         Key verifier = browserRequestMethod.go();
         
-        keys.setVerifier(verifier);
+        return verifier;
     }
     
-    private void fetchAccessToken() throws IOException, OauthException {
+    private void fetchAccessToken(Key verifier) throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, accessTokenURI);
         
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys, verifier);
         Parameters response = request.sendAndGetResponse().parseResponse();
         
         Key token = new Key(response.getValue("oauth_token"));

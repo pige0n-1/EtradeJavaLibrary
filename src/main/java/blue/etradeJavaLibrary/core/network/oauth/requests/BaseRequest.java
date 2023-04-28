@@ -31,12 +31,16 @@ public abstract class BaseRequest
         this.httpMethod = httpMethod;
         
         if (keys.hasRetrievedAToken())
-            oauthParameters = new OauthParameters(keys.consumerKey, keys.getToken(), keys.getVerifier());
+            oauthParameters = new OauthParameters(keys.consumerKey, keys.getToken());
         else
             oauthParameters = new OauthParameters(keys.consumerKey);
     }
     
     protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
+    
+    protected void setVerifier(Key verifier) {
+        oauthParameters.addVerifier(verifier);
+    }
     
     protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
