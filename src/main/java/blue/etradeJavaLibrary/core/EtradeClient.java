@@ -24,11 +24,10 @@ public class EtradeClient
     private final EnvironmentType environmentType;
     private String SAVE_FILE_NAME;
     private String oauthBaseURL;
-    public transient static boolean loadFromSave = true;
     
     // Static data fields
-    private static int numberOfInstances = 0;
     private static EtradeClient currentSession;
+    public transient static boolean loadFromSave = true;
     private transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
     private transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
@@ -43,7 +42,6 @@ public class EtradeClient
         networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
         networkLogger.log("Logged into Etrade successfully");
         
-        numberOfInstances++;
         currentSession = this;
     }
     
