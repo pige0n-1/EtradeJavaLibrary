@@ -179,6 +179,7 @@ public class EtradeClient
     private void renewAccessTokenIfNeeded() throws NetworkException {
         if (accessTokenExpired()) {
             networkLogger.log("Access token is expired. Re-performing Oauth flow...");
+            setKeys();
             performOauthFlow();
         }
         else if (hasBeenTwoHoursSinceLastRenewal()) {
