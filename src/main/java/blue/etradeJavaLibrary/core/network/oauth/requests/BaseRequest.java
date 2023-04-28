@@ -4,14 +4,7 @@ package blue.etradeJavaLibrary.core.network.oauth.requests;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.SignatureBuilder;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.URLBuilder;
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
-import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.BaseResponse;
 import java.io.*;
 import java.net.HttpURLConnection;
@@ -23,33 +16,24 @@ public abstract class BaseRequest
         implements Serializable {
     
     // Instance data fields
-    private OauthParameters oauthParameters;
-    private BaseURL baseURL;
-    private Key consumerSecret;
-    private Key tokenSecret;
-    private HttpMethod httpMethod;
+    private final BaseURL baseURL;
+    private final OauthKeySet keys;
+    private final HttpMethod httpMethod;
+    private final OauthParameters oauthParameters;
     private HttpURLConnection connection;
     
     // Static data fields
     protected static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, HttpMethod httpMethod) throws OauthException {
-        this.oauthParameters = new OauthParameters(consumerKey);
+    protected BaseRequest(BaseURL baseURL, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
         this.baseURL = baseURL;
-        this.consumerSecret = consumerSecret;
+        this.keys = keys;
         this.httpMethod = httpMethod;
-        this.tokenSecret = new Key();
-    }
-    
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        this(baseURL, consumerKey, consumerSecret, httpMethod);
-        this.tokenSecret = tokenSecret;
-        oauthParameters.setToken(token);
-    }
-    
-    protected BaseRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier, HttpMethod httpMethod) throws OauthException {
-        this(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
-        oauthParameters.addVerifier(verifier);
+        
+        if (keys.hasRetrievedAToken())
+            oauthParameters = new OauthParameters(keys.consumerKey, keys.getToken(), keys.getVerifier());
+        else
+            oauthParameters = new OauthParameters(keys.consumerKey);
     }
     
     protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
@@ -79,7 +63,7 @@ public abstract class BaseRequest
         
         allParameters = Parameters.merge(oauthParameters, allParameters);
         
-        String signature = SignatureBuilder.buildSignature(fullURL, allParameters, consumerSecret, tokenSecret, httpMethod);
+        String signature = SignatureBuilder.buildSignature(fullURL, allParameters, keys.consumerSecret, keys.getTokenSecret(), httpMethod);
         oauthParameters.setSignature(signature);
         
         connection = (HttpURLConnection)fullURL.openConnection();
