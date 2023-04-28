@@ -21,6 +21,7 @@ public class ProgramLogger implements Serializable {
     private static final boolean APPEND_TO_LOG_FILE = true;
     private static ProgramLogger networkInstanceOfProgramLogger;
     private static ProgramLogger apiInstanceOfProgramLogger;
+    public static boolean clearPreviousLogs = false;
     
     private ProgramLogger(LoggerType loggerType) throws IOException {
         String fileName = NETWORK_LOG_FILE_NAME;
@@ -141,7 +142,7 @@ public class ProgramLogger implements Serializable {
     private class MyFileHandler extends FileHandler {
         
         public MyFileHandler(String fileName, boolean append) throws IOException {
-            super(fileName, append);
+            super(fileName, !clearPreviousLogs);
         }
         
         @Override
