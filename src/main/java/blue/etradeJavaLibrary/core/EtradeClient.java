@@ -253,6 +253,7 @@ public class EtradeClient
     
     private String getLastAccessTokenRenewal() {
         ZonedDateTime time = timeOfLastAccessTokenRenewal.atZone(ZoneId.systemDefault());
+        
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(time);
     }
 }

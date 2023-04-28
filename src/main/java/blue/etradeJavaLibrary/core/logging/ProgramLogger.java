@@ -2,9 +2,8 @@
 package blue.etradeJavaLibrary.core.logging;
 
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
+import java.time.*;
+import java.time.format.*;
 import java.util.logging.*;
 
 public class ProgramLogger {
@@ -99,9 +98,12 @@ public class ProgramLogger {
     }
     
     private class SimpleLogFormatter extends Formatter {
+        private static final String FORMAT_STRING = "hh:mm:ss a:";
+        private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(FORMAT_STRING);
+        
         @Override
         public String format(LogRecord record) {
-            String message = String.format("%20s:   %s%n", formatDate(), record.getMessage());
+            String message = String.format("%-14s%s%n", formatDate(), record.getMessage());
             
             // This will only be true upon closing the logger
             if (record.getLevel() == Level.INFO)
@@ -123,29 +125,10 @@ public class ProgramLogger {
         
         
         private String formatDate() {
-            StringBuilder formattedDate = new StringBuilder();
-            Calendar currentTime = GregorianCalendar.getInstance();
+            ZoneId currentTimeZone = ZoneId.systemDefault();
+            ZonedDateTime currentTime = Instant.now().atZone(currentTimeZone);
             
-            formattedDate.append(currentTime.get(Calendar.DAY_OF_MONTH));
-            formattedDate.append(" ");
-            
-            formattedDate.append(currentTime.getDisplayName(Calendar.MONTH, Calendar.SHORT_FORMAT, Locale.ENGLISH));
-            formattedDate.append(" ");
-            
-            int hour = currentTime.get(Calendar.HOUR);
-            hour = (hour == 0) ? 12 : hour;
-            formattedDate.append(hour);
-            formattedDate.append(":");
-            
-            formattedDate.append(currentTime.get(Calendar.MINUTE));
-            formattedDate.append(":");
-            
-            formattedDate.append(currentTime.get(Calendar.SECOND));
-            formattedDate.append(" ");
-            
-            formattedDate.append(currentTime.getDisplayName(Calendar.AM_PM, Calendar.SHORT_FORMAT, Locale.ENGLISH));
-            
-            return formattedDate.toString();
+            return formatter.format(currentTime);
         }
     }
     
