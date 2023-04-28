@@ -29,6 +29,10 @@ public class BaseURL
         return baseURL.matches(UNFILLED_VARIABLES_REGEX);
     }
     
+    public BaseURL append(String url) {
+        return new BaseURL(baseURL + url);
+    }
+    
     @Override
     public String toString() {
         return baseURL;

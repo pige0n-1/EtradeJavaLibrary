@@ -81,7 +81,7 @@ public class EtradeClient
         try {
             BaseURL requestBaseURL = new BaseURL(oauthBaseURL + KeyAndURLExtractor.API_ACCOUNT_LIST_URI);
             APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
-            String response =  request.sendAndGetResponse().parseResponse();
+            String response =  request.sendAndGetResponse().parse();
             apiLogger.log("Accounts list retrieved successfully");
             
             return response;
@@ -170,7 +170,7 @@ public class EtradeClient
         oauthFlow.setBrowserRequest(new EtradeBrowserRequest());
         
         try {
-            oauthFlow.setTokens();
+            oauthFlow.getAccessToken();
             timeOfLastAccessTokenRenewal = Instant.now();
         }
         catch (OauthException ex) {

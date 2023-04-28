@@ -11,7 +11,7 @@ public class APIResponse extends BaseResponse {
     }
     
     @Override
-    public String parseResponse() throws OauthException {
+    public String parse() throws OauthException {
         return convertToString(connectionResponseStream);
     }
 }

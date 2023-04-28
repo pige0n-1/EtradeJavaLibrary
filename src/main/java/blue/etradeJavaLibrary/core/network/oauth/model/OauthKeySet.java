@@ -48,4 +48,10 @@ public class OauthKeySet
     public boolean hasRetrievedAToken() {
         return retrievedAccessToken;
     }
+    
+    public void removeToken() {
+        this.token = new Key();
+        this.tokenSecret = new Key();
+        retrievedAccessToken = false;
+    }
 }
