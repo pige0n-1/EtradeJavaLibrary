@@ -3,7 +3,7 @@ package blue.etradeJavaLibrary.core.network.oauth.requests;
 
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
-import blue.etradeJavaLibrary.core.network.oauth.model.Key;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthKeySet;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
 import java.io.*;
@@ -15,16 +15,8 @@ public final class OauthFlowRequest extends BaseRequest {
     
     private static final int MAX_ATTEMPTS = 5;
     
-    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret) throws OauthException {   
-        super(baseURL, consumerKey, consumerSecret, HttpMethod.GET);
-    }
-    
-    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret) throws OauthException {
-        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, HttpMethod.GET);
-    }
-    
-    public OauthFlowRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier) throws OauthException {
-        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, verifier, HttpMethod.GET);
+    public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {   
+        super(baseURL, keys, HttpMethod.GET);
     }
     
     @Override

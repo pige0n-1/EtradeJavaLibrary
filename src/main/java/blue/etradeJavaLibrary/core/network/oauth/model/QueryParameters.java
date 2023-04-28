@@ -19,4 +19,8 @@ public class QueryParameters extends Parameters {
     public QueryParameters(boolean rfc3986Encoded) {
         super(rfc3986Encoded);
     }
+    
+    public void addParameter(String key, Key value) {
+        addParameter(key, value.getValue());
+    }
 }

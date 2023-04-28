@@ -4,6 +4,7 @@ package blue.etradeJavaLibrary.core.network.oauth;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
+import blue.etradeJavaLibrary.core.network.oauth.model.OauthKeySet;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
@@ -20,11 +21,7 @@ public class OauthFlowManager implements Serializable {
     private final String accessTokenURI;
     private final String renewAccessTokenURI;
     private final String revokeAccessTokenURI;
-    private final Key consumerKey;
-    private final Key consumerSecret;
-    private Key token;
-    private Key tokenSecret;
-    private Key verifier;
+    private final OauthKeySet keys;
     private BrowserRequest browserRequestMethod = new BrowserRequest();
     
     // Static data fields
@@ -37,19 +34,17 @@ public class OauthFlowManager implements Serializable {
      * @param requestTokenURI
      * @param accessTokenURI
      * @param renewAccessTokenURI
-     * @param revokeAccessTokenURI
-     * @param consumerKey
-     * @param consumerSecret 
+     * @param revokeAccessTokenURI 
+     * @param keys 
      */
-    public OauthFlowManager(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, Key consumerKey, Key consumerSecret) {
+    public OauthFlowManager(String oauthBaseURL, String authorizeAccountBaseURL, String requestTokenURI, String accessTokenURI, String renewAccessTokenURI, String revokeAccessTokenURI, OauthKeySet keys) {
         this.oauthBaseURL = oauthBaseURL;
         this.authorizeAccountBaseURL = authorizeAccountBaseURL;
         this.requestTokenURI = requestTokenURI;
         this.accessTokenURI = accessTokenURI;
         this.renewAccessTokenURI = renewAccessTokenURI;
         this.revokeAccessTokenURI = revokeAccessTokenURI;
-        this.consumerKey = consumerKey;
-        this.consumerSecret = consumerSecret;     
+        this.keys = keys;
     }
     
     /**
@@ -64,23 +59,15 @@ public class OauthFlowManager implements Serializable {
         browserRequestMethod = requestMethod;
     }
     
-    public Key getToken() throws OauthException {
+    public void setTokens() throws OauthException {
         performOauthFlowIfRequired();
-        
-        return token;
-    }
-    
-    public Key getTokenSecret() throws OauthException {
-        performOauthFlowIfRequired();
-        
-        return tokenSecret;
     }
     
     public void renewAccessToken() throws OauthException {
         performOauthFlowIfRequired();
 
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, renewAccessTokenURI);
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
         
         try {
             request.sendAndGetResponse();
@@ -96,7 +83,7 @@ public class OauthFlowManager implements Serializable {
         performOauthFlowIfRequired();
     
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, revokeAccessTokenURI);
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
         
         try {
             request.sendAndGetResponse();
@@ -113,7 +100,7 @@ public class OauthFlowManager implements Serializable {
     
     
     private void performOauthFlowIfRequired() throws OauthException {
-        if (token == null)
+        if (!keys.hasRetrievedAToken())
             performOauthFlow();
     }
     
@@ -131,28 +118,34 @@ public class OauthFlowManager implements Serializable {
     
     private void fetchRequestToken() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, requestTokenURI);
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
         
         Parameters response = request.sendAndGetResponse().parseResponse();
         
-        token = new Key(response.getValue("oauth_token"));
-        tokenSecret = new Key(response.getValue("oauth_token_secret"));
+        Key token = new Key(response.getValue("oauth_token"));
+        Key tokenSecret = new Key(response.getValue("oauth_token_secret"));
+        
+        keys.setToken(token, tokenSecret);
     }
     
     private void fetchVerifier() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(authorizeAccountBaseURL);
-        browserRequestMethod.configureBrowserRequest(etradeBaseURL, consumerKey, token);
+        browserRequestMethod.configureBrowserRequest(etradeBaseURL, keys);
         
-        verifier = browserRequestMethod.go();
+        Key verifier = browserRequestMethod.go();
+        
+        keys.setVerifier(verifier);
     }
     
     private void fetchAccessToken() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, accessTokenURI);
         
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret, verifier);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
         Parameters response = request.sendAndGetResponse().parseResponse();
         
-        token = new Key(response.getValue("oauth_token"));
-        tokenSecret = new Key(response.getValue("oauth_token_secret"));
+        Key token = new Key(response.getValue("oauth_token"));
+        Key tokenSecret = new Key(response.getValue("oauth_token_secret"));
+        
+        keys.setToken(token, tokenSecret);
     }
 }

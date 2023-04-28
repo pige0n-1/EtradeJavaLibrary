@@ -18,10 +18,7 @@ public class EtradeClient
         implements Serializable, AutoCloseable {
     
     // Instance data fields
-    private Key consumerKey;
-    private Key consumerSecret;
-    private Key token;
-    private Key tokenSecret;
+    private OauthKeySet keys;
     private OauthFlowManager oauthFlow;
     private Instant timeOfLastAccessTokenRenewal;
     private final EnvironmentType environmentType;
@@ -40,7 +37,7 @@ public class EtradeClient
         setSaveFileName();
         networkLogger.log("Current environment type", environmentType.name());
         
-        setConsumerKeyAndSecret();
+        setKeys();
         determineBaseURL(environmentType);
         performOauthFlow();
         networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
@@ -84,7 +81,7 @@ public class EtradeClient
         
         try {
             BaseURL requestBaseURL = new BaseURL(oauthBaseURL + KeyAndURLExtractor.API_ACCOUNT_LIST_URI);
-            APIRequest request = new APIRequest(requestBaseURL, consumerKey, consumerSecret, token, tokenSecret, HttpMethod.GET);
+            APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
             String response =  request.sendAndGetResponse().parseResponse();
             apiLogger.log("Accounts list retrieved successfully");
             
@@ -169,14 +166,12 @@ public class EtradeClient
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI,
                 KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
-                consumerKey, 
-                consumerSecret);
+                keys);
         oauthFlow.setBrowserRequest(new EtradeBrowserRequest());
         
         try {
-            token = oauthFlow.getToken();
+            oauthFlow.setTokens();
             timeOfLastAccessTokenRenewal = Instant.now();
-            tokenSecret = oauthFlow.getTokenSecret();
         }
         catch (OauthException ex) {
             throw new NetworkException("The oauth flow encountered an issue");
@@ -236,7 +231,10 @@ public class EtradeClient
         return environmentType.name().toLowerCase() + "save.dat";
     }
     
-    private void setConsumerKeyAndSecret() {
+    private void setKeys() {
+        Key consumerKey;
+        Key consumerSecret;
+        
         if (environmentType == EnvironmentType.LIVE) {
             consumerKey = KeyAndURLExtractor.getConsumerKey();
             consumerSecret = KeyAndURLExtractor.getConsumerSecret();
@@ -245,5 +243,7 @@ public class EtradeClient
             consumerKey = KeyAndURLExtractor.getSandboxConsumerKey();
             consumerSecret = KeyAndURLExtractor.getSandboxConsumerSecret();
         }
+        
+        keys = new OauthKeySet(consumerKey, consumerSecret);
     }
 }

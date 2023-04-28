@@ -1,13 +1,7 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
-import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,22 +18,22 @@ public class APIRequest extends BaseRequest {
     // Static data fields
     protected static final int MAX_ATTEMPTS = 3;
     
-    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        super(baseURL, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
+        super(baseURL, keys, httpMethod);
         this.pathParameters = pathParameters;
         this.queryParameters = queryParameters;
     }
     
-    public APIRequest(BaseURL baseURL, PathParameters pathParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        this(baseURL, pathParameters, new QueryParameters(), consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    public APIRequest(BaseURL baseURL, PathParameters pathParameters, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, pathParameters, new QueryParameters(), keys, httpMethod);
     }
     
-    public APIRequest(BaseURL baseURL, QueryParameters queryParameters, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        this(baseURL, new PathParameters(), queryParameters, consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    public APIRequest(BaseURL baseURL, QueryParameters queryParameters, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, new PathParameters(), queryParameters, keys, httpMethod);
     }
     
-    public APIRequest(BaseURL baseURL, Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, HttpMethod httpMethod) throws OauthException {
-        this(baseURL, new PathParameters(), new QueryParameters(), consumerKey, consumerSecret, token, tokenSecret, httpMethod);
+    public APIRequest(BaseURL baseURL, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
+        this(baseURL, new PathParameters(), new QueryParameters(), keys, httpMethod);
     }
     
     @Override

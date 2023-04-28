@@ -37,12 +37,12 @@ public class BrowserRequest
      */
     public BrowserRequest() {}
     
-    public BrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
-        configure(baseURL, consumerKey, token);
+    public BrowserRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {
+        configure(baseURL, keys);
     }
     
-    public void configureBrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
-        configure(baseURL, consumerKey, token);
+    public void configureBrowserRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {
+        configure(baseURL, keys);
     }
     
     public Key go() throws IOException, OauthException {
@@ -66,10 +66,13 @@ public class BrowserRequest
     // Private helper methods
     
     
-    private void configure(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {
+    private void configure(BaseURL baseURL, OauthKeySet keys) throws OauthException {
+        if (!keys.hasRetrievedAToken())
+            throw new InvalidParameterException("You must have an access token to configure a BrowserRequest.");
+        
         QueryParameters queryParameters = new QueryParameters(RFC3986_ENCODED);
-        queryParameters.addParameter("key", consumerKey.getValue());
-        queryParameters.addParameter("token", token.getValue());
+        queryParameters.addParameter("key", keys.consumerKey);
+        queryParameters.addParameter("token", keys.getToken());
         
         try {
             URL fullURL = URLBuilder.buildURL(baseURL, queryParameters);

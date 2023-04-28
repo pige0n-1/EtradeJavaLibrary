@@ -11,25 +11,51 @@ public class OauthKeySet
         implements Serializable {
     
     // Instance data fields
-    public Key consumerKey;
-    public Key consumerSecret;
-    public Key token;
-    public Key tokenSecret;
-    public Key verifier;
+    public final Key consumerKey;
+    public final Key consumerSecret;
+    private Key token;
+    private Key tokenSecret;
+    private Key verifier;
+    private boolean retrievedAccessToken = false;
     
     public OauthKeySet(Key consumerKey, Key consumerSecret) {
         this.consumerKey = consumerKey;
         this.consumerSecret = consumerSecret;
+        this.token = new Key();
+        this.tokenSecret = new Key();
+        this.verifier = new Key();
     }
     
     public OauthKeySet(Key consumerKey, Key consumerSecret, Key token, Key tokenSecret) {
         this(consumerKey, consumerSecret);
         this.token = token;
         this.tokenSecret = tokenSecret;
+        retrievedAccessToken = true;
     }
     
-    public OauthKeySet(Key consumerKey, Key consumerSecret, Key token, Key tokenSecret, Key verifier) {
-        this(consumerKey, consumerSecret, token, tokenSecret);
+    public void setToken(Key token, Key tokenSecret) {
+        this.token = token;
+        this.tokenSecret = tokenSecret;
+        retrievedAccessToken = true;
+    }
+    
+    public void setVerifier(Key verifier) {
         this.verifier = verifier;
+    }
+    
+    public Key getToken() {
+        return token;
+    }
+    
+    public Key getTokenSecret() {
+        return tokenSecret;
+    }
+    
+    public Key getVerifier() {
+        return verifier;
+    }
+    
+    public boolean hasRetrievedAToken() {
+        return retrievedAccessToken;
     }
 }
