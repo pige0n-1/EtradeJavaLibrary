@@ -1,12 +1,12 @@
 
 package blue.etradeJavaLibrary.core.logging;
 
-import java.util.logging.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
-import java.io.Serializable;
+import java.util.logging.*;
 
 public class ProgramLogger implements Serializable {
     
@@ -14,21 +14,23 @@ public class ProgramLogger implements Serializable {
     private final Logger javaLogger;
     
     // Static data fields
-    public static boolean loggingAllowed = true;
     private static final String NETWORK_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/network_log.txt";
     private static final String API_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/api_log.txt";
     private static final Level DEFAULT_LEVEL = Level.FINE;
-    private static final boolean APPEND_TO_LOG_FILE = true;
     private static ProgramLogger networkInstanceOfProgramLogger;
     private static ProgramLogger apiInstanceOfProgramLogger;
     public static boolean clearPreviousLogs = false;
+    public static boolean loggingAllowed = true;
     
     private ProgramLogger(LoggerType loggerType) throws IOException {
         String fileName = NETWORK_LOG_FILE_NAME;
-        if (loggerType == loggerType.API)
+        if (loggerType == LoggerType.API)
             fileName = API_LOG_FILE_NAME;
         
-        FileHandler fileHandler = new MyFileHandler(fileName, APPEND_TO_LOG_FILE);
+        if (clearPreviousLogs)
+            deleteOldLogFile(fileName);
+        
+        FileHandler fileHandler = new MyFileHandler(fileName);
         fileHandler.setFormatter(new SimpleLogFormatter());
         
         javaLogger = Logger.getLogger(loggerType.name().toLowerCase());
@@ -73,6 +75,15 @@ public class ProgramLogger implements Serializable {
     
     // Private helper methods
     
+    
+    private void deleteOldLogFile(String fileName) {
+        java.io.File logFile = new java.io.File(fileName);
+        
+        if (logFile.exists()) {
+            logFile.delete();
+            System.out.println("Old log file deleted.");
+        }
+    }
     
     private static void ensureInstantiationHasOccurred() {
         try {
@@ -141,8 +152,11 @@ public class ProgramLogger implements Serializable {
     
     private class MyFileHandler extends FileHandler {
         
-        public MyFileHandler(String fileName, boolean append) throws IOException {
-            super(fileName, !clearPreviousLogs);
+        // Static data fields
+        private static final boolean APPEND_TO_LOG_FILE = true;
+        
+        public MyFileHandler(String fileName) throws IOException {
+            super(fileName, APPEND_TO_LOG_FILE);
         }
         
         @Override
