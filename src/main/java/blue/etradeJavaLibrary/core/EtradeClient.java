@@ -92,7 +92,7 @@ public class EtradeClient
         }
         catch (IOException ex) {
             apiLogger.log("Accounts list could not be retrieved");
-            throw new NetworkException("");
+            throw new NetworkException("Accounts list could not be retrieved");
         }
     }
     
