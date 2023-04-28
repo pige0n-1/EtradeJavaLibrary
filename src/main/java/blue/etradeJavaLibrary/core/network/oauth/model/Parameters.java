@@ -2,13 +2,23 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
-import java.util.TreeMap;
-import java.util.Map;
 import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
+/**
+ * This is a general class to represent any kind of parameters in the OAuth 1.0a
+ * model. There are three subclasses of this class to represent the three types
+ * of parameters in the model: PathParameters, QueryParameters, and
+ * OauthParameters. The data structure is mapped as a key-value pair. The 
+ * boolean data field "rfc3986Encoded" is a public option to percent-encode
+ * all the parameters. This is marked "true" by default to comply with the
+ * standards, but there are times when it may be convenient to pass unencoded
+ * parameters back to the user as a response from an HTTP request.
+ */
 public class Parameters implements Iterable<Parameters.Parameter> {
     
-    // Data fields
+    // Instance data fields
     private final TreeMap<String, String> parameters = new TreeMap<>();
     private final boolean rfc3986Encoded;
     
@@ -40,6 +50,8 @@ public class Parameters implements Iterable<Parameters.Parameter> {
     }
     
     public static Parameters merge(Parameters... parametersCollection) {
+        ensureNoParametersAreNull(parametersCollection);
+        
         Parameters allParameters = new Parameters(false);
         
         for (Parameters currentParameters : parametersCollection)
@@ -108,6 +120,17 @@ public class Parameters implements Iterable<Parameters.Parameter> {
 
         public String getValue() {
             return value;
+        }
+    }
+    
+    
+    // Private helper methods
+    
+    
+    private static void ensureNoParametersAreNull(Parameters... parametersCollection) {
+        for (Parameters parameters : parametersCollection) {
+            if (parameters == null)
+                throw new InvalidParameterException("No Parameters object can be null in the merge process");
         }
     }
 }

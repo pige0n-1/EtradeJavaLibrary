@@ -21,12 +21,20 @@ import java.net.URL;
 public class BrowserRequest 
         implements Serializable {
     
-    private static final boolean RFC3986_ENCODED = false;
-    protected static ProgramLogger logger = ProgramLogger.getNetworkLogger();
-    
+    // Instance data fields
     private URI fullURI;
     private boolean configured = false;
     
+    // Static data fields
+    private static final boolean RFC3986_ENCODED = false;
+    protected static ProgramLogger logger = ProgramLogger.getNetworkLogger();
+    
+    /**
+     * This no-arg constructor is provided purely for convenience so that the
+     * data fields can be configured at a later time. This is useful when an 
+     * oauth manager allows the passage of a child object of this class into a
+     * method without being configured yet.
+     */
     public BrowserRequest() {}
     
     public BrowserRequest(BaseURL baseURL, Key consumerKey, Key token) throws OauthException {

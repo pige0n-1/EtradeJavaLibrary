@@ -1,9 +1,18 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import java.util.Base64;
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
+import java.util.Base64;
 
+/**
+ * This Parameters child class contains all of the OAuth authorization
+ * parameters, i.e. any parameter starting with "oauth_" in the model.
+ * Most of these parameters are added automatically upon instantiation, but
+ * some cannot be added at that point. Use any of the setter methods to add 
+ * additional needed parameters, and they will be added and automatically 
+ * encoded. If needing to reuse the parameters, be sure to call the
+ * resetNonceAndTimestamp method.
+ */
 public final class OauthParameters extends Parameters {
     
     public OauthParameters(Key consumerKey) {
@@ -37,7 +46,7 @@ public final class OauthParameters extends Parameters {
         addParameter("oauth_verifier", verifier.getValue());
     }
     
-    public void reset() {
+    public void resetNonceAndTimestamp() {
         createTimestamp();
         
         removeParameter("oauth_nonce");

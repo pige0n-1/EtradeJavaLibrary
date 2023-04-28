@@ -1,10 +1,13 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms;
 
+import blue.etradeJavaLibrary.core.network.oauth.model.InvalidParameterException;
+import java.security.InvalidKeyException;
+import java.security.Key;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.util.Base64;
 
 /**
  * Contains the functionality for an Hmac-SHA1 operation within the oauth 1.0a
@@ -12,6 +15,8 @@ import java.util.Base64;
  * @author Hunter
  */
 public class HmacSha1 {
+    
+    // Static data fields
     private static final String ALGORITHM = "HmacSHA1";
     
     private HmacSha1() {}
@@ -28,8 +33,10 @@ public class HmacSha1 {
             String base64Digest = Base64.getEncoder().encodeToString(digest);
             return base64Digest;
         }
-        catch (Exception ex) {
-            ex.printStackTrace();
+        catch (InvalidKeyException ex) {
+            throw new InvalidParameterException("Invalid key for producting HMAC-SHA1 digest.");
+        }
+        catch (IllegalStateException | NoSuchAlgorithmException ex) {
             return null;
         }
     }

@@ -1,15 +1,13 @@
 
 package blue.etradeJavaLibrary.core.network.oauth;
 
+import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
 import blue.etradeJavaLibrary.core.network.oauth.requests.OauthFlowRequest;
-import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
-import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import java.net.MalformedURLException;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -80,32 +78,32 @@ public class OauthFlowManager implements Serializable {
     
     public void renewAccessToken() throws OauthException {
         performOauthFlowIfRequired();
-        
-        String urlString = oauthBaseURL + renewAccessTokenURI;
-        BaseURL etradeBaseURL = new BaseURL(urlString);
-        
+
+        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, renewAccessTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        
         try {
             request.sendAndGetResponse();
             logger.log("Access token successfully renewed.");
         }
-        catch (Exception ex) {
+        catch (IOException ex) {
+            logger.log("Attempt to renew access token failed.");
             throw new OauthException("Unable to renew access token.");
         }
     }
     
     public void revokeAccessToken() throws OauthException {
         performOauthFlowIfRequired();
-        
-        String urlString = oauthBaseURL + revokeAccessTokenURI;
-        BaseURL etradeBaseURL = new BaseURL(urlString);
-        
+    
+        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, revokeAccessTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret);
+        
         try {
             request.sendAndGetResponse();
             logger.log("Access token successfully revoked");
         }
-        catch (Exception ex) {
+        catch (IOException ex) {
+            logger.log("Attempt to revoke access token failed.");
             throw new OauthException("Unable to renew access token.");
         }
     }
@@ -115,7 +113,7 @@ public class OauthFlowManager implements Serializable {
     
     
     private void performOauthFlowIfRequired() throws OauthException {
-        if (oauthFlowRequired())
+        if (token == null)
             performOauthFlow();
     }
     
@@ -126,20 +124,19 @@ public class OauthFlowManager implements Serializable {
             fetchAccessToken();
         }
         catch (IOException ex) {
-            throw new OauthException(ex.getMessage());
+            logger.log("The oauth flow was unsuccessful after maximum attempts.");
+            throw new OauthException("The oauth flow was unsuccessful.");
         }
     }
     
     private void fetchRequestToken() throws IOException, OauthException {
-        String urlString = oauthBaseURL + requestTokenURI;
-        BaseURL etradeBaseURL = new BaseURL(urlString);
-        
+        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, requestTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret);
-        OauthFlowResponse response = request.sendAndGetResponse();
-        Parameters responseParameters = response.parseResponse();
         
-        token = new Key(responseParameters.getValue("oauth_token"));
-        tokenSecret = new Key(responseParameters.getValue("oauth_token_secret"));
+        Parameters response = request.sendAndGetResponse().parseResponse();
+        
+        token = new Key(response.getValue("oauth_token"));
+        tokenSecret = new Key(response.getValue("oauth_token_secret"));
     }
     
     private void fetchVerifier() throws IOException, OauthException {
@@ -150,17 +147,12 @@ public class OauthFlowManager implements Serializable {
     }
     
     private void fetchAccessToken() throws IOException, OauthException {
-        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL + accessTokenURI);
+        BaseURL etradeBaseURL = new BaseURL(oauthBaseURL, accessTokenURI);
         
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, consumerKey, consumerSecret, token, tokenSecret, verifier);
-        OauthFlowResponse response = request.sendAndGetResponse();
-        Parameters responseParameters = response.parseResponse();
+        Parameters response = request.sendAndGetResponse().parseResponse();
         
-        token = new Key(responseParameters.getValue("oauth_token"));
-        tokenSecret = new Key(responseParameters.getValue("oauth_token_secret"));
-    }
-    
-    private boolean oauthFlowRequired() {
-        return token == null;
+        token = new Key(response.getValue("oauth_token"));
+        tokenSecret = new Key(response.getValue("oauth_token_secret"));
     }
 }

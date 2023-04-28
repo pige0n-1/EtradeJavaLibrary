@@ -2,8 +2,8 @@
 package blue.etradeJavaLibrary.core.network;
 
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import blue.etradeJavaLibrary.core.network.oauth.requests.BrowserRequest;
 
 public class EtradeBrowserRequest extends BrowserRequest {
     

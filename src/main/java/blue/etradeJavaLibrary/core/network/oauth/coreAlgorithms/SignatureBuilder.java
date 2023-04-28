@@ -5,17 +5,11 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-
-/**
- * This class contains the functionality to build an oauth 1.0a signature. The
- * constructor requires an HttpOauth1Parameters object, which contains all
- * information necessary to build a signature. The resulting signature is
- * encoded in Base64.
- * @author Hunter
- */
 import java.net.URL;
 
 public class SignatureBuilder {
+    
+    // Static data fields
     private static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     private SignatureBuilder() {}
@@ -33,6 +27,10 @@ public class SignatureBuilder {
         logger.log("Normalized parameters", normalizedParameters);
 
         return HmacSha1.doHmacSha1Base64(key, signatureBaseString);     
+    }
+    
+    public static String buildSignature(URL url, Parameters parameters, Key consumerSecret, HttpMethod httpMethod) {
+        return buildSignature(url, parameters, consumerSecret, new Key(), httpMethod);
     }
     
     

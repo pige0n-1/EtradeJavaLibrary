@@ -1,14 +1,17 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.responses;
 
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-import java.io.InputStream;
-import java.io.IOException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import java.io.IOException;
+import java.io.InputStream;
 
 public abstract class BaseResponse {
+    
+    // Instance data fields
     protected InputStream connectionResponseStream;
+    
+    // Static data fields
     protected static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     public BaseResponse(InputStream connectionResponseStream) {

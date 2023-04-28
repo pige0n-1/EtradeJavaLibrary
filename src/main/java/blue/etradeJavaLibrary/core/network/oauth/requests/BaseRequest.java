@@ -71,16 +71,13 @@ public abstract class BaseRequest
     }
     
     protected HttpURLConnection getConnection(URL fullURL) throws OauthException, IOException {
-        return getConnection(fullURL, null);
+        return getConnection(fullURL, new Parameters());
     }
     
     protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws OauthException, IOException {
-        oauthParameters.reset();
+        oauthParameters.resetNonceAndTimestamp();
         
-        if (allParameters == null)
-            allParameters = oauthParameters;
-        else
-            allParameters = Parameters.merge(oauthParameters, allParameters);
+        allParameters = Parameters.merge(oauthParameters, allParameters);
         
         String signature = SignatureBuilder.buildSignature(fullURL, allParameters, consumerSecret, tokenSecret, httpMethod);
         oauthParameters.setSignature(signature);

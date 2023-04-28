@@ -1,15 +1,15 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
+import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.responses.OauthFlowResponse;
+import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.*;
 
 public final class OauthFlowRequest extends BaseRequest {
     

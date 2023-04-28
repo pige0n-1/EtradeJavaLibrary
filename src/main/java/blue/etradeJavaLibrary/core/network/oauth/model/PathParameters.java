@@ -2,6 +2,18 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 
+/**
+ * This child class of Parameters is used to represent parameters in the OAuth
+ * 1.0a model that are located in the path section of a URL. The URLBuilder
+ * class takes in an object of this class and a BaseURL object, as well as
+ * QueryParameters, to construct a full URL object. The BaseURL object must have
+ * all the names of the path parameters embedded in it, with each one being
+ * surrounded with curly brackets 
+ * (example: "https://etrade.com/accounts/{accountNumber}").
+ * The corresponding PathParameters object would have a parameter with a key
+ * called "accountNumber". These must match exactly, or an exception will be
+ * thrown.
+ */
 public class PathParameters extends Parameters {
     
     public PathParameters() {}

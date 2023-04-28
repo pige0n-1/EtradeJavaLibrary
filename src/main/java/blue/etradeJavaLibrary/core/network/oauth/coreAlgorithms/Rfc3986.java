@@ -1,8 +1,8 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms;
 
-import java.util.ArrayList;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 /**
  * Contains functionality to encode a string using RFC3986 percent-encoding.
@@ -38,7 +38,6 @@ public final class Rfc3986 {
     private static String percentDecode(String encodedString) throws UnsupportedEncodingException {
         StringBuilder decodedStringBuilder = new StringBuilder();
         
-        // Iterate through the input encodedString
         String currentEscapeSequence;
         for (int i = 0; i < encodedString.length(); i++) {
             char currentCharacter = encodedString.charAt(i);
@@ -59,16 +58,15 @@ public final class Rfc3986 {
     }
     
     private static String decodePercentEscapeSequence(String escapeSequence) {
-        assert escapeSequence.length() == 2;
         byte escapeByteValue = Byte.parseByte(escapeSequence, 16);
         return Character.toString(escapeByteValue);
     }
     
     private static String convertArrayListToString(ArrayList<Byte> arrayList) throws UnsupportedEncodingException{
         byte[] resultArray = new byte[arrayList.size()];
-        for (int i = 0; i < arrayList.size(); i++) {
+        
+        for (int i = 0; i < arrayList.size(); i++)
             resultArray[i] = arrayList.get(i);
-        }
         
         return new String(resultArray, "UTF-8");
     }
@@ -77,7 +75,6 @@ public final class Rfc3986 {
         byte[] codePoints = string.getBytes();
         
         ArrayList<Byte> newCodePoints = new ArrayList<>();
-        // Iterate through input string
         for (int i = 0; i < codePoints.length; i++) {
             byte currentCodePoint = codePoints[i];
             

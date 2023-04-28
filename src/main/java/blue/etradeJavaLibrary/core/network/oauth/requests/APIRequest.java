@@ -1,19 +1,19 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
 import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
-import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
-import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
+import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
+import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
+import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.HttpURLConnection;
-import java.io.InputStream;
-import java.io.IOException;
 
 public class APIRequest extends BaseRequest {
     

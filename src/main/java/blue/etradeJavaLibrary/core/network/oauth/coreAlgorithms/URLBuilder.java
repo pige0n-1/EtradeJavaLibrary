@@ -1,15 +1,11 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms;
 
-import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;
-import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
-import java.net.URL;
-import java.net.MalformedURLException;
-import java.util.Iterator;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
+import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Iterator;
 
 /**
  * URLs generally contain three main components in this model. The base URL
@@ -26,55 +22,53 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
  * @author Hunter
  */
 public class URLBuilder {
-    private static ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
-    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters) throws OauthException, MalformedURLException {
-        String baseURLWithVariables = fillInVariables(baseURL.toString(), pathParameters);
-        String fullURLString = addQueryParameters(baseURLWithVariables, queryParameters);
+    // Static data fields
+    private static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
+    
+    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
+        BaseURL baseURLWithVariables = fillInVariables(baseURL, pathParameters);
         
-        ensureAllVariablesFilledIn(baseURLWithVariables);
+        if (baseURLWithVariables.hasUnfilledVariables()) {
+            logger.log("There is a mismatch between BaseURL path variables and PathParameters.");
+            throw new InvalidParameterException("There is a mismatch between base URL path variables and the PathParameters object");
+        }
         
-        return new URL(fullURLString);
+        URL fullURL = addQueryParameters(baseURLWithVariables, queryParameters);
+        
+        return fullURL;
     }
     
-    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters) throws OauthException, MalformedURLException {
-        return buildURL(baseURL, pathParameters, null);
+    public static URL buildURL(BaseURL baseURL, PathParameters pathParameters) throws MalformedURLException {
+        return buildURL(baseURL, pathParameters, new QueryParameters());
     }
     
-    public static URL buildURL(BaseURL baseURL, QueryParameters queryParameters) throws OauthException, MalformedURLException {
-        return buildURL(baseURL, null, queryParameters);
+    public static URL buildURL(BaseURL baseURL, QueryParameters queryParameters) throws MalformedURLException {
+        return buildURL(baseURL, new PathParameters(), queryParameters);
     }
     
     
     // Private helper methods
     
     
-    private static void ensureAllVariablesFilledIn(String urlString) throws OauthException {
-        String variableMismatchRegex = ".+\\{.+\\}.*";
+    private static BaseURL fillInVariables(BaseURL baseURL, PathParameters pathParameters) {
+        String urlString = baseURL.toString();
         
-        if (urlString.matches(variableMismatchRegex))
-            throw new OauthException("Path variables do not match base URL");
-    }
-    
-    private static String fillInVariables(String urlString, PathParameters pathParameters) throws OauthException {
-        if (pathParameters == null || pathParameters.isEmpty())
-            return urlString;
-        
-        String newURLString = urlString;
         for (Parameters.Parameter pathVariable : pathParameters) {
             String replacementRegex = "\\{" + pathVariable.getKey() + "\\}";
-            newURLString = newURLString.replaceAll(replacementRegex, pathVariable.getValue());
+            urlString = urlString.replaceAll(replacementRegex, pathVariable.getValue());
         }
-        return newURLString;
+        
+        return new BaseURL(urlString);
     }
     
-    private static String addQueryParameters(String baseURL, QueryParameters queryParameters) throws MalformedURLException {
-        if (queryParameters == null || queryParameters.isEmpty())
-            return baseURL;
-        
-        StringBuilder finalURLString = new StringBuilder(baseURL);
+    private static URL addQueryParameters(BaseURL baseURL, QueryParameters queryParameters) throws MalformedURLException {
+
+        StringBuilder finalURLString = new StringBuilder(baseURL.toString());
         Iterator<Parameters.Parameter> parametersIterator = queryParameters.iterator();
-        finalURLString.append("?");
+        
+        if (parametersIterator.hasNext())
+            finalURLString.append("?");
         
         while(parametersIterator.hasNext()) {
             Parameters.Parameter currentParameter = parametersIterator.next();
@@ -87,6 +81,6 @@ public class URLBuilder {
                 finalURLString.append("&");
         }
         
-        return finalURLString.toString();
+        return new URL(finalURLString.toString());
     }
 }
