@@ -37,7 +37,7 @@ public class EtradeClient
         setSaveFileName();
         networkLogger.log("Current environment type", environmentType.name());
         
-        setConsumerKeyAndSecret();
+        setKeys();
         determineBaseURL(environmentType);
         performOauthFlow();
         networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.toString());
@@ -231,7 +231,7 @@ public class EtradeClient
         return environmentType.name().toLowerCase() + "save.dat";
     }
     
-    private void setConsumerKeyAndSecret() {
+    private void setKeys() {
         Key consumerKey;
         Key consumerSecret;
         
