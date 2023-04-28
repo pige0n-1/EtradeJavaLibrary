@@ -13,6 +13,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.time.*;
+import java.time.format.*;
 
 public class EtradeClient
         implements Serializable, AutoCloseable {
@@ -39,7 +40,7 @@ public class EtradeClient
         setKeys();
         setBaseURL();
         performOauthFlow();
-        networkLogger.log("Access token retrieved at", timeOfLastAccessTokenRenewal.atZone(ZoneId.of("America/Chicago")).toString());
+        networkLogger.log("Access token retrieved at", getLastAccessTokenRenewal());
         networkLogger.log("Logged into Etrade successfully");
         
         currentSession = this;
@@ -115,6 +116,7 @@ public class EtradeClient
         try {
             currentSession = loadLastSession(environmentType);
             networkLogger.log("Current environment type", environmentType.name());
+            networkLogger.log("Last access token renewal at", currentSession.getLastAccessTokenRenewal());
         }
         catch (IOException ex) {
             networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
@@ -212,6 +214,7 @@ public class EtradeClient
         try {
             oauthFlow.renewAccessToken();
             timeOfLastAccessTokenRenewal = Instant.now();
+            networkLogger.log("Access token renewed at", getLastAccessTokenRenewal());
         }
         catch (OauthException ex) {
             networkLogger.log("Session could not be renewed. Reperforming Oauth flow...");
@@ -246,5 +249,10 @@ public class EtradeClient
         }
         
         keys = new OauthKeySet(consumerKey, consumerSecret);
+    }
+    
+    private String getLastAccessTokenRenewal() {
+        ZonedDateTime time = timeOfLastAccessTokenRenewal.atZone(ZoneId.systemDefault());
+        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(time);
     }
 }

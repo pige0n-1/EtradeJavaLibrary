@@ -2,13 +2,12 @@
 package blue.etradeJavaLibrary.core.logging;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.logging.*;
 
-public class ProgramLogger implements Serializable {
+public class ProgramLogger {
     
     // Instance data fields
     private final Logger javaLogger;
