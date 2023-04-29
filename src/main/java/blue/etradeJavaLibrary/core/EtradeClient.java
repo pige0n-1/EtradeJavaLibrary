@@ -151,7 +151,7 @@ public class EtradeClient extends APIManager
         if (environmentType == EnvironmentType.SANDBOX)
             environmentBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
         else
-            environmentBaseURL = KeyAndURLExtractor.API_BASE_URL;
+            environmentBaseURL = KeyAndURLExtractor.MAIN_BASE_URL;
         
         BaseURLSet urls = new BaseURLSet(environmentBaseURL, 
                 environmentBaseURL, 
@@ -159,7 +159,7 @@ public class EtradeClient extends APIManager
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL);
+                KeyAndURLExtractor.OAUTH_VERIFIER_BASE_URL);
                 
         return urls;
     }

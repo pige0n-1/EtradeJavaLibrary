@@ -21,10 +21,9 @@ public class SignatureBuilder {
         String signatureBaseString = getSignatureBaseString(normalizedParameters, httpMethod, urlWithoutQuery);
         String key = buildKey(consumerSecret, tokenSecret);
         
-        logger.log("All parameters", parameters.toString());
-        logger.log("Key for building oauth signature", key);
-        logger.log("Signature base string", signatureBaseString);
         logger.log("Normalized parameters", normalizedParameters);
+        logger.log("Signature base string", signatureBaseString);
+        logger.log("Key for building oauth signature", key);
 
         return HmacSha1.doHmacSha1Base64(key, signatureBaseString);     
     }

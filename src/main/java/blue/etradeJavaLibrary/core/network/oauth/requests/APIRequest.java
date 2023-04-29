@@ -16,7 +16,7 @@ public class APIRequest extends BaseRequest {
     private final QueryParameters queryParameters;
     
     // Static data fields
-    protected static final int MAX_ATTEMPTS = 10;
+    protected static final int MAX_ATTEMPTS = 5;
     
     public APIRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, OauthKeySet keys, HttpMethod httpMethod) throws OauthException {
         super(baseURL, keys, httpMethod);

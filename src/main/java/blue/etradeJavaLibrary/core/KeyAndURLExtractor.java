@@ -6,20 +6,14 @@ import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 
 public class KeyAndURLExtractor {
     
-    public static final String OAUTH_BASE_URL = "https://api.etrade.com";
-    public static final String OAUTH_AUTHORIZATION_BASE_URL = "https://us.etrade.com/e/t/etws/authorize";
+    public static final String MAIN_BASE_URL = "https://api.etrade.com";
+    public static final String SANDBOX_BASE_URL = "https://apisb.etrade.com";
+    public static final String OAUTH_VERIFIER_BASE_URL = "https://us.etrade.com/e/t/etws/authorize";
     public static final String OAUTH_ACCESS_TOKEN_URI = "/oauth/access_token";
     public static final String OAUTH_REQUEST_TOKEN_URI = "/oauth/request_token";
     public static final String OAUTH_RENEW_ACCESS_TOKEN_URI = "/oauth/renew_access_token";
     public static final String OAUTH_REVOKE_ACCESS_TOKEN_URI = "/oauth/revoke_access_token";
-    public static final String API_BASE_URL = "https://api.etrade.com";
     public static final String API_ACCOUNT_LIST_URI = "/v1/accounts/list";
-    public static final String API_BALANCE_URI = "/v1/accounts/";
-    public static final String API_PORTFOLIO_URI = "/v1/accounts/";
-    public static final String API_QUOTE_URI = "/v1/market/quote/";
-    public static final String API_ACCOUNTS_URI = "/v1/accounts/";
-    public static final String API_ORDER_URI = "/v1/accounts/";
-    public static final String SANDBOX_BASE_URL = "https://apisb.etrade.com";
      
     public static Key getConsumerKey() {
         String keyString = extractSystemEnvironmentVariable("etradeConsumerKey");
@@ -39,14 +33,6 @@ public class KeyAndURLExtractor {
     public static Key getSandboxConsumerSecret() {
         String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerSecret");
         return new Key(keyString);
-    }
-    
-    public static String getEtradeUsername() {
-        return extractSystemEnvironmentVariable("etradeUsername");
-    }
-    
-    public static String getEtradePassword() {
-        return extractSystemEnvironmentVariable("etradePassword");
     }
     
     
