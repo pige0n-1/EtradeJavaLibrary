@@ -18,7 +18,7 @@ public abstract class BaseResponse<O> {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    protected abstract O parse() throws Exception;
+    protected abstract O parse() throws OauthException;
     
     protected static String convertToString(InputStream connectionResponseStream) throws OauthException {
         try {

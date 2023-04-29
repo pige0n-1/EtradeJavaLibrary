@@ -13,15 +13,10 @@ public class APIResponse extends BaseResponse<Document> {
         super(connectionResponseStream);
     }
     
-    protected Document parse() throws SAXException, IOException {
-        return XMLDefinedObject.parseXML(connectionResponseStream);
-    }
-    
-    public <X extends XMLDefinedObject> void parse(X xmlObject) throws OauthException {
-        
+    @Override
+    public Document parse() throws OauthException {
         try {
-            Document responseDocument = parse();
-            xmlObject.processDocument(responseDocument);
+            return XMLDefinedObject.parseXML(connectionResponseStream);
         }
         catch (SAXException | IOException ex) {
             throw new OauthException("The response document could not be parsed.", ex);
