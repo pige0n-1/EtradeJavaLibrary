@@ -10,7 +10,8 @@ import java.net.URL;
 
 public final class OauthFlowRequest extends BaseRequest {
     
-    private static final int MAX_ATTEMPTS = 5;
+    private static final int MAX_ATTEMPTS = 100;
+    private static final int WAIT_BETWEEN_RETRY = 500;
     
     public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {   
         super(baseURL, keys, HttpMethod.GET);
@@ -30,7 +31,7 @@ public final class OauthFlowRequest extends BaseRequest {
     // Private helper methods
     
     
-    public OauthFlowResponse sendAndGetResponse(int attemptNumber) throws IOException, OauthException {
+    private OauthFlowResponse sendAndGetResponse(int attemptNumber) throws IOException, OauthException {
         HttpURLConnection connection = null;
         
         try {
@@ -53,10 +54,19 @@ public final class OauthFlowRequest extends BaseRequest {
             logger.log("Connection to etrade unsuccessful");
             logger.log("Connection response", connection.getResponseCode() + "");
             
-            if (attemptNumber < MAX_ATTEMPTS)
+            if (attemptNumber < MAX_ATTEMPTS) {
+                sleep(WAIT_BETWEEN_RETRY);
                 return sendAndGetResponse(attemptNumber + 1);
+            }
             else
                 throw new OauthException("Connection to etrade unsuccessful.", ex);
         }
+    }
+    
+    private void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        }
+        catch (Exception ex) {}
     }
 }

@@ -16,17 +16,17 @@ public class EtradeClient extends APIManager
         implements AutoCloseable {
     
     // Instance data fields
+    public final EnvironmentType environmentType;
+    private String saveFileName;
     private Instant timeOfLastAccessTokenRenewal;
-    private final EnvironmentType environmentType;
-    private String SAVE_FILE_NAME;
     
     // Static data fields
     private static EtradeClient currentSession;
     public transient static boolean loadFromSave = true;
     
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
-        networkLogger.log("Current environment type", environmentType.name());
         this.environmentType = environmentType;
+        networkLogger.log("Current environment type", environmentType.name());
         setSaveFileName();
         
         try {
@@ -76,7 +76,10 @@ public class EtradeClient extends APIManager
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
         
         try {
-            return sendAPIRequest(requestURI, HttpMethod.GET);
+            String response = sendAPIRequest(requestURI, HttpMethod.GET);
+            apiLogger.log("Accounts list retrieved successfully.");
+            
+            return response;
         }
         catch (OauthException ex) {
             apiLogger.log("Accounts list could not be retrieved");
@@ -117,7 +120,7 @@ public class EtradeClient extends APIManager
     }
     
     private void saveSession() throws IOException {
-        FileOutputStream file = new FileOutputStream(SAVE_FILE_NAME);
+        FileOutputStream file = new FileOutputStream(saveFileName);
         
         try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
             objectOutput.writeObject(this);
@@ -200,7 +203,7 @@ public class EtradeClient extends APIManager
     }
     
     private void setSaveFileName() {
-        SAVE_FILE_NAME = getSaveFileName(environmentType);
+        saveFileName = getSaveFileName(environmentType);
     }
     
     private static String getSaveFileName(EnvironmentType environmentType) {
