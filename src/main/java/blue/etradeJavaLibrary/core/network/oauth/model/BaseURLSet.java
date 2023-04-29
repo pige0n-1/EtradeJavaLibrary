@@ -1,8 +1,9 @@
 
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
+import java.io.Serializable;
 
-public class BaseURLSet {
+public class BaseURLSet implements Serializable {
     public final String oauthBaseURL;
     public final String apiBaseURL;
     public final String requestTokenURI;

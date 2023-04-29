@@ -9,12 +9,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.time.*;
 import java.time.format.*;
 
 public class EtradeClient extends APIManager
-        implements Serializable, AutoCloseable {
+        implements AutoCloseable {
     
     // Instance data fields
     private Instant timeOfLastAccessTokenRenewal;
@@ -32,6 +31,7 @@ public class EtradeClient extends APIManager
         
         try {
             super.configure(getBaseURLSet(), getKeys(), new EtradeBrowserRequest());
+            timeOfLastAccessTokenRenewal = Instant.now();
         }
         catch (OauthException ex) {
             throw new NetworkException("Could not log into Etrade.", ex);

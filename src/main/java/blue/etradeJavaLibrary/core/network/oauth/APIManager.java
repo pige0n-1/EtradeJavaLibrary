@@ -15,6 +15,7 @@ public abstract class APIManager
     private OauthKeySet keys;
     private BaseURLSet baseURLSet;
     private OauthFlowManager oauthFlow;
+    private boolean configured = false;
     
     // Static data fields
     protected transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
@@ -27,19 +28,27 @@ public abstract class APIManager
     }
     
     protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys, BrowserRequest browserRequestMethod) throws OauthException{
+        this.keys = keys;
+        this.baseURLSet = baseURLSet;
         oauthFlow = new OauthFlowManager(baseURLSet, keys);
         oauthFlow.setBrowserRequest(browserRequestMethod);
+        configured = true;
+        
+        getNewAccessToken();
     }
     
     protected final void renewAccessToken() throws OauthException {
+        ensureConfigured();
         oauthFlow.renewAccessToken();
     }
     
     protected final void getNewAccessToken() throws OauthException {
+        ensureConfigured();
         oauthFlow.getAccessToken();
     }
     
     protected final String sendAPIRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameter, HttpMethod httpMethod) throws OauthException {
+        ensureConfigured();
         renewAccessTokenIfNeeded();
         
         try {
@@ -74,4 +83,13 @@ public abstract class APIManager
      * inactive or completely expired.
      */
     protected abstract void renewAccessTokenIfNeeded() throws OauthException;
+    
+    
+    // Private helper methods
+    
+    
+    private void ensureConfigured() {
+        if (!configured)
+            throw new RuntimeException("The API manager must be configured before sending a request.");
+    }
 }
