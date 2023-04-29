@@ -6,7 +6,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.io.InputStream;
 
-public class OauthFlowResponse extends BaseResponse {
+public class OauthFlowResponse extends BaseResponse<Parameters> {
     
     public OauthFlowResponse(InputStream connectionResponseStream) {
         super(connectionResponseStream);

@@ -6,7 +6,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import java.io.IOException;
 import java.io.InputStream;
 
-public abstract class BaseResponse {
+public abstract class BaseResponse<O> {
     
     // Instance data fields
     protected InputStream connectionResponseStream;
@@ -18,7 +18,7 @@ public abstract class BaseResponse {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    public abstract Object parse() throws OauthException;
+    protected abstract O parse() throws Exception;
     
     protected static String convertToString(InputStream connectionResponseStream) throws OauthException {
         try {
