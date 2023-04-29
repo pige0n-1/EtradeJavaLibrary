@@ -1,11 +1,9 @@
 
 package blue.etradeJavaLibrary.core;
 
-import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import blue.etradeJavaLibrary.core.network.oauth.requests.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -15,32 +13,31 @@ import java.io.Serializable;
 import java.time.*;
 import java.time.format.*;
 
-public class EtradeClient
+public class EtradeClient extends APIManager
         implements Serializable, AutoCloseable {
     
     // Instance data fields
-    private OauthKeySet keys;
-    private OauthFlowManager oauthFlow;
     private Instant timeOfLastAccessTokenRenewal;
     private final EnvironmentType environmentType;
     private String SAVE_FILE_NAME;
-    private String oauthBaseURL;
     
     // Static data fields
     private static EtradeClient currentSession;
     public transient static boolean loadFromSave = true;
-    private transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
-    private transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
+        networkLogger.log("Current environment type", environmentType.name());
         this.environmentType = environmentType;
         setSaveFileName();
-        networkLogger.log("Current environment type", environmentType.name());
         
-        setKeys();
-        setBaseURL();
-        performOauthFlow();
-        networkLogger.log("Access token retrieved at", getLastAccessTokenRenewal());
+        try {
+            super.configure(getBaseURLSet(), getKeys(), new EtradeBrowserRequest());
+        }
+        catch (OauthException ex) {
+            throw new NetworkException("Could not log into Etrade.", ex);
+        }
+        
+        networkLogger.log("Access token retrieved at", formatLastAccessTokenRenewal());
         networkLogger.log("Logged into Etrade successfully");
         
         currentSession = this;
@@ -76,17 +73,12 @@ public class EtradeClient
     }
     
     public String getAccountsList() throws NetworkException {
-        renewAccessTokenIfNeeded();
+        String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
         
         try {
-            BaseURL requestBaseURL = new BaseURL(oauthBaseURL + KeyAndURLExtractor.API_ACCOUNT_LIST_URI);
-            APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
-            String response =  request.sendAndGetResponse().parse();
-            apiLogger.log("Accounts list retrieved successfully");
-            
-            return response;
+            return sendAPIRequest(requestURI, HttpMethod.GET);
         }
-        catch (IOException ex) {
+        catch (OauthException ex) {
             apiLogger.log("Accounts list could not be retrieved");
             throw new NetworkException("Accounts list could not be retrieved", ex);
         }
@@ -116,7 +108,7 @@ public class EtradeClient
         try {
             currentSession = loadLastSession(environmentType);
             networkLogger.log("Current environment type", environmentType.name());
-            networkLogger.log("Last access token renewal at", currentSession.getLastAccessTokenRenewal());
+            networkLogger.log("Last access token renewal at", currentSession.formatLastAccessTokenRenewal());
         }
         catch (IOException ex) {
             networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
@@ -149,44 +141,37 @@ public class EtradeClient
             networkLogger.log("Last EtradeClient session could not be loaded.");
             throw new IOException("Last EtradeClient session could not be loaded.", ex);
         }
-    }    
-    
-    private void setBaseURL() {
-        if (environmentType == EnvironmentType.SANDBOX)
-            oauthBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
-        else
-            oauthBaseURL = KeyAndURLExtractor.API_BASE_URL;
     }
     
-    private void performOauthFlow() throws NetworkException {
-        oauthFlow = new OauthFlowManager(
-                oauthBaseURL, 
-                KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL, 
+    private BaseURLSet getBaseURLSet() throws NetworkException {
+        String environmentBaseURL;
+        if (environmentType == EnvironmentType.SANDBOX)
+            environmentBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
+        else
+            environmentBaseURL = KeyAndURLExtractor.API_BASE_URL;
+        
+        BaseURLSet urls = new BaseURLSet(environmentBaseURL, 
+                environmentBaseURL, 
                 KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI, 
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI,
-                KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
-                keys);
-        oauthFlow.setBrowserRequest(new EtradeBrowserRequest());
-        
-        try {
-            oauthFlow.getAccessToken();
-            timeOfLastAccessTokenRenewal = Instant.now();
-        }
-        catch (OauthException ex) {
-            throw new NetworkException("The oauth flow encountered an issue", ex);
-        }
+                KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI, 
+                KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI, 
+                KeyAndURLExtractor.OAUTH_AUTHORIZATION_BASE_URL);
+                
+        return urls;
     }
     
-    private void renewAccessTokenIfNeeded() throws NetworkException {
+    @Override
+    protected void renewAccessTokenIfNeeded() throws OauthException {
         if (accessTokenExpired()) {
             networkLogger.log("Access token is expired. Re-performing Oauth flow...");
-            setKeys();
-            performOauthFlow();
+            getNewAccessToken();
+            timeOfLastAccessTokenRenewal = Instant.now();
         }
         else if (hasBeenTwoHoursSinceLastRenewal()) {
             networkLogger.log("Access token is inactive. Renewing access token...");
             renewAccessToken();
+            timeOfLastAccessTokenRenewal = Instant.now();
         }
     }
     
@@ -210,19 +195,6 @@ public class EtradeClient
         return numberOfDays >= 1;  
     }
     
-    private void renewAccessToken() throws NetworkException {
-        try {
-            oauthFlow.renewAccessToken();
-            timeOfLastAccessTokenRenewal = Instant.now();
-            networkLogger.log("Access token renewed at", getLastAccessTokenRenewal());
-        }
-        catch (OauthException ex) {
-            networkLogger.log("Session could not be renewed. Reperforming Oauth flow...");
-            setKeys();
-            performOauthFlow();
-        }
-    }
-    
     private static boolean currentSessionMatches(EnvironmentType environmentType) {
         return currentSession != null && currentSession.environmentType == environmentType;
     }
@@ -235,7 +207,7 @@ public class EtradeClient
         return environmentType.name().toLowerCase() + "save.dat";
     }
     
-    private void setKeys() {
+    private OauthKeySet getKeys() {
         Key consumerKey;
         Key consumerSecret;
         
@@ -248,10 +220,10 @@ public class EtradeClient
             consumerSecret = KeyAndURLExtractor.getSandboxConsumerSecret();
         }
         
-        keys = new OauthKeySet(consumerKey, consumerSecret);
+        return new OauthKeySet(consumerKey, consumerSecret);
     }
     
-    private String getLastAccessTokenRenewal() {
+    private String formatLastAccessTokenRenewal() {
         ZonedDateTime time = timeOfLastAccessTokenRenewal.atZone(ZoneId.systemDefault());
         
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(time);

@@ -1,12 +1,12 @@
 
 package blue.etradeJavaLibrary.core.network.oauth;
 
-import java.io.Serializable;
-import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
+import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.requests.*;
+import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
 import java.io.IOException;
+import java.io.Serializable;
 
 public abstract class APIManager 
         implements Serializable, AutoCloseable {
@@ -73,5 +73,5 @@ public abstract class APIManager
      * by calling the renewAccessToken method or getNewAccessToken method, depending on if the token is
      * inactive or completely expired.
      */
-    protected abstract void renewAccessTokenIfNeeded();
+    protected abstract void renewAccessTokenIfNeeded() throws OauthException;
 }
