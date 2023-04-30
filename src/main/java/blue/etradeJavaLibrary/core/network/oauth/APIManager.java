@@ -4,7 +4,7 @@ package blue.etradeJavaLibrary.core.network.oauth;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.requests.*;
-import blue.etradeJavaLibrary.core.network.oauth.responses.APIResponse;
+import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -47,16 +47,16 @@ public abstract class APIManager
         oauthFlow.getAccessToken();
     }
     
-    protected final String sendAPIRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameter, HttpMethod httpMethod) throws OauthException {
+    protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameter, XMLDefinedObject xmlObject) throws OauthException {
         ensureConfigured();
         renewAccessTokenIfNeeded();
         
         try {
             BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
-            APIRequest request = new APIRequest(requestBaseURL, keys, httpMethod);
+            APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
             APIResponse response = request.sendAndGetResponse();
-
-            return response.parse();
+                
+            response.parseIntoXMLDefinedObject(xmlObject);
         }
         catch (IOException ex) {
             networkLogger.log("API request failure.");
@@ -64,16 +64,16 @@ public abstract class APIManager
         }
     }
     
-    protected final String sendAPIRequest(String requestURI, PathParameters pathParameters, HttpMethod httpMethod) throws OauthException {
-        return sendAPIRequest(requestURI, pathParameters, new QueryParameters(), httpMethod);
+    protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIGetRequest(requestURI, pathParameters, new QueryParameters(), xmlObject);
     }
     
-    protected final String sendAPIRequest(String requestURI, QueryParameters queryParameters, HttpMethod httpMethod) throws OauthException {
-        return sendAPIRequest(requestURI, new PathParameters(), queryParameters, httpMethod);
+    protected final void sendAPIGetRequest(String requestURI, QueryParameters queryParameters, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIGetRequest(requestURI, new PathParameters(), queryParameters, xmlObject);
     }
     
-    protected final String sendAPIRequest(String requestURI, HttpMethod httpMethod) throws OauthException {
-        return sendAPIRequest(requestURI, new PathParameters(), new QueryParameters(), httpMethod);
+    protected final void sendAPIGetRequest(String requestURI, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIGetRequest(requestURI, new PathParameters(), new QueryParameters(), xmlObject);
     }
     
     /**

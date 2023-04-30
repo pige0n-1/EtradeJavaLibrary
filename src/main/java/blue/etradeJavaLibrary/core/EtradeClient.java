@@ -4,6 +4,7 @@ package blue.etradeJavaLibrary.core;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import blue.etradeJavaLibrary.model.*;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -72,14 +73,15 @@ public class EtradeClient extends APIManager
         return getClient(EnvironmentType.SANDBOX);
     }
     
-    public String getAccountsList() throws NetworkException {
+    public AccountsList getAccountsList() throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
+        AccountsList accountsList = new AccountsList();
         
         try {
-            String response = sendAPIRequest(requestURI, HttpMethod.GET);
+            sendAPIGetRequest(requestURI, accountsList);
             apiLogger.log("Accounts list retrieved successfully.");
             
-            return response;
+            return accountsList;
         }
         catch (OauthException ex) {
             apiLogger.log("Accounts list could not be retrieved");

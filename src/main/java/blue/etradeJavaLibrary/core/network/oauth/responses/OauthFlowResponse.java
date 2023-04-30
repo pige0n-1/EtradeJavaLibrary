@@ -14,7 +14,7 @@ public class OauthFlowResponse extends BaseResponse<Parameters> {
     
     @Override
     public Parameters parse() throws OauthException {
-        String responseString = convertToString(connectionResponseStream);
+        String responseString = convertToString();
         
         String[] parametersArray = responseString.split("&");
         var parameters = new Parameters(false);

@@ -9,7 +9,9 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public interface XMLDefinedObject {
+public interface XMLDefinedObject<O> {
+    
+    public static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     
     /**
      * This is a simple method to convert an input stream from an HTTP respond
@@ -23,10 +25,12 @@ public interface XMLDefinedObject {
      */
     public static Document parseXML(InputStream xmlInputStream) throws SAXException, IOException {
         try {
-            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+            DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
-            return documentBuilder.parse(xmlInputStream);
+            Document document = documentBuilder.parse(xmlInputStream);
+            document.getDocumentElement().normalize();
+            
+            return document;
         }
         catch (ParserConfigurationException ex) {
             return null;
@@ -34,9 +38,9 @@ public interface XMLDefinedObject {
     }
     
     /**
-     * Takes in an xml Document object to configure the implementing object.
-     * In this model, this can be used to configure the instance after constructing the object.
+     * Takes in an xml Document object to configure the implementing object.In this model, this can be used to configure the instance after constructing the object.
      * @param xmlDocument a Document object from the java API, which is the output from the parseXML method
+     * @throws blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException
      */
-    public void processDocument(Document xmlDocument);
+    public O processXMLDocument(Document xmlDocument) throws ObjectMismatchException;
 }

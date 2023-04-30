@@ -22,4 +22,8 @@ public class APIResponse extends BaseResponse<Document> {
             throw new OauthException("The response document could not be parsed.", ex);
         }
     }
+    
+    public void parseIntoXMLDefinedObject(XMLDefinedObject xmlObject) throws OauthException, ObjectMismatchException {
+        xmlObject.processXMLDocument(parse());
+    }
 }

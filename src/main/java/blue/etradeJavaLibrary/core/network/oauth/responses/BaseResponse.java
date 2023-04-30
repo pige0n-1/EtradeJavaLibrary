@@ -18,13 +18,25 @@ public abstract class BaseResponse<O> {
         this.connectionResponseStream = connectionResponseStream;
     }
     
-    protected abstract O parse() throws OauthException;
+    /**
+     * Returns the parsed form of the InputStream response. It can be parsed
+     * into different objects depending on the implementatino.
+     * @return
+     * @throws OauthException 
+     */
+    public abstract O parse() throws OauthException;
     
-    protected static String convertToString(InputStream connectionResponseStream) throws OauthException {
+    /**
+     * A general convenience method for converting the InputStream response to a String.
+     * @return
+     * @throws OauthException 
+     */
+    protected String convertToString() throws OauthException {
         try {
             byte[] responseBytes = connectionResponseStream.readAllBytes();
             String responseString = new String(responseBytes);
             logger.log("Raw response string", responseString);
+            
             return responseString;
         }
         catch (IOException ex) {
