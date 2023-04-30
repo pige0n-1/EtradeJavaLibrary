@@ -81,7 +81,7 @@ public final class EtradeClient extends APIManager
         try {
             sendAPIGetRequest(requestURI, accountsList);
             apiLogger.log("Accounts list retrieved successfully.");
-            apiLogger.log(accountsList.toString());
+            apiLogger.log("Response", accountsList.toString());
             
             return accountsList;
         }

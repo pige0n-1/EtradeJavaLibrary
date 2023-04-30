@@ -61,8 +61,8 @@ public abstract class APIManager
             updateTimeOfLastRequest();
                 
             response.parseIntoXMLDefinedObject(xmlObject);
-            networkLogger.log(request.toString());
-            networkLogger.log(response.toString());
+            networkLogger.log("API request", request.toString());
+            networkLogger.log("API response", response.toString());
             networkLogger.log("API request success.");
         }
         catch (IOException | ObjectMismatchException ex) {
