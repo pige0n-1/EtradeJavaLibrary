@@ -8,9 +8,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 
 public interface XMLDefinedObject<O> {
     
+    // Static data fields
+    public static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
     public static final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
     
     /**
@@ -40,6 +43,7 @@ public interface XMLDefinedObject<O> {
     /**
      * Takes in an xml Document object to configure the implementing object.In this model, this can be used to configure the instance after constructing the object.
      * @param xmlDocument a Document object from the java API, which is the output from the parseXML method
+     * @return 
      * @throws blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException
      */
     public O processXMLDocument(Document xmlDocument) throws ObjectMismatchException;

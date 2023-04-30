@@ -23,7 +23,7 @@ public class APIResponse extends BaseResponse<Document> {
         }
     }
     
-    public void parseIntoXMLDefinedObject(XMLDefinedObject xmlObject) throws OauthException, ObjectMismatchException {
-        xmlObject.processXMLDocument(parse());
+    public void parseIntoXMLDefinedObject(XMLDefinedObject xmlDefinedObject) throws OauthException, ObjectMismatchException {
+        xmlDefinedObject.processXMLDocument(parse());
     }
 }

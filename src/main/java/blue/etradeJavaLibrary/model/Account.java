@@ -2,9 +2,7 @@
 package blue.etradeJavaLibrary.model;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
-import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import org.w3c.dom.*;
-import java.util.ArrayList;
 
 public class Account 
         implements XMLDefinedObject<Account> {
@@ -26,24 +24,26 @@ public class Account
     
     @Override
     public Account processXMLDocument(Document xmlDocument) {
-        accountId = xmlDocument.getElementById("accountId").getTextContent();
-        accountIdKey = xmlDocument.getElementById("accountIdKey").getTextContent();
-        accountMode = xmlDocument.getElementById("accountMode").getTextContent();
-        accountDesc = xmlDocument.getElementById("accountDesc").getTextContent();
-        accountName = xmlDocument.getElementById("accountName").getTextContent();
-        accountType = xmlDocument.getElementById("accountType").getTextContent();
-        institutionType = xmlDocument.getElementById("institutionType").getTextContent();
-        accountStatus = xmlDocument.getElementById("accountStatus").getTextContent();
-        closedDate = Long.parseLong(xmlDocument.getElementById("closedDate").getTextContent());
-        shareWorksAccount = Boolean.parseBoolean(xmlDocument.getElementById("shareWorksAccount").getTextContent());
-        shareWorksSource = xmlDocument.getElementById("shareWorksSource").getTextContent();
+        accountId = xmlDocument.getElementsByTagName("accountId").item(0).getTextContent();
+        accountIdKey = xmlDocument.getElementsByTagName("accountIdKey").item(0).getTextContent();
+        accountMode = xmlDocument.getElementsByTagName("accountMode").item(0).getTextContent();
+        accountDesc = xmlDocument.getElementsByTagName("accountDesc").item(0).getTextContent();
+        accountName = xmlDocument.getElementsByTagName("accountName").item(0).getTextContent();
+        accountType = xmlDocument.getElementsByTagName("accountType").item(0).getTextContent();
+        institutionType = xmlDocument.getElementsByTagName("institutionType").item(0).getTextContent();
+        accountStatus = xmlDocument.getElementsByTagName("accountStatus").item(0).getTextContent();
+        closedDate = Long.parseLong(xmlDocument.getElementsByTagName("closedDate").item(0).getTextContent());
+        shareWorksAccount = Boolean.parseBoolean(xmlDocument.getElementsByTagName("shareWorksAccount").item(0).getTextContent());
+        
+        if (shareWorksAccount)
+            shareWorksSource = xmlDocument.getElementsByTagName("shareWorksSource").item(0).getTextContent();
         
         return this;
     }
     
     @Override
     public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("E*Trade account:\n");
+        StringBuilder stringBuilder = new StringBuilder("Account:\n");
         stringBuilder.append("accountId: ").append(accountId).append("\n");
         stringBuilder.append("accountIdKey: ").append(accountIdKey).append("\n");
         stringBuilder.append("accountMode: ").append(accountMode).append("\n");
@@ -54,7 +54,7 @@ public class Account
         stringBuilder.append("accountStatus: ").append(accountStatus).append("\n");
         stringBuilder.append("closedDate: ").append(closedDate).append("\n");
         stringBuilder.append("shareWorksAccount: ").append(shareWorksAccount).append("\n");
-        stringBuilder.append("shareWorksSource: ").append(shareWorksSource).append("\n");
+        stringBuilder.append("shareWorksSource: ").append(shareWorksSource);
         
         return stringBuilder.toString();
     }

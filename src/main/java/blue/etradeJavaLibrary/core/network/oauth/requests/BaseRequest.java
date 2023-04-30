@@ -76,6 +76,16 @@ public abstract class BaseRequest
         return connection;
     }
     
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Base URL: ").append(baseURL.toString());
+        stringBuilder.append(", Http method: ").append(httpMethod.name());
+        stringBuilder.append(", Oauth parameters: ").append(oauthParameters.toString());
+        
+        return stringBuilder.toString();
+    }
+    
     
     // Private helper methods
     

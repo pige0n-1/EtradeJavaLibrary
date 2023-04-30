@@ -3,7 +3,7 @@ package blue.etradeJavaLibrary.core.network.oauth.responses;
 
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 public abstract class BaseResponse<O> {
@@ -31,16 +31,28 @@ public abstract class BaseResponse<O> {
      * @return
      * @throws OauthException 
      */
-    protected String convertToString() throws OauthException {
+    public String convertToString() throws OauthException {
         try {
             byte[] responseBytes = connectionResponseStream.readAllBytes();
             String responseString = new String(responseBytes);
             logger.log("Raw response string", responseString);
             
+            connectionResponseStream = new ByteArrayInputStream(responseBytes); // replenish the InputStream
+            
             return responseString;
         }
-        catch (IOException ex) {
+        catch (Exception ex) {
             throw new OauthException("Response stream could not be read.", ex);
+        }
+    }
+    
+    @Override
+    public String toString() {
+        try {
+            return convertToString();
+        }
+        catch (Exception ex) {
+            return "";
         }
     }
 }

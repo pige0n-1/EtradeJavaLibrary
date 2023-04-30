@@ -14,6 +14,7 @@ public class APIRequest extends BaseRequest {
     // Instance data fields
     private final PathParameters pathParameters;
     private final QueryParameters queryParameters;
+    private URL fullURL;
     
     // Static data fields
     protected static final int MAX_ATTEMPTS = 5;
@@ -41,6 +42,17 @@ public class APIRequest extends BaseRequest {
         return sendAndGetResponse(1);
     }
     
+    @Override
+    public String toString() {
+        StringBuilder stringBuilder = new StringBuilder("APIRequest: ");
+        stringBuilder.append("Full URL: ").append(fullURL.toString()).append(" ");
+        stringBuilder.append(super.toString());
+        stringBuilder.append(", ").append(pathParameters.toString()).append(", ");
+        stringBuilder.append(", ").append(queryParameters.toString());
+        
+        return stringBuilder.toString();
+    }
+    
     
     // Private helper methods
     
@@ -49,7 +61,7 @@ public class APIRequest extends BaseRequest {
         HttpURLConnection connection = null;
         
         try {
-            URL fullURL = buildFullURL(pathParameters, queryParameters);
+            fullURL = buildFullURL(pathParameters, queryParameters);
 
             logger.log("Full URL", fullURL.toString());
 

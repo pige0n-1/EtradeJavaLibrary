@@ -1,6 +1,7 @@
 
 package blue.etradeJavaLibrary.core;
 
+import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
@@ -13,18 +14,19 @@ import java.io.ObjectOutputStream;
 import java.time.*;
 import java.time.format.*;
 
-public class EtradeClient extends APIManager
+public final class EtradeClient extends APIManager
         implements AutoCloseable {
     
     // Instance data fields
     public final EnvironmentType environmentType;
     private String saveFileName;
-    private Instant timeOfLastAccessTokenRenewal;
     
     // Static data fields
     private static EtradeClient currentSession;
     public transient static boolean loadFromSave = true;
+    protected transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
+    /* Private constructor to prevent instantiation */
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
         this.environmentType = environmentType;
         networkLogger.log("Current environment type", environmentType.name());
@@ -32,13 +34,12 @@ public class EtradeClient extends APIManager
         
         try {
             super.configure(getBaseURLSet(), getKeys(), new EtradeBrowserRequest());
-            timeOfLastAccessTokenRenewal = Instant.now();
         }
         catch (OauthException ex) {
             throw new NetworkException("Could not log into Etrade.", ex);
         }
         
-        networkLogger.log("Access token retrieved at", formatLastAccessTokenRenewal());
+        networkLogger.log("Time of last request", formatLastRequestTime());
         networkLogger.log("Logged into Etrade successfully");
         
         currentSession = this;
@@ -80,6 +81,7 @@ public class EtradeClient extends APIManager
         try {
             sendAPIGetRequest(requestURI, accountsList);
             apiLogger.log("Accounts list retrieved successfully.");
+            apiLogger.log(accountsList.toString());
             
             return accountsList;
         }
@@ -113,7 +115,7 @@ public class EtradeClient extends APIManager
         try {
             currentSession = loadLastSession(environmentType);
             networkLogger.log("Current environment type", environmentType.name());
-            networkLogger.log("Last access token renewal at", currentSession.formatLastAccessTokenRenewal());
+            networkLogger.log("Time of last request", currentSession.formatLastRequestTime());
         }
         catch (IOException ex) {
             networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
@@ -171,30 +173,28 @@ public class EtradeClient extends APIManager
         if (accessTokenExpired()) {
             networkLogger.log("Access token is expired. Re-performing Oauth flow...");
             getNewAccessToken();
-            timeOfLastAccessTokenRenewal = Instant.now();
         }
-        else if (hasBeenTwoHoursSinceLastRenewal()) {
+        else if (hasBeenTwoHoursSinceLastRequest()) {
             networkLogger.log("Access token is inactive. Renewing access token...");
             renewAccessToken();
-            timeOfLastAccessTokenRenewal = Instant.now();
         }
     }
     
-    private boolean hasBeenTwoHoursSinceLastRenewal() {
+    private boolean hasBeenTwoHoursSinceLastRequest() {
         Instant now = Instant.now();
         Duration twoHours = Duration.ofHours(2);
-        Duration timeSinceLastRenewal = Duration.between(timeOfLastAccessTokenRenewal, now);
+        Duration timeSinceLastRequest = Duration.between(timeOfLastRequest, now);
         
-        return timeSinceLastRenewal.compareTo(twoHours) > 0;
+        return timeSinceLastRequest.compareTo(twoHours) > 0;
     }
     
     private boolean accessTokenExpired() {
         final ZoneId EST_ZONE_ID = ZoneId.of("America/New_York");
         
-        var lastRenewalTimeEST = timeOfLastAccessTokenRenewal.atZone(EST_ZONE_ID);
+        var lastRequestTimeEST = timeOfLastRequest.atZone(EST_ZONE_ID);
         var now = Instant.now().atZone(EST_ZONE_ID);
         
-        var daysBetweenTime = Period.between(lastRenewalTimeEST.toLocalDate(), now.toLocalDate());
+        var daysBetweenTime = Period.between(lastRequestTimeEST.toLocalDate(), now.toLocalDate());
         int numberOfDays = daysBetweenTime.getDays();
         
         return numberOfDays >= 1;  
@@ -228,8 +228,8 @@ public class EtradeClient extends APIManager
         return new OauthKeySet(consumerKey, consumerSecret);
     }
     
-    private String formatLastAccessTokenRenewal() {
-        ZonedDateTime time = timeOfLastAccessTokenRenewal.atZone(ZoneId.systemDefault());
+    private String formatLastRequestTime() {
+        ZonedDateTime time = timeOfLastRequest.atZone(ZoneId.systemDefault());
         
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(time);
     }

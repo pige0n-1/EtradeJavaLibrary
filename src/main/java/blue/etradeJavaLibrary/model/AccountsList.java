@@ -2,10 +2,9 @@
 package blue.etradeJavaLibrary.model;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
-import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import java.util.ArrayList;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
-import java.util.ArrayList;
 
 public class AccountsList extends ArrayList<Account>
         implements XMLDefinedObject<AccountsList> {

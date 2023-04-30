@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.requests.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
+import java.time.Instant;
 import java.io.IOException;
 import java.io.Serializable;
 
@@ -16,10 +17,10 @@ public abstract class APIManager
     private BaseURLSet baseURLSet;
     private OauthFlowManager oauthFlow;
     private boolean configured = false;
+    protected Instant timeOfLastRequest = Instant.now();
     
     // Static data fields
     protected transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
-    protected transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
     protected APIManager() {}
     
@@ -40,11 +41,13 @@ public abstract class APIManager
     protected final void renewAccessToken() throws OauthException {
         ensureConfigured();
         oauthFlow.renewAccessToken();
+        updateTimeOfLastRequest();
     }
     
     protected final void getNewAccessToken() throws OauthException {
         ensureConfigured();
         oauthFlow.getAccessToken();
+        updateTimeOfLastRequest();
     }
     
     protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameter, XMLDefinedObject xmlObject) throws OauthException {
@@ -55,10 +58,14 @@ public abstract class APIManager
             BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
             APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
             APIResponse response = request.sendAndGetResponse();
+            updateTimeOfLastRequest();
                 
             response.parseIntoXMLDefinedObject(xmlObject);
+            networkLogger.log(request.toString());
+            networkLogger.log(response.toString());
+            networkLogger.log("API request success.");
         }
-        catch (IOException ex) {
+        catch (IOException | ObjectMismatchException ex) {
             networkLogger.log("API request failure.");
             throw new OauthException("API request could not be sent.", ex);
         }
@@ -91,5 +98,9 @@ public abstract class APIManager
     private void ensureConfigured() {
         if (!configured)
             throw new RuntimeException("The API manager must be configured before sending a request.");
+    }
+    
+    protected void updateTimeOfLastRequest() {
+        timeOfLastRequest = Instant.now();
     }
 }
