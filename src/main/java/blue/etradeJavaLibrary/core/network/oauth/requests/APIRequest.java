@@ -9,7 +9,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public abstract class APIRequest extends BaseRequest {
+public class APIRequest extends BaseRequest {
     
     // Instance data fields
     private final PathParameters pathParameters;

@@ -6,13 +6,23 @@ import java.util.ArrayList;
 import javax.xml.parsers.*;
 import org.w3c.dom.*;
 
+/**
+ * Represents an E*Trade HTTP response of a list of accounts.
+ * It is defined in an XML response.
+ * @author Hunter
+ */
 public class AccountsList extends ArrayList<Account>
         implements XMLDefinedObject<AccountsList> {
+    
+    // Instance data fields
+    private Document xmlDocument;
     
     public AccountsList() {}
     
     @Override
-    public AccountsList processXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+    public AccountsList configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+        this.xmlDocument = xmlDocument;
+        
         NodeList listOfAccounts = xmlDocument.getElementsByTagName("Account");
         
         if (listOfAccounts.getLength() == 0)
@@ -22,12 +32,17 @@ public class AccountsList extends ArrayList<Account>
             Node accountNode = listOfAccounts.item(i);
             Document accountXMLDoc = convertToDocument(accountNode);
             
-            Account currentAccount = new Account().processXMLDocument(accountXMLDoc);
+            Account currentAccount = new Account().configureFromXMLDocument(accountXMLDoc);
             
             add(currentAccount);
         }
         
         return this;
+    }
+    
+    @Override
+    public Document toXMLDocument() {
+        return xmlDocument;
     }
     
     @Override

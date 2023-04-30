@@ -8,6 +8,7 @@ public class Account
         implements XMLDefinedObject<Account> {
     
     // Instance data fields
+    private Document xmlDocument;
     public String accountId;
     public String accountIdKey;
     public String accountMode;
@@ -23,7 +24,9 @@ public class Account
     public Account() {}
     
     @Override
-    public Account processXMLDocument(Document xmlDocument) {
+    public Account configureFromXMLDocument(Document xmlDocument) {
+        this.xmlDocument = xmlDocument;
+        
         accountId = xmlDocument.getElementsByTagName("accountId").item(0).getTextContent();
         accountIdKey = xmlDocument.getElementsByTagName("accountIdKey").item(0).getTextContent();
         accountMode = xmlDocument.getElementsByTagName("accountMode").item(0).getTextContent();
@@ -39,6 +42,11 @@ public class Account
             shareWorksSource = xmlDocument.getElementsByTagName("shareWorksSource").item(0).getTextContent();
         
         return this;
+    }
+    
+    @Override
+    public Document toXMLDocument() {
+        return xmlDocument;
     }
     
     @Override

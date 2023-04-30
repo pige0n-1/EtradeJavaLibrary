@@ -10,7 +10,15 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 
-public interface XMLDefinedObject<O> {
+/**
+ * An XMLDefinedObject, in this model, represents any type of object that can
+ * be represented in the document object model (DOM) with XML. This is useful in the
+ * oauth 1.0a model to easily convert XML in HTTP requests and responses to corresponding
+ * Java objects.
+ * @param <O> an optional type parameter for the instance type that implements XMLDefinedObject.
+ * this is used for the configureFromXMLDocument method to return the same type.
+ */
+public interface XMLDefinedObject<O extends XMLDefinedObject> {
     
     // Static data fields
     public static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
@@ -26,7 +34,7 @@ public interface XMLDefinedObject<O> {
      * @throws SAXException
      * @throws IOException 
      */
-    public static Document parseXML(InputStream xmlInputStream) throws SAXException, IOException {
+    static Document parseXML(InputStream xmlInputStream) throws SAXException, IOException {
         try {
             DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
 
@@ -41,10 +49,17 @@ public interface XMLDefinedObject<O> {
     }
     
     /**
-     * Takes in an xml Document object to configure the implementing object.In this model, this can be used to configure the instance after constructing the object.
+     * Takes in an xml Document object to configure the implementing object.
+     * In this model, this can be used to configure the instance after constructing the object.
      * @param xmlDocument a Document object from the java API, which is the output from the parseXML method
-     * @return 
-     * @throws blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException
+     * @return the instance object, strictly for convenience
+     * @throws ObjectMismatchException if the given XML document does not represent the same type of object as the instance
      */
-    public O processXMLDocument(Document xmlDocument) throws ObjectMismatchException;
+    O configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException;
+    
+    /**
+     * Converts this object into Document form.
+     * @return Document object, representing an XML document
+     */
+    Document toXMLDocument();
 }

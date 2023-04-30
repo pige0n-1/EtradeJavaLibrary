@@ -63,6 +63,9 @@ public abstract class BaseRequest
     }
     
     protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws OauthException, IOException {
+        if (connection != null)
+            return connection;
+        
         oauthParameters.resetNonceAndTimestamp();
         
         allParameters = Parameters.merge(oauthParameters, allParameters);
