@@ -56,13 +56,11 @@ public abstract class APIManager
         
         try {
             BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
-            APIRequest request = new APIRequest(requestBaseURL, keys, HttpMethod.GET);
+            APIRequest request = new APIGetRequest(requestBaseURL, keys);
             APIResponse response = request.sendAndGetResponse();
             updateTimeOfLastRequest();
                 
             response.parseIntoXMLDefinedObject(xmlObject);
-            networkLogger.log("API request", request.toString());
-            networkLogger.log("API response", response.toString());
             networkLogger.log("API request success.");
         }
         catch (IOException | ObjectMismatchException ex) {

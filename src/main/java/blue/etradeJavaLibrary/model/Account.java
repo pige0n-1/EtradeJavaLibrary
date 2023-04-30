@@ -58,4 +58,26 @@ public class Account
         
         return stringBuilder.toString();
     }
+    
+    @Override
+    /**
+     * Two accounts with the same accountIdKey are the same account; therefore,
+     * if two Account objects have the equal accountIdKey strings, they are considered
+     * equal in this model.
+     */
+    public boolean equals(Object otherObject) {
+        if (otherObject instanceof Account otherAccount) 
+            return otherAccount.accountIdKey.equals(this.accountIdKey);
+        else
+            return false;
+    }
+    
+    @Override
+    /**
+     * Generates the hash code of the accountId string, since the accountIdKey is what
+     * makes two Account objects equal.
+     */
+    public int hashCode() {
+        return accountIdKey.hashCode();
+    }
 }
