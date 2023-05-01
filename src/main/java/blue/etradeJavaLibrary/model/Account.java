@@ -21,6 +21,11 @@ public class Account
     public boolean shareWorksAccount;
     public String shareWorksSource;
     
+    /**
+     * Creates an Account object that is not yet initialized.
+     * To initialize the object, call the configureFromXMLDocument
+     * with the XML response from Etrade.
+     */
     public Account() {}
     
     @Override

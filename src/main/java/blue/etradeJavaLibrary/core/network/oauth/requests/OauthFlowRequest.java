@@ -8,21 +8,46 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+/**
+ * Represents an HTTP request in the Oauth authentication flow.
+ * All it needs is a BaseURL object and an OauthKeySet to configure,
+ * and it can be easily sent using the sendAndGetResponse() method.
+ */
 public final class OauthFlowRequest extends BaseRequest {
     
+    // Static data fields
     private static final int MAX_ATTEMPTS = 5;
     private static final int WAIT_BETWEEN_RETRY = 3000;
     
+    /**
+     * Constructs an OauthFlowRequest object with a BaseURL and OauthKeySet.
+     * @param baseURL
+     * @param keys
+     * @throws OauthException 
+     */
     public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {   
         super(baseURL, keys, HttpMethod.GET);
     }
     
+    /**
+     * Constructs an OauthFlowRequest with an added verifier Key, which is sent from
+     * the service provider to the consumer in the Oauth authentication flow.
+     * @param baseURL
+     * @param keys
+     * @param verifier
+     * @throws OauthException 
+     */
     public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys, Key verifier) throws OauthException {
         super(baseURL, keys, HttpMethod.GET);
         setVerifier(verifier);
     }
     
     @Override
+    /**
+     * Send the OauthFlowRequest and returns an OauthFlowResponse object. The response object contains an
+     * instance method "parse" than parses the response into a Parameters object, where the access token
+     * or request token can be retrieved.
+     */
     public OauthFlowResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException {
         return sendAndGetResponse(1);
     }

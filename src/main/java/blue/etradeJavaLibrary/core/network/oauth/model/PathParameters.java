@@ -16,12 +16,29 @@ package blue.etradeJavaLibrary.core.network.oauth.model;
  */
 public class PathParameters extends Parameters {
     
+    /**
+     * Constructs an empty PathParameters object
+     */
     public PathParameters() {}
     
+    /**
+     * A convenient constructor for a PathParameters that starts
+     * out with one parameter
+     * @param key
+     * @param value 
+     */
     public PathParameters(String key, String value) {
         addParameter(key, value);
     }
     
+    /**
+     * A convenient constructor for a PathParameters that starts
+     * with two parameters
+     * @param key1
+     * @param value1
+     * @param key2
+     * @param value2 
+     */
     public PathParameters(String key1, String value1, String key2, String value2) {
         addParameter(key1, value1);
         addParameter(key2, value2);

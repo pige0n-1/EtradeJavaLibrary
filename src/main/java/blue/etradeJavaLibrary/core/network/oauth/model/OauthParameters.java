@@ -11,41 +11,87 @@ import java.util.Base64;
  * some cannot be added at that point. Use any of the setter methods to add 
  * additional needed parameters, and they will be added and automatically 
  * encoded. If needing to reuse the parameters, be sure to call the
- * resetNonceAndTimestamp method.
+ * resetNonceAndTimestamp method
  */
 public final class OauthParameters extends Parameters {
     
+    /**
+     * Constructs an OauthParameters object without any keys. The
+     * Parameters are initialized with parameters that are added
+     * automatically.
+     */
+    public OauthParameters() {
+        initializeParameters();
+    }
+    
+    /**
+     * Constructs an OauthParameters object with a consumer key. The
+     * object is initialized with several other Oauth parameters that
+     * can be automatically generated.
+     * @param consumerKey 
+     */
     public OauthParameters(Key consumerKey) {
         initializeParameters();
         setConsumerKey(consumerKey);
     }
     
+    /**
+     * Constructs an OauthParameters object with a consumer key and a token
+     * @param consumerKey
+     * @param token 
+     */
     public OauthParameters(Key consumerKey, Key token) {
         this(consumerKey);
         setToken(token);
     }
     
+    /**
+     * Constructs an OauthParameters object with a consumer key, token, and verifier
+     * @param consumerKey
+     * @param token
+     * @param verifier 
+     */
     public OauthParameters(Key consumerKey, Key token, Key verifier) {
         this(consumerKey, token);
         addVerifier(verifier);
     }
     
+    /**
+     * Sets the oauth_signature parameter
+     * @param signature 
+     */
     public void setSignature(String signature) {
         addParameter("oauth_signature", signature);
     }
     
+    /**
+     * Sets the consumer key parameter
+     * @param consumerKey 
+     */
     public void setConsumerKey(Key consumerKey) {
         addParameter("oauth_consumer_key", consumerKey.getValue());
     }
     
+    /**
+     * Sets the oauth_token parameter
+     * @param token 
+     */
     public void setToken(Key token) {
         addParameter("oauth_token", token.getValue());
     }
     
+    /**
+     * Adds the optional oauth_verifier parameter
+     * @param verifier 
+     */
     public void addVerifier(Key verifier) {
         addParameter("oauth_verifier", verifier.getValue());
     }
     
+    /**
+     * If a request needs to be re-sent, the nonce needs to be set again.
+     * This method renews the timestamp and changes the nonce.
+     */
     public void resetNonceAndTimestamp() {
         createTimestamp();
         

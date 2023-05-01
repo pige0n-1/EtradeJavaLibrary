@@ -16,13 +16,22 @@ import java.net.URL;
  * This class represents a specialized type of request in the Oauth 1.0a 
  * authentication flow for that represents the user sign-on to the severice
  * provider. No authorization header is set; only a URL is called with the
- * base URL and query parameters
+ * base URL and query parameters. The request can be sent with the go()
+ * methdod.
  */
 public class BrowserRequest 
         implements Serializable {
     
     // Instance data fields
+    /**
+     * The URL of the detination of the request
+     */
     private URI fullURI;
+    
+    /**
+     * Represents if this has been configured. It can be configured with
+     * the configure method. The request cannot be sent until it is configured.
+     */
     private boolean configured = false;
     
     // Static data fields
@@ -37,14 +46,34 @@ public class BrowserRequest
      */
     public BrowserRequest() {}
     
+    /**
+     * Constructs a BrowserRequest that is configured with a BaseURL and
+     * an OauthKeySet.
+     * @param baseURL
+     * @param keys
+     * @throws OauthException 
+     */
     public BrowserRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {
         configure(baseURL, keys);
     }
     
+    /**
+     * If the BrowserRequest is not yet configured, this method can be called to configure
+     * it.
+     * @param baseURL
+     * @param keys
+     * @throws OauthException 
+     */
     public void configureBrowserRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {
         configure(baseURL, keys);
     }
     
+    /**
+     * Sends the request in a browser window.
+     * @return the verifier Key, from the Oauth model
+     * @throws IOException
+     * @throws OauthException 
+     */
     public Key go() throws IOException, OauthException {
         if (configured) {
             Desktop.getDesktop().browse(fullURI);

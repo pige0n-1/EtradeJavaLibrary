@@ -9,8 +9,17 @@ import java.io.Serializable;
  * maintain rigidity of the program.
  */
 public class Key implements Serializable {
+    
+    // Instance data fields
+    /**
+     * The underlying string value of the key
+     */
     private final String value;
     
+    /**
+     * Constructs a Key with an underlying String
+     * @param value 
+     */
     public Key(String value) {
         if (value.contains(" "))
             throw new InvalidParameterException("The value of a Key object cannot contain spaces.");
@@ -18,10 +27,17 @@ public class Key implements Serializable {
         this.value = value;
     }
     
+    /**
+     * Constructs an empty key
+     */
     public Key() {
         value = "";
     }
     
+    /**
+     * Returns the string value of the key
+     * @return 
+     */
     public String getValue() {
         return value;
     }

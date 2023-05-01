@@ -9,7 +9,6 @@ import org.w3c.dom.*;
 /**
  * Represents an E*Trade HTTP response of a list of accounts.
  * It is defined in an XML response.
- * @author Hunter
  */
 public class AccountsList extends ArrayList<Account>
         implements XMLDefinedObject<AccountsList> {
@@ -17,6 +16,11 @@ public class AccountsList extends ArrayList<Account>
     // Instance data fields
     private Document xmlDocument;
     
+    /**
+     * Creates an AccountsList object that is not yet initialized.
+     * To initialize, call the configureFromXMLDocument method
+     * with the response document from Etrade.
+     */
     public AccountsList() {}
     
     @Override

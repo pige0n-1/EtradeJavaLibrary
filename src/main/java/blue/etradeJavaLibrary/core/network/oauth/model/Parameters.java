@@ -22,14 +22,27 @@ public class Parameters implements Iterable<Parameters.Parameter> {
     private final TreeMap<String, String> parameters = new TreeMap<>();
     private final boolean rfc3986Encoded;
     
+    /**
+     * Constructs an empty Parameters object that is RFC3986 encoded
+     */
     public Parameters() {
         rfc3986Encoded = true;
     }
     
+    /**
+     * Constructs an empty Parameters object that can either be encoded
+     * or unencoded.
+     * @param rfc3986Encoded 
+     */
     public Parameters(boolean rfc3986Encoded) {
         this.rfc3986Encoded = rfc3986Encoded;
     }
     
+    /**
+     * Adds the key and value pair to the collection
+     * @param key
+     * @param value 
+     */
     public void addParameter(String key, String value) {
         if (rfc3986Encoded)
             parameters.put(encode(key), encode(value));
@@ -37,18 +50,38 @@ public class Parameters implements Iterable<Parameters.Parameter> {
             parameters.put(key, value);
     }
     
+    /**
+     * Removes the parameter with the specified key
+     * @param key 
+     */
     public void removeParameter(String key) {
         parameters.remove(key);
     }
     
+    /**
+     * Retrieves the value with the specified key
+     * @param key
+     * @return 
+     */
     public String getValue(String key) {
         return parameters.get(key);
     }
     
+    /**
+     * Returns true if there are no parameters in the collection
+     * @return 
+     */
     public boolean isEmpty() {
         return parameters.isEmpty();
     }
     
+    /**
+     * Merges all parameters that are passed as arguments into one Parameters
+     * object. If one Parameters object is encoded, it will stay encoded,
+     * while the others will stay unencoded.
+     * @param parametersCollection an arbitrary-length argument of Parameters objects
+     * @return 
+     */
     public static Parameters merge(Parameters... parametersCollection) {
         ensureNoParametersAreNull(parametersCollection);
         
@@ -86,10 +119,16 @@ public class Parameters implements Iterable<Parameters.Parameter> {
     }
     
     @Override
+    /**
+     * Returns an Iterator for this object
+     */
     public Iterator<Parameter> iterator() {
         return new ParametersIterator();
     }
     
+    /**
+     * A simple extension of Iterator to iterate through a Parameters object
+     */
     public class ParametersIterator implements Iterator<Parameter> {
         Iterator<Map.Entry<String, String>> treeMapIterator = parameters.entrySet().iterator();
         
@@ -105,6 +144,9 @@ public class Parameters implements Iterable<Parameters.Parameter> {
         }
     }
     
+    /**
+     * Represents a single parameter in the Parameters class
+     */
     public class Parameter {
         private final String key;
         private final String value;

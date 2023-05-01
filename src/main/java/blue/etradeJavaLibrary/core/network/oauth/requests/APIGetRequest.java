@@ -10,8 +10,8 @@ import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
 
 /**
  * Represents a simple HTTP get request in the oauth 1.0a model.
- * This class extends APIRequest and does not add any extra functionality.
- * @author Hunter
+ * This class extends APIRequest and does not add any extra functionality,
+ * but it is added for functionality.
  */
 public final class APIGetRequest extends APIRequest {
 
