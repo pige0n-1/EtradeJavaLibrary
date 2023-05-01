@@ -6,6 +6,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.net.URL;
+import java.util.Iterator;
 
 public class SignatureBuilder {
     
@@ -19,13 +20,13 @@ public class SignatureBuilder {
         
         String normalizedParameters = normalizeParameters(parameters);
         String signatureBaseString = getSignatureBaseString(normalizedParameters, httpMethod, urlWithoutQuery);
-        String key = buildKey(consumerSecret, tokenSecret);
+        String signatureKey = buildSignatureKey(consumerSecret, tokenSecret);
         
         logger.log("Normalized parameters", normalizedParameters);
         logger.log("Signature base string", signatureBaseString);
-        logger.log("Key for building oauth signature", key);
+        logger.log("Key for building oauth signature", signatureKey);
 
-        return HmacSha1.doHmacSha1Base64(key, signatureBaseString);     
+        return HmacSha1.doHmacSha1Base64(signatureKey, signatureBaseString);     
     }
     
     public static String buildSignature(URL url, Parameters parameters, Key consumerSecret, HttpMethod httpMethod) {
@@ -36,25 +37,29 @@ public class SignatureBuilder {
     // Private helper methods
     
     
-    private static String buildKey(Key consumerSecret, Key tokenSecret) {
+    private static String buildSignatureKey(Key consumerSecret, Key tokenSecret) {
         String consumerSecretString = Rfc3986.encode(consumerSecret.getValue());
         String tokenSecretString = Rfc3986.encode(tokenSecret.getValue());
         
         return consumerSecretString + "&" + tokenSecretString;
     }
 
-    private static String normalizeParameters(Parameters parameters) {
-        String normalizedString = "";
+    private static String normalizeParameters(Parameters allParameters) {
+        StringBuilder normalizedParameters = new StringBuilder();
         
-        // Iterate through all parameters
-        for (Parameters.Parameter parameter : parameters) {
-            normalizedString += parameter.getKey() + "=" + parameter.getValue() + "&";
+        Iterator<Parameters.Parameter> parametersIterator = allParameters.iterator();
+        while (parametersIterator.hasNext()) {
+            Parameters.Parameter currentParameter = parametersIterator.next();
+            
+            normalizedParameters
+                    .append(currentParameter.getKey())
+                    .append("=")
+                    .append(currentParameter.getValue());
+            
+            if (parametersIterator.hasNext()) normalizedParameters.append("&");
         }
-        // Remove "&" from the end of the string
-        normalizedString = normalizedString.substring(0, 
-                normalizedString.length() - 1);
         
-        return normalizedString;
+        return normalizedParameters.toString();
     }
     
     private static String getSignatureBaseString(String normalizedParameters, HttpMethod httpMethod, String urlWithoutQuery) {

@@ -132,10 +132,8 @@ public class APIRequest extends BaseRequest {
             logger.log("Connection to etrade unsuccessful");
             logger.log("Connection response", connection.getResponseCode() + "");
             
-            if (attemptNumber < MAX_ATTEMPTS)
-                return sendAndGetResponse(attemptNumber + 1);
-            else
-                throw new OauthException("Connection to etrade unsuccessful.", ex);
+            if (attemptNumber < MAX_ATTEMPTS) return sendAndGetResponse(attemptNumber + 1);
+            else throw new OauthException("Connection to etrade unsuccessful.", ex);
         }
     }
 }

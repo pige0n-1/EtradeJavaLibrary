@@ -81,8 +81,8 @@ public class Account
     public boolean equals(Object otherObject) {
         if (otherObject instanceof Account otherAccount) 
             return otherAccount.accountIdKey.equals(this.accountIdKey);
-        else
-            return false;
+        
+        else return false;
     }
     
     @Override

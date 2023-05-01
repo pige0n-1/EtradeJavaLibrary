@@ -29,8 +29,7 @@ public class AccountsList extends ArrayList<Account>
         
         NodeList listOfAccounts = xmlDocument.getElementsByTagName("Account");
         
-        if (listOfAccounts.getLength() == 0)
-            throw new ObjectMismatchException();
+        if (listOfAccounts.getLength() == 0) throw new ObjectMismatchException();
         
         for (int i = 0; i < listOfAccounts.getLength(); i++) {
             Node accountNode = listOfAccounts.item(i);
@@ -53,9 +52,8 @@ public class AccountsList extends ArrayList<Account>
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder("Accounts list:\n");
         
-        for (Account account : this) {
+        for (Account account : this)
             stringBuilder.append(account.toString()).append("\n");
-        }
         
         return stringBuilder.toString();
     }

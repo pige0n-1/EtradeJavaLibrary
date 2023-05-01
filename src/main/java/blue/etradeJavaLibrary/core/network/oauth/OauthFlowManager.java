@@ -22,8 +22,7 @@ public class OauthFlowManager implements Serializable {
         this.urls = urls;
         this.keys = keys;
         
-        if (keys.hasRetrievedAToken())
-            keys.removeToken();
+        if (keys.hasRetrievedAToken()) keys.removeToken();
     }
     
     /**
@@ -80,8 +79,7 @@ public class OauthFlowManager implements Serializable {
     
     
     private void performOauthFlowIfRequired() throws OauthException {
-        if (!keys.hasRetrievedAToken())
-            performOauthFlow();
+        if (!keys.hasRetrievedAToken()) performOauthFlow();
     }
     
     private void performOauthFlow() throws OauthException {

@@ -15,7 +15,6 @@ public class EtradeBrowserRequest extends BrowserRequest {
         java.util.Scanner scanner = new java.util.Scanner(System.in);
         
         System.out.print("Enter the verifier code: ");
-        
         String verifierCode = scanner.next();
         
         try {
@@ -23,6 +22,7 @@ public class EtradeBrowserRequest extends BrowserRequest {
         }
         catch (InvalidParameterException ex) {
             networkLogger.log("Invalid verifier code entered", verifierCode);
+            
             return getVerifierUserInput();
         }
     }

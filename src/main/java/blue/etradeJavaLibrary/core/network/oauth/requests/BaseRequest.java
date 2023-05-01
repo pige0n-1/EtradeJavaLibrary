@@ -153,8 +153,7 @@ public abstract class BaseRequest
      * @throws IOException 
      */
     protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws IOException {
-        if (connection != null)
-            return connection;
+        if (connection != null) return connection;
         
         oauthParameters.resetNonceAndTimestamp();
         
@@ -195,8 +194,7 @@ public abstract class BaseRequest
             authorizationString.append(currentParameter.getValue());
             authorizationString.append("\"");
             
-            if (parametersIterator.hasNext())
-                authorizationString.append(",");
+            if (parametersIterator.hasNext()) authorizationString.append(",");
         }
         logger.log("Authorization", authorizationString.toString());
 

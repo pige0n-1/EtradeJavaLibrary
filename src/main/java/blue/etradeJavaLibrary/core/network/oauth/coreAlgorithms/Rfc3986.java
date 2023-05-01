@@ -78,8 +78,7 @@ public final class Rfc3986 {
         for (int i = 0; i < codePoints.length; i++) {
             byte currentCodePoint = codePoints[i];
             
-            if (isAnUnreservedCharacter(currentCodePoint))
-                newCodePoints.add(currentCodePoint);
+            if (isAnUnreservedCharacter(currentCodePoint)) newCodePoints.add(currentCodePoint);
 
             else { // Reserved characters must be replaced with "%" followed by uppercase hex value
                 newCodePoints.add((byte)'%');

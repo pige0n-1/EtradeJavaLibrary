@@ -6,6 +6,11 @@ import java.time.*;
 import java.time.format.*;
 import java.util.logging.*;
 
+/**
+ * An internal logging class for the entire EtradeJavaLibrary project. There are multiple statically-generated
+ * logging objects that can be used project-wide. There are boolean data fields that are used as options for logging,
+ * such as clearing previous logs and if logging is allowed.
+ */
 public class ProgramLogger {
     
     // Instance data fields
@@ -22,11 +27,10 @@ public class ProgramLogger {
     
     private ProgramLogger(LoggerType loggerType) throws IOException {
         String fileName = NETWORK_LOG_FILE_NAME;
-        if (loggerType == LoggerType.API)
-            fileName = API_LOG_FILE_NAME;
         
-        if (clearPreviousLogs)
-            deleteOldLogFile(fileName);
+        if (loggerType == LoggerType.API) fileName = API_LOG_FILE_NAME;
+        
+        if (clearPreviousLogs) deleteOldLogFile(fileName);
         
         FileHandler fileHandler = new MyFileHandler(fileName);
         fileHandler.setFormatter(new SimpleLogFormatter());
@@ -47,15 +51,12 @@ public class ProgramLogger {
     public static ProgramLogger getProgramLogger(LoggerType loggerType) {
         ensureInstantiationHasOccurred();
         
-        if (loggerType == LoggerType.NETWORK)
-            return networkInstanceOfProgramLogger;
-        else
-            return apiInstanceOfProgramLogger;
+        if (loggerType == LoggerType.NETWORK) return networkInstanceOfProgramLogger;
+        else return apiInstanceOfProgramLogger;
     }
     
     public void log(String message) {
-        if (loggingAllowed)
-            javaLogger.fine(message);
+        if (loggingAllowed) javaLogger.fine(message);
     }
     
     public void log(String label, String message) {

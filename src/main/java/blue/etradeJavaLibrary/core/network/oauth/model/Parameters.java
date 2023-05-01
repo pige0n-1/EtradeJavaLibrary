@@ -44,10 +44,9 @@ public class Parameters implements Iterable<Parameters.Parameter> {
      * @param value 
      */
     public void addParameter(String key, String value) {
-        if (rfc3986Encoded)
-            parameters.put(encode(key), encode(value));
-        else
-            parameters.put(key, value);
+        if (rfc3986Encoded) parameters.put(encode(key), encode(value));
+        
+        else parameters.put(key, value);
     }
     
     /**
@@ -106,8 +105,7 @@ public class Parameters implements Iterable<Parameters.Parameter> {
             parametersString.append("=");
             parametersString.append(parameter.getValue());
             
-            if (iterator.hasNext())
-                parametersString.append(", ");
+            if (iterator.hasNext()) parametersString.append(", ");
         }
         parametersString.append("}");
         

@@ -58,10 +58,9 @@ public final class EtradeClient extends APIManager
      * @return The only current instance of EtradeClient
      */
     public static EtradeClient getClient(EnvironmentType environmentType) throws NetworkException {   
-        if (currentSessionMatches(environmentType))
-            return currentSession;
-        else
-            establishNewCurrentSession(environmentType);
+        if (currentSessionMatches(environmentType)) return currentSession;
+        
+        else establishNewCurrentSession(environmentType);
         
         return currentSession;
     }
@@ -135,13 +134,12 @@ public final class EtradeClient extends APIManager
         FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
         
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
-            if (loadFromSave == false)
-                throw new IOException();
+            if (loadFromSave == false) throw new IOException();
             
             var client = objectInput.readObject();
             networkLogger.log("Last EtradeClient session loaded successfully.");
             
-            return (EtradeClient) client;
+            return (EtradeClient)client;
         }
         
         catch (ClassNotFoundException ex) {

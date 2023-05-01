@@ -63,12 +63,10 @@ public class URLBuilder {
     }
     
     private static URL addQueryParameters(BaseURL baseURL, QueryParameters queryParameters) throws MalformedURLException {
-
         StringBuilder finalURLString = new StringBuilder(baseURL.toString());
-        Iterator<Parameters.Parameter> parametersIterator = queryParameters.iterator();
         
-        if (parametersIterator.hasNext())
-            finalURLString.append("?");
+        Iterator<Parameters.Parameter> parametersIterator = queryParameters.iterator();
+        if (parametersIterator.hasNext()) finalURLString.append("?");
         
         while(parametersIterator.hasNext()) {
             Parameters.Parameter currentParameter = parametersIterator.next();
@@ -77,8 +75,7 @@ public class URLBuilder {
             finalURLString.append("=");
             finalURLString.append(currentParameter.getValue());
             
-            if (parametersIterator.hasNext())
-                finalURLString.append("&");
+            if (parametersIterator.hasNext()) finalURLString.append("&");
         }
         
         return new URL(finalURLString.toString());
