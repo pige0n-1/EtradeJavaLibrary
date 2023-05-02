@@ -7,11 +7,9 @@ import org.w3c.dom.*;
 /**
  * Represents an E*Trade account
  */
-public class Account 
-        implements XMLDefinedObject<Account> {
+public class Account extends EtradeObject {
     
     // Instance data fields
-    private Document xmlDocument;
     public String accountId;
     public String accountIdKey;
     public String accountMode;
@@ -35,19 +33,17 @@ public class Account
     public Account configureFromXMLDocument(Document xmlDocument) {
         this.xmlDocument = xmlDocument;
         
-        accountId = xmlDocument.getElementsByTagName("accountId").item(0).getTextContent();
-        accountIdKey = xmlDocument.getElementsByTagName("accountIdKey").item(0).getTextContent();
-        accountMode = xmlDocument.getElementsByTagName("accountMode").item(0).getTextContent();
-        accountDesc = xmlDocument.getElementsByTagName("accountDesc").item(0).getTextContent();
-        accountName = xmlDocument.getElementsByTagName("accountName").item(0).getTextContent();
-        accountType = xmlDocument.getElementsByTagName("accountType").item(0).getTextContent();
-        institutionType = xmlDocument.getElementsByTagName("institutionType").item(0).getTextContent();
-        accountStatus = xmlDocument.getElementsByTagName("accountStatus").item(0).getTextContent();
-        closedDate = Long.parseLong(xmlDocument.getElementsByTagName("closedDate").item(0).getTextContent());
-        shareWorksAccount = Boolean.parseBoolean(xmlDocument.getElementsByTagName("shareWorksAccount").item(0).getTextContent());
-        
-        if (shareWorksAccount)
-            shareWorksSource = xmlDocument.getElementsByTagName("shareWorksSource").item(0).getTextContent();
+        accountId = extract("accountId");
+        accountIdKey = extract("accountIdKey");;
+        accountMode = extract("accountMode");;
+        accountDesc = extract("accountDesc");;
+        accountName = extract("accountName");;
+        accountType = extract("accountType");;
+        institutionType = extract("institutionType");;
+        accountStatus = extract("accountStatus");;
+        closedDate = extractLong("closedDate");
+        shareWorksAccount = extractBoolean("shareWorksAccount");
+        shareWorksSource = extract("shareWorksSource");
         
         return this;
     }

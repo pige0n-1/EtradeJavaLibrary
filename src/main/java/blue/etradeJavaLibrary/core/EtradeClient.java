@@ -121,9 +121,9 @@ public final class EtradeClient extends APIManager
      * @return an AccountsList object representing all the user's accounts
      * @throws NetworkException
      */
-    public AccountsList getAccountsList() throws NetworkException {
+    public Accounts getAccountsList() throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
-        var accountsList = new AccountsList();
+        var accountsList = new Accounts();
         
         try {
             sendAPIGetRequest(requestURI, accountsList);
@@ -133,8 +133,33 @@ public final class EtradeClient extends APIManager
             return accountsList;
         }
         catch (OauthException ex) {
-            apiLogger.log("Accounts list could not be retrieved");
+            apiLogger.log("Accounts list could not be retrieved.");
             throw new NetworkException("Accounts list could not be retrieved", ex);
+        }
+    }
+
+    public BalanceResponse getAccountBalance(Account account) throws NetworkException {
+        String instType = "BROKERAGE";
+        String realTimeNAV = "true";
+        String accountIdKey = account.accountIdKey;
+        var balanceResponse = new BalanceResponse();
+
+        String requestURI = KeyAndURLExtractor.API_ACCOUNT_BALANCE_URI;
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("instType", instType);
+        queryParameters.addParameter("realTimeNAV", realTimeNAV);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, balanceResponse);
+            apiLogger.log("Account balance retrieved successfully.");
+            apiLogger.log("Response", balanceResponse.toString());
+
+            return balanceResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Account balance could not be retrieved.");
+            throw new NetworkException("Account balance could not be retrieved", ex);
         }
     }
 

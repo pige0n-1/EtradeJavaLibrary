@@ -13,6 +13,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 
@@ -53,7 +54,23 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
             return null;
         }
     }
-    
+
+    static Document convertToDocument(Node accountNode) {
+        final boolean RECURSIVELY_IMPORT_NODE = true;
+
+        try {
+            DocumentBuilder documentBuilder = XMLDefinedObject.documentBuilderFactory.newDocumentBuilder();
+            Document document = documentBuilder.newDocument();
+            Node importedAccountNode = document.importNode(accountNode, RECURSIVELY_IMPORT_NODE);
+            document.appendChild(importedAccountNode);
+
+            return document;
+        }
+        catch (ParserConfigurationException ex) {
+            return null;
+        }
+    }
+
     /**
      * Takes in an xml Document object to configure the implementing object.
      * In this model, this can be used to configure the instance after constructing the object.
