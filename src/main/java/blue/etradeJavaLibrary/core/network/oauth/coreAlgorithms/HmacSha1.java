@@ -18,9 +18,16 @@ public class HmacSha1 {
     
     // Static data fields
     private static final String ALGORITHM = "HmacSHA1";
-    
+
+    /* Prevent instantiation */
     private HmacSha1() {}
-    
+
+    /**
+     * Returns the digest of an HMAC-SHA1 operation
+     * @param key
+     * @param message
+     * @return
+     */
     public static String doHmacSha1Base64(String key, String message) {
         try {
             byte[] keyBytes = key.getBytes();

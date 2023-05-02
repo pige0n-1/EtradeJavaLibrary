@@ -9,10 +9,13 @@ import blue.etradeJavaLibrary.core.network.oauth.model.OauthParameters;
  */
 public class EtradeOauthParameters extends OauthParameters {
 
-    public EtradeOauthParameters() {
-    }
+    /**
+     * Constructs a default EtradeOauthParameters object. Since it is used for E*Trade, the oauth_callback parameter
+     * is always set to "oob" automatically.
+     */
+    public EtradeOauthParameters() {}
 
-    public EtradeOauthParameters(Key consumerKey) {
+    /*public EtradeOauthParameters(Key consumerKey) {
         super(consumerKey);
     }
 
@@ -22,7 +25,7 @@ public class EtradeOauthParameters extends OauthParameters {
 
     public EtradeOauthParameters(Key consumerKey, Key token, Key verifier) {
         super(consumerKey, token, verifier);
-    }
+    }*/
 
     @Override
     public void configure() {

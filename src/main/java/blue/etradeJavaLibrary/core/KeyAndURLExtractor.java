@@ -4,6 +4,10 @@ package blue.etradeJavaLibrary.core;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 
+/**
+ * Utility class for the E*Trade Java Library. All keys that are needed for the Etrade Oauth authentication flow and
+ * URLs that are needed can be extracted from this class. This class cannot be instantiation.
+ */
 public class KeyAndURLExtractor {
     
     public static final String MAIN_BASE_URL = "https://api.etrade.com";
@@ -14,22 +18,41 @@ public class KeyAndURLExtractor {
     public static final String OAUTH_RENEW_ACCESS_TOKEN_URI = "/oauth/renew_access_token";
     public static final String OAUTH_REVOKE_ACCESS_TOKEN_URI = "/oauth/revoke_access_token";
     public static final String API_ACCOUNT_LIST_URI = "/v1/accounts/list";
-     
+
+    /* Prevent instantiation */
+    private KeyAndURLExtractor() {}
+
+    /**
+     * Returns the consumer key that is stored in the user environment variable 'etradeConsumerKey'
+     * @return
+     */
     public static Key getConsumerKey() {
         String keyString = extractSystemEnvironmentVariable("etradeConsumerKey");
         return new Key(keyString);
     }
-    
+
+    /**
+     * Returns the consumer secret that is stored in the user environment variable 'etradeConsumerSecret'
+     * @return
+     */
     public static Key getConsumerSecret() {
         String keyString = extractSystemEnvironmentVariable("etradeConsumerSecret");
         return new Key(keyString);
     }
-    
+
+    /**
+     * Returns the sandbox consumer key that is stored in the user environment variable 'etradeSandboxConsumerKey'
+     * @return
+     */
     public static Key getSandboxConsumerKey() {
         String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerKey");
         return new Key(keyString);
     }
-    
+
+    /**
+     * Returns the sandbox consumer secret that is stored in the user environment variable 'etradeSandboxConsumerSecret'
+     * @return
+     */
     public static Key getSandboxConsumerSecret() {
         String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerSecret");
         return new Key(keyString);

@@ -8,13 +8,26 @@ import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.net.URL;
 import java.util.Iterator;
 
+/**
+ * A non-instance class used to build signatures in the Oauth 1.0a model
+ */
 public class SignatureBuilder {
     
     // Static data fields
     private static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
-    
+
+    /* Prevent instantiation */
     private SignatureBuilder() {}
-    
+
+    /**
+     * Returns a string representing a signature in the Oauth 1.0a model
+     * @param url
+     * @param parameters
+     * @param consumerSecret
+     * @param tokenSecret
+     * @param httpMethod
+     * @return
+     */
     public static String buildSignature(URL url, Parameters parameters, Key consumerSecret, Key tokenSecret, HttpMethod httpMethod) {
         String urlWithoutQuery = getURLWithoutQuery(url);
         
@@ -28,7 +41,16 @@ public class SignatureBuilder {
 
         return HmacSha1.doHmacSha1Base64(signatureKey, signatureBaseString);     
     }
-    
+
+    /**
+     * Returns a string representing a signature in the Oauth 1.0a model. This overloaded method should only be used
+     * before receiving a request or access token in the authentication flow; therefore, this should be used once.
+     * @param url
+     * @param parameters
+     * @param consumerSecret
+     * @param httpMethod
+     * @return
+     */
     public static String buildSignature(URL url, Parameters parameters, Key consumerSecret, HttpMethod httpMethod) {
         return buildSignature(url, parameters, consumerSecret, new Key(), httpMethod);
     }

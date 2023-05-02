@@ -19,13 +19,21 @@ import java.util.Iterator;
  * values of any PathParameters. The last component of the URL is QueryParameters,
  * which is found in the same package as PathParameters. QueryParameters is
  * parameters that are added on the end of the URL as a query.
- * @author Hunter
  */
 public class URLBuilder {
     
     // Static data fields
     private static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
-    
+
+    /**
+     * Builds a full URL from a BaseURL object and its parameters. The variable names in the base URL must match the
+     * keys in the PathParameters object, or a RuntimeException is thrown.
+     * @param baseURL
+     * @param pathParameters
+     * @param queryParameters
+     * @return
+     * @throws MalformedURLException
+     */
     public static URL buildURL(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
         BaseURL baseURLWithVariables = fillInVariables(baseURL, pathParameters);
         
@@ -38,11 +46,28 @@ public class URLBuilder {
         
         return fullURL;
     }
-    
+
+    /**
+     * Builds a full URL from a BaseURL object and its parameters. The variable names in the base URL must match the
+     * keys in the PathParamters object, or a RuntimeException is thrown. This overloaded method is used without
+     * QueryParameters.
+     * @param baseURL
+     * @param pathParameters
+     * @return
+     * @throws MalformedURLException
+     */
     public static URL buildURL(BaseURL baseURL, PathParameters pathParameters) throws MalformedURLException {
         return buildURL(baseURL, pathParameters, new QueryParameters());
     }
-    
+
+    /**
+     * Builds a full URL from a BaseURL object and its parameters. In this overloaded method, no PathParameters are
+     * used, only query parameters.
+     * @param baseURL
+     * @param queryParameters
+     * @return
+     * @throws MalformedURLException
+     */
     public static URL buildURL(BaseURL baseURL, QueryParameters queryParameters) throws MalformedURLException {
         return buildURL(baseURL, new PathParameters(), queryParameters);
     }

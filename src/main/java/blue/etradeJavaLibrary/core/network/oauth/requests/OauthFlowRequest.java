@@ -20,7 +20,7 @@ public final class OauthFlowRequest extends BaseRequest {
     
     // Static data fields
     public static final int MAX_ATTEMPTS = 5;
-    public static final int MILLISECONDS_BETWEEN_RETRY = 50;
+    public static final int MILLISECONDS_BETWEEN_RETRY = 2000;
     
     /**
      * Constructs a standard OauthFlowRequest object.

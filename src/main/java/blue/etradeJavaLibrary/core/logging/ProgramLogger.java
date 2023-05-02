@@ -15,6 +15,9 @@ import java.util.logging.*;
 public class ProgramLogger {
     
     // Instance data fields
+    /**
+     * The encapsulated Java API logger that is used internally
+     */
     private final Logger javaLogger;
     
     // Static data fields
@@ -25,7 +28,8 @@ public class ProgramLogger {
     private static ProgramLogger apiInstanceOfProgramLogger;
     public static boolean clearPreviousLogs = false;
     public static boolean loggingAllowed = true;
-    
+
+    /* Prevent instantiation */
     private ProgramLogger(LoggerType loggerType) throws IOException {
         String fileName = NETWORK_LOG_FILE_NAME;
         
@@ -40,33 +44,58 @@ public class ProgramLogger {
         javaLogger.setLevel(DEFAULT_LEVEL);
         javaLogger.addHandler(fileHandler);
     }
-    
+
+    /**
+     * Returns the only instance of the network logger
+     * @return
+     */
     public static ProgramLogger getNetworkLogger() {
         return getProgramLogger(LoggerType.NETWORK);
     }
-    
+
+    /**
+     * Returns the only instance of the API logger
+     * @return
+     */
     public static ProgramLogger getAPILogger() {
         return getProgramLogger(LoggerType.API);
     }
-    
+
+    /**
+     * Returns the only instance of the specified logger (either NETWORK or API)
+     * @param loggerType
+     * @return
+     */
     public static ProgramLogger getProgramLogger(LoggerType loggerType) {
         ensureInstantiationHasOccurred();
         
         if (loggerType == LoggerType.NETWORK) return networkInstanceOfProgramLogger;
         else return apiInstanceOfProgramLogger;
     }
-    
+
+    /**
+     * Outputs a message to the appropriate *log.txt file
+     * @param message
+     */
     public void log(String message) {
         if (loggingAllowed) javaLogger.fine(message);
     }
-    
+
+    /**
+     * Outputs label: message to the appropriate *log.txt file
+     * @param label
+     * @param message
+     */
     public void log(String label, String message) {
         if (loggingAllowed) {
             String newMessage = String.format("%s: %s", label, message);
             javaLogger.fine(newMessage);
         }
     }
-    
+
+    /**
+     * Lists the two types of logger supported in the library
+     */
     public enum LoggerType {
         NETWORK,
         API

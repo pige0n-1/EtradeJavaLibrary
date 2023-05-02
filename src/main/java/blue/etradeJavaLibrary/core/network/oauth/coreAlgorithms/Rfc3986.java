@@ -10,9 +10,15 @@ import java.util.ArrayList;
  * @author Hunter
  */
 public final class Rfc3986 {
-    
+
+    /* Prevent instantiation */
     private Rfc3986() {}
-    
+
+    /**
+     * Encodes a given string according to RFC3986 percent encoding
+     * @param string
+     * @return
+     */
     public static String encode(String string) {
         try {
             return percentEncode(string);
@@ -21,7 +27,12 @@ public final class Rfc3986 {
             return null; // This will never happen
         }
     }
-    
+
+    /**
+     * Decodes a percent-encoded string
+     * @param string
+     * @return
+     */
     public static String decode(String string) {
         try {
             return percentDecode(string);
