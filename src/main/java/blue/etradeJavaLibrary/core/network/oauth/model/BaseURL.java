@@ -4,10 +4,10 @@ package blue.etradeJavaLibrary.core.network.oauth.model;
 import java.io.Serializable;
 
 /**
- * This class is used to represent a base URL. It does not contain any query information. The base URL string that is
- * used in the constructor can contain variables that are later filled in with PathParameters objects. Simply surround
- * the variable name with curly brackets in the string, and any path parameters with the same key name will be filled
- * in automatically.
+ * This immutable class is used to represent a base URL. It does not contain any query information. The base URL string
+ * that is used in the constructor can contain variables that are later filled in with PathParameters objects. Simply
+ * surround the variable name with curly brackets in the string, and any path parameters with the same key name will be
+ * filled in automatically.
  */
 public class BaseURL 
         implements Serializable {
@@ -34,7 +34,12 @@ public class BaseURL
         
         return baseURL.matches(UNFILLED_VARIABLES_REGEX);
     }
-    
+
+    /**
+     * Adds a second baseURL to the first and returns it. The instance BaseURL is not changed.
+     * @param url
+     * @return
+     */
     public BaseURL append(String url) {
         return new BaseURL(baseURL + url);
     }

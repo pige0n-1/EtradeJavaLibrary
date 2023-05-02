@@ -62,7 +62,7 @@ public final class EtradeClient extends APIManager
         setSaveFileName();
         
         try {
-            EtradeOauthParameters etradeOauthParameters = new EtradeOauthParameters();
+            var etradeOauthParameters = new EtradeOauthParameters();
 
             super.configure(getBaseURLSet(), getKeys(), etradeOauthParameters,new EtradeBrowserRequest());
         }
@@ -123,7 +123,7 @@ public final class EtradeClient extends APIManager
      */
     public AccountsList getAccountsList() throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
-        AccountsList accountsList = new AccountsList();
+        var accountsList = new AccountsList();
         
         try {
             sendAPIGetRequest(requestURI, accountsList);
@@ -183,7 +183,7 @@ public final class EtradeClient extends APIManager
     }
 
     private void saveSession() throws IOException {
-        FileOutputStream file = new FileOutputStream(saveFileName);
+        var file = new FileOutputStream(saveFileName);
 
         try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
             objectOutput.writeObject(this);
@@ -191,10 +191,10 @@ public final class EtradeClient extends APIManager
     }
 
     private static EtradeClient loadLastSession(EnvironmentType environmentType) throws IOException {
-        FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
+        var file = new FileInputStream(getSaveFileName(environmentType));
 
         try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
-            if (loadFromSave == false) throw new IOException();
+            if (!loadFromSave) throw new IOException();
 
             var client = objectInput.readObject();
             networkLogger.log("Last EtradeClient session loaded successfully.");
@@ -215,21 +215,19 @@ public final class EtradeClient extends APIManager
         else
             environmentBaseURL = KeyAndURLExtractor.MAIN_BASE_URL;
 
-        BaseURLSet urls = new BaseURLSet(environmentBaseURL,
+        return new BaseURLSet(environmentBaseURL,
                 environmentBaseURL,
                 KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI,
                 KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI,
                 KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI,
                 KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
                 KeyAndURLExtractor.OAUTH_VERIFIER_BASE_URL);
-
-        return urls;
     }
 
     private boolean hasBeenTwoHoursSinceLastRequest() {
-        Instant now = Instant.now();
-        Duration twoHours = Duration.ofHours(2);
-        Duration timeSinceLastRequest = Duration.between(timeOfLastRequest, now);
+        var now = Instant.now();
+        var twoHours = Duration.ofHours(2);
+        var timeSinceLastRequest = Duration.between(timeOfLastRequest, now);
         
         return timeSinceLastRequest.compareTo(twoHours) > 0;
     }
@@ -275,8 +273,8 @@ public final class EtradeClient extends APIManager
     }
     
     private String formatLastRequestTime() {
-        ZonedDateTime time = timeOfLastRequest.atZone(ZoneId.systemDefault());
+        var timeOfLastRequestAtThisTimeZone = timeOfLastRequest.atZone(ZoneId.systemDefault());
         
-        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(time);
+        return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(timeOfLastRequestAtThisTimeZone);
     }
 }

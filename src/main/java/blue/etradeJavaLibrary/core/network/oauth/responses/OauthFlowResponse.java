@@ -29,6 +29,7 @@ public class OauthFlowResponse extends BaseResponse<Parameters> {
      */
     public Parameters parse() throws OauthException {
         String responseString = convertToString();
+        logger.log("Raw response string", responseString);
         
         String[] parametersArray = responseString.split("&");
         var parameters = new Parameters(false);

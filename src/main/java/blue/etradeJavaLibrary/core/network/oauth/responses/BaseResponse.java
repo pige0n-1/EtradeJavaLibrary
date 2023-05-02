@@ -67,8 +67,7 @@ public abstract class BaseResponse<O> {
     public String convertToString() {
         try {
             byte[] responseBytes = getConnectionResponseStream().readAllBytes();
-            String responseString = new String(responseBytes);
-            logger.log("Raw response string", responseString);
+            var responseString = new String(responseBytes);
             
             return responseString;
         }

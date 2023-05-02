@@ -24,9 +24,14 @@ public class BodyParameter extends Parameters {
      */
     public BodyParameter(String key, XMLDefinedObject body) {
         super(RFC3986_ENCODED);
+        body.toXMLDocument().setXmlStandalone(true);
         addParameter(key, body.toXMLString());
     }
 
+    /**
+     * Returns the value of the body parameter as a string
+     * @return
+     */
     public String getValue() {
         var parametersIterator = iterator();
 

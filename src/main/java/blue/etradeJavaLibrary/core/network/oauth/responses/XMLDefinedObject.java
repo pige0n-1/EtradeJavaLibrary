@@ -46,7 +46,7 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
 
             Document document = documentBuilder.parse(xmlInputStream);
             document.getDocumentElement().normalize();
-            
+
             return document;
         }
         catch (ParserConfigurationException ex) {

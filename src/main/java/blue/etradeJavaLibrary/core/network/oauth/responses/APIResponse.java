@@ -52,6 +52,7 @@ public class APIResponse extends BaseResponse<Document> {
      * @throws ObjectMismatchException 
      */
     public void parseIntoXMLDefinedObject(XMLDefinedObject xmlDefinedObject) throws OauthException, ObjectMismatchException {
+        networkLogger.log("Raw response string", toString());
         xmlDefinedObject.configureFromXMLDocument(parse());
     }
 }
