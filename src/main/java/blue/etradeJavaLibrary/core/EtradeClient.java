@@ -121,16 +121,16 @@ public final class EtradeClient extends APIManager
      * @return an AccountsList object representing all the user's accounts
      * @throws NetworkException
      */
-    public Accounts getAccountsList() throws NetworkException {
+    public AccountsListResponse getAccountsList() throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
-        var accountsList = new Accounts();
+        var accountsListResponse = new AccountsListResponse();
         
         try {
-            sendAPIGetRequest(requestURI, accountsList);
+            sendAPIGetRequest(requestURI, accountsListResponse);
             apiLogger.log("Accounts list retrieved successfully.");
-            apiLogger.log("Response", accountsList.toString());
+            apiLogger.log("Response", accountsListResponse.toString());
             
-            return accountsList;
+            return accountsListResponse;
         }
         catch (OauthException ex) {
             apiLogger.log("Accounts list could not be retrieved.");

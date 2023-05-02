@@ -63,7 +63,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
 
     protected NodeList getList(EtradeObject emptyObject) {
         try {
-            return xmlDocument.getElementsByTagName(emptyObject.getClass().getName());
+            return xmlDocument.getElementsByTagName(getClassName(emptyObject));
         }
         catch (Exception ex) {
             return null;
@@ -71,16 +71,26 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     }
 
     protected <T extends EtradeObject<T>> T extractObject(T emptyObject, Node node) throws ObjectMismatchException{
-        var objectDocument = XMLDefinedObject.convertToDocument(node);
+        try {
+            var objectDocument = XMLDefinedObject.convertToDocument(node);
 
-        return emptyObject.configureFromXMLDocument(objectDocument);
+            return emptyObject.configureFromXMLDocument(objectDocument);
+        }
+        catch (ObjectMismatchException e) {
+            return null;
+        }
     }
 
     protected <T extends EtradeObject<T>> T extractObject(T emptyObject) throws ObjectMismatchException {
-        var objectList = getList(emptyObject);
-        var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
+        try {
+            var objectList = getList(emptyObject);
+            var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
 
-        return emptyObject.configureFromXMLDocument(objectDocument);
+            return emptyObject.configureFromXMLDocument(objectDocument);
+        }
+        catch (Exception ex) {
+            return null;
+        }
     }
 
     @Override
@@ -91,5 +101,16 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     @Override
     public String toString() {
         return toXMLString();
+    }
+
+
+    // Private helper methods
+
+
+    private static String getClassName(Object object) {
+        String classNameWithDotOperators = object.getClass().getName();
+        int lastIndexOfDot = classNameWithDotOperators.lastIndexOf('.');
+
+        return classNameWithDotOperators.substring(lastIndexOfDot + 1);
     }
 }
