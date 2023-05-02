@@ -25,13 +25,14 @@ public abstract class APIManager
     protected APIManager() {}
     
     protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys) throws OauthException {
-        configure(baseURLSet, keys, new BrowserRequest());
+        configure(baseURLSet, keys, new OauthParameters(), new BrowserRequest());
     }
     
-    protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys, BrowserRequest browserRequestMethod) throws OauthException{
+    protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys, OauthParameters oauthParameters, BrowserRequest browserRequestMethod) throws OauthException {
         this.keys = keys;
         this.baseURLSet = baseURLSet;
         oauthFlow = new OauthFlowManager(baseURLSet, keys);
+        oauthFlow.setOauthParameters(oauthParameters);
         oauthFlow.setBrowserRequest(browserRequestMethod);
         configured = true;
         
@@ -57,6 +58,8 @@ public abstract class APIManager
         try {
             BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
             APIRequest request = new APIGetRequest(requestBaseURL, keys);
+            request.setOauthParameters(oauthFlow.getOauthParameters());
+
             APIResponse response = request.sendAndGetResponse();
             updateTimeOfLastRequest();
                 
@@ -95,7 +98,7 @@ public abstract class APIManager
     
     private void ensureConfigured() {
         if (!configured)
-            throw new RuntimeException("The API manager must be configured before sending a request.");
+            throw new InvalidParameterException("The API manager must be configured before sending a request.");
     }
     
     protected void updateTimeOfLastRequest() {

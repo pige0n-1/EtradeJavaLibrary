@@ -17,7 +17,7 @@ import java.util.Iterator;
  * It is used to model requests in the authentication flow and a typical
  * API request. All instances of this class have the sendAndGetResponse()
  * method to send the request and parse the response into some object.
- * This class may not be useful for retreiving the verifier code in the model
+ * This class may not be useful for retrieving the verifier code in the model
  * if the service provider requires that the verifier is retrieved through a browser
  * window. In that case, the BrowserRequest method can be used instead.
  */
@@ -41,15 +41,15 @@ public abstract class BaseRequest
     private final HttpMethod httpMethod;
     
     /**
-     * All of the parameters in the oauth 1.0a model that are needed in every request.
+     * All the parameters in the oauth 1.0a model that are needed in every request.
      * This includes the consumer key, timestamp, signature, etc. These are not needed
      * to be configured by the user of this class; rather, they are automatically generated
      * when the sendAndGetResponse method is called.
      */
-    private final OauthParameters oauthParameters;
+    private OauthParameters oauthParameters;
     
     /**
-     * The underlying connnection object from the Java API that is used to actually send the request
+     * The underlying connection object from the Java API that is used to actually send the request
      */
     private HttpURLConnection connection;
     
@@ -57,7 +57,7 @@ public abstract class BaseRequest
     protected static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
     
     /**
-     * Constructs a BaseRequest object from the essentials.
+     * Constructs a BaseRequest object from the essentials with a default OauthParameters object
      * @param baseURL
      * @param keys
      * @param httpMethod
@@ -67,10 +67,20 @@ public abstract class BaseRequest
         this.keys = keys;
         this.httpMethod = httpMethod;
         
-        if (keys.hasRetrievedAToken())
-            oauthParameters = new OauthParameters(keys.consumerKey, keys.getToken());
-        else
-            oauthParameters = new OauthParameters(keys.consumerKey);
+        setOauthParameters(new OauthParameters());
+    }
+
+    /**
+     * An optional method to use a custom object of a subclass of OauthParameters. Since every service provider
+     * typically requires slightly different Oauth parameters, this method can be used to specify those differences.
+     * See the OauthParameters javadoc for details on Oauth parameters and which are added automatically.
+     * @param oauthParameters
+     */
+    public void setOauthParameters(OauthParameters oauthParameters) {
+        this.oauthParameters = oauthParameters;
+
+        if (keys.hasRetrievedAToken()) oauthParameters.configure(keys.consumerKey, keys.getToken());
+        else oauthParameters.configure(keys.consumerKey);
     }
     
     /**
@@ -84,7 +94,8 @@ public abstract class BaseRequest
     
     /**
      * If a verifier code has been obtained in the Oauth model, it can be added to
-     * the OauthParameters object with this method
+     * the OauthParameters object with this method. If supplying a custom OauthParameters object to build a BaseRequest,
+     * be sure to set the OauthParameters object before calling this method.
      * @param verifier 
      */
     protected void setVerifier(Key verifier) {
@@ -96,7 +107,7 @@ public abstract class BaseRequest
      * @param pathParameters the object that encapsulates all path parameters of the oauth model
      * @param queryParameters the object that encapsulates all query parameters of the oauth model
      * @return
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
@@ -106,7 +117,7 @@ public abstract class BaseRequest
      * Returns the full URL object, with the path parameters added in
      * @param pathParameters the object that encapsulates all path parameters of the oauth model
      * @return
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     protected URL buildFullURL(PathParameters pathParameters) throws MalformedURLException {
         return URLBuilder.buildURL(baseURL, pathParameters);

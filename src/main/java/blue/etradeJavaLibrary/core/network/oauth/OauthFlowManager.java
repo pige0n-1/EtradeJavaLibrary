@@ -13,11 +13,20 @@ public class OauthFlowManager implements Serializable {
     // Instance data fields
     private final BaseURLSet urls;
     private final OauthKeySet keys;
+    private OauthParameters oauthParameters = new OauthParameters();
     private BrowserRequest browserRequestMethod = new BrowserRequest();
     
     // Static data fields
     private final static ProgramLogger logger = ProgramLogger.getNetworkLogger();
-    
+
+    /**
+     * Constructs a new OauthFlowManager instance. All Oauth parameters will be set to the default values, unless
+     * setOauthParameters() is called to pass a custom OauthParameters object. The setBrowserRequest method can also
+     * be called for customization; however, neither of these two methods are strictly required unless the service
+     * provider in the Oauth model requires slightly different or extra Oauth parameters.
+     * @param urls
+     * @param keys
+     */
     public OauthFlowManager(BaseURLSet urls, OauthKeySet keys) {
         this.urls = urls;
         this.keys = keys;
@@ -31,10 +40,32 @@ public class OauthFlowManager implements Serializable {
      * window to display a verifier code, but others send the verifier code 
      * through other means. To customize, create a class that extends 
      * BrowserRequest and pass it to this method.
-     * @param requestMethod an instance of BrowserRequest
+     * @param browserRequestMethod an instance of BrowserRequest
      */
-    public void setBrowserRequest(BrowserRequest requestMethod) {
-        browserRequestMethod = requestMethod;
+    public void setBrowserRequest(BrowserRequest browserRequestMethod) {
+        this.browserRequestMethod = browserRequestMethod;
+    }
+
+    /**
+     * Returns oauthParameters
+     * @return
+     */
+    public OauthParameters getOauthParameters() {
+        return oauthParameters;
+    }
+
+    /**
+     * This optional method is for customization of the underlying oauth_parameters that are required by the
+     * service provider in the oauth model. Every service provider requires slightly different Oauth parameters,
+     * so this method allows the consumer to customize those parameters, and then the OauthManager object sends them
+     * to the service provider. At this point, the OauthParameters object will still automatically be configured with
+     * the appropriate keys, but any added oauth_parameters at this point will not be removed for the sake of
+     * customization. Consult the OauthParameters javadoc for more information about which parameters are configured
+     * automatically.
+     * @param oauthParameters
+     */
+    public void setOauthParameters(OauthParameters oauthParameters) {
+        this.oauthParameters = oauthParameters;
     }
     
     public void getAccessToken() throws OauthException {
@@ -47,6 +78,7 @@ public class OauthFlowManager implements Serializable {
 
         BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.renewAccessTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        request.setOauthParameters(oauthParameters);
         
         try {
             request.sendAndGetResponse();
@@ -63,6 +95,7 @@ public class OauthFlowManager implements Serializable {
     
         BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.revokeAccessTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        request.setOauthParameters(oauthParameters);
         
         try {
             request.sendAndGetResponse();
@@ -97,6 +130,7 @@ public class OauthFlowManager implements Serializable {
     private void fetchRequestToken() throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.requestTokenURI);
         OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        request.setOauthParameters(oauthParameters);
         
         Parameters response = request.sendAndGetResponse().parse();
         
@@ -118,7 +152,10 @@ public class OauthFlowManager implements Serializable {
     private void fetchAccessToken(Key verifier) throws IOException, OauthException {
         BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.accessTokenURI);
         
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys, verifier);
+        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        request.setOauthParameters(oauthParameters);
+        request.setVerifier(verifier);
+
         Parameters response = request.sendAndGetResponse().parse();
         
         Key token = new Key(response.getValue("oauth_token"));

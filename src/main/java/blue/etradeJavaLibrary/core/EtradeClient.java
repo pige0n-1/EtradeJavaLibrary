@@ -33,7 +33,9 @@ public final class EtradeClient extends APIManager
         setSaveFileName();
         
         try {
-            super.configure(getBaseURLSet(), getKeys(), new EtradeBrowserRequest());
+            EtradeOauthParameters etradeOauthParameters = new EtradeOauthParameters();
+
+            super.configure(getBaseURLSet(), getKeys(), etradeOauthParameters,new EtradeBrowserRequest());
         }
         catch (OauthException ex) {
             throw new NetworkException("Could not log into Etrade.", ex);

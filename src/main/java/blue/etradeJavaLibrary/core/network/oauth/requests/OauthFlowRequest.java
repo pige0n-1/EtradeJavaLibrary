@@ -14,34 +14,34 @@ import java.net.URL;
  * and it can be easily sent using the sendAndGetResponse() method.
  */
 public final class OauthFlowRequest extends BaseRequest {
+
+    // Instance data fields
+    private Key verifier;
     
     // Static data fields
     private static final int MAX_ATTEMPTS = 5;
     private static final int WAIT_BETWEEN_RETRY = 3000;
     
     /**
-     * Constructs an OauthFlowRequest object with a BaseURL and OauthKeySet.
+     * Constructs a standard OauthFlowRequest object.
      * @param baseURL
      * @param keys
-     * @throws OauthException 
      */
-    public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {   
+    public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys) {
         super(baseURL, keys, HttpMethod.GET);
     }
-    
+
+    @Override
     /**
-     * Constructs an OauthFlowRequest with an added verifier Key, which is sent from
-     * the service provider to the consumer in the Oauth authentication flow.
-     * @param baseURL
-     * @param keys
+     * Sets the oauth_verifier parameter. The verifier is typically needed in the Oauth flow after the request token
+     * is obtained. If using a custom OauthParameters object during the flow, be sure to set it first by calling
+     * setOauthParameters(), and then call this method.
      * @param verifier
-     * @throws OauthException 
      */
-    public OauthFlowRequest(BaseURL baseURL, OauthKeySet keys, Key verifier) throws OauthException {
-        super(baseURL, keys, HttpMethod.GET);
-        setVerifier(verifier);
+    public void setVerifier(Key verifier) {
+        super.setVerifier(verifier);
     }
-    
+
     @Override
     /**
      * Send the OauthFlowRequest and returns an OauthFlowResponse object. The response object contains an
