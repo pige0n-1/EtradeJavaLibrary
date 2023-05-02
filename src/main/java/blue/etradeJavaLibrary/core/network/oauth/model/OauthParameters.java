@@ -2,6 +2,8 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 import blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms.Rfc3986;
+
+import java.io.Serializable;
 import java.util.Base64;
 
 /**
@@ -22,7 +24,8 @@ import java.util.Base64;
  * oauth_signature_method
  * The signature method can be changed by calling setSignatureMethod(), but it is set by default for convenience.
  */
-public class OauthParameters extends Parameters {
+public class OauthParameters extends Parameters
+        implements Serializable {
     
     /**
      * Constructs an OauthParameters object without any keys or values. Call configure() to add all the
@@ -63,7 +66,7 @@ public class OauthParameters extends Parameters {
 
     /**
      * This method adds all Oauth parameters that can be added automatically. See the OauthParameters class javadoc for
-     * details.
+     * details. To make objects of this class reusable, any signature that was added before is removed at this point.
      */
     public void configure() {
         initializeParameters();
@@ -71,7 +74,8 @@ public class OauthParameters extends Parameters {
 
     /**
      * This method adds all Oauth parameters that can be added automatically, with addition of oauth_consumer_key. See
-     * the OauthParameters class javadoc for more details.
+     * the OauthParameters class javadoc for more details. To make objects of this class reusable, any signature that
+     * was added before is removed at this point.
      * @param consumerKey
      */
     public void configure(Key consumerKey) {
@@ -81,7 +85,8 @@ public class OauthParameters extends Parameters {
 
     /**
      * This method adds all Oauth parameters that can be added automatically, with addition of oauth_consumer_key and
-     * oauth_token. See the OauthParameters class javadoc for more details.
+     * oauth_token. See the OauthParameters class javadoc for more details. To make objects of this class reusable, any
+     * signature that was added before is removed at this point.
      * @param consumerKey
      * @param token
      */
@@ -92,7 +97,8 @@ public class OauthParameters extends Parameters {
 
     /**
      * Adds all Oauth parameters that can be added automatically, with addition of oauth_consumer_key, oauth_token, and
-     * oauth_verifier. See the OauthParameters class javadoc for more details.
+     * oauth_verifier. See the OauthParameters class javadoc for more details. To make objects of this class reusable,
+     * any signature that was added before is removed at this point.
      * @param consumerKey
      * @param token
      * @param verifier
@@ -176,6 +182,7 @@ public class OauthParameters extends Parameters {
 
 
     private void initializeParameters() {
+        removeParameter("oauth_signature");
         addParameter("oauth_signature_method", "HMAC-SHA1");
         addParameter("oauth_nonce", generateNonce());
         addParameter("oauth_version", "1.0");

@@ -8,7 +8,8 @@ import blue.etradeJavaLibrary.core.network.oauth.requests.OauthFlowRequest;
 import java.io.IOException;
 import java.io.Serializable;
 
-public class OauthFlowManager implements Serializable {
+public class OauthFlowManager
+        implements Serializable {
     
     // Instance data fields
     private final BaseURLSet urls;
