@@ -1,6 +1,6 @@
 package blue.etradeJavaLibrary.model;
 
-import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
+import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 public class PortfolioMargin extends EtradeObject<PortfolioMargin> {
 
     // Instance data fields
-    private Document xmlDocument;
     public BigDecimal dtCashOpenOrderReserve;
     public BigDecimal dtMarginOpenOrderReserve;
     public BigDecimal liquidatingEquity;
@@ -20,4 +19,23 @@ public class PortfolioMargin extends EtradeObject<PortfolioMargin> {
     public BigDecimal excessEquity;
     public BigDecimal openOrderReserve;
     public BigDecimal fundsOnHold;
+
+    @Override
+    public PortfolioMargin configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+        this.xmlDocument = xmlDocument;
+
+        dtCashOpenOrderReserve = extractNumber("dtCashOpenOrderReserve");
+        dtMarginOpenOrderReserve = extractNumber("dtMarginOpenOrderReserve");
+        liquidatingEquity = extractNumber("liquidatingEquity");
+        houseExcessEquity = extractNumber("houseExcessEquity");
+        totalHouseRequirement = extractNumber("totalHouseRequirement");
+        excessEquityMinusRequirement = extractNumber("excessEquityMinusRequirement");
+        totalMarginRqmts = extractNumber("totalMarginRqmts");
+        availExcessEquity = extractNumber("availExcessEquity");
+        excessEquity = extractNumber("excessEquity");
+        openOrderReserve = extractNumber("openOrderReserve");
+        fundsOnHold = extractNumber("fundsOnHold");
+
+        return this;
+    }
 }

@@ -1,5 +1,6 @@
 package blue.etradeJavaLibrary.model;
 
+import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
 import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
 import org.w3c.dom.Document;
 
@@ -8,7 +9,6 @@ import java.math.BigDecimal;
 public class ComputedBalance extends EtradeObject<ComputedBalance> {
 
     // Instance data fields
-    private Document xmlDocument;
     public BigDecimal cashAvailableForInvestment;
     public BigDecimal cashAvailableForWithdrawal;
     public BigDecimal totalAvailableForWithdrawal;
@@ -30,4 +30,33 @@ public class ComputedBalance extends EtradeObject<ComputedBalance> {
     public OpenCalls openCalls;
     public RealTimeValues realTimeValues;
     public PortfolioMargin portfolioMargin;
+
+    @Override
+    public ComputedBalance configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+        this.xmlDocument = xmlDocument;
+
+        cashAvailableForInvestment = extractNumber("cashAvailableForInvestment");
+        cashAvailableForWithdrawal = extractNumber("cashAvailableForWithdrawal");
+        totalAvailableForWithdrawal = extractNumber("totalAvailableForWithdrawal");
+        netCash = extractNumber("netCash");
+        cashBalance = extractNumber("cashBalance");
+        settledCashForInvestment = extractNumber("settledCashForInvestment");
+        unSettledCashForInvestment = extractNumber("unSettledCashForInvestment");
+        fundsWithheldFromPurchasePower = extractNumber("fundsWithheldFromPurchasePower");
+        fundsWithheldFromWithdrawal = extractNumber("fundsWithheldFromWithdrawal");
+        marginBuyingPower = extractNumber("marginBuyingPower");
+        cashBuyingPower = extractNumber("cashBuyingPower");
+        dtMarginBuyingPower = extractNumber("dtMarginBuyingPower");
+        dtCashBuyingPower = extractNumber("dtCashBuyingPower");
+        marginBalance = extractNumber("marginBalance");
+        shortAdjustBalance = extractNumber("shortAdjustBalance");
+        regtEquity = extractNumber("regtEquity");
+        regtEquityPercent = extractNumber("regtEquityPercent");
+        accountBalance = extractNumber("accountBalance");
+        openCalls = extractObject(new OpenCalls());
+        realTimeValues = extractObject(new RealTimeValues());
+        portfolioMargin = extractObject(new PortfolioMargin());
+
+        return this;
+    }
 }
