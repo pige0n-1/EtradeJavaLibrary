@@ -129,8 +129,8 @@ public class OauthFlowManager
     }
     
     private void fetchRequestToken() throws IOException, OauthException {
-        BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.requestTokenURI);
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        var baseURL = new BaseURL(urls.oauthBaseURL, urls.requestTokenURI);
+        OauthFlowRequest request = new OauthFlowRequest(baseURL, keys);
         request.setOauthParameters(oauthParameters);
         
         Parameters response = request.sendAndGetResponse().parse();
@@ -142,8 +142,8 @@ public class OauthFlowManager
     }
     
     private Key fetchVerifier() throws IOException, OauthException {
-        BaseURL etradeBaseURL = new BaseURL(urls.authorizeAccountBaseURL);
-        browserRequestMethod.configureBrowserRequest(etradeBaseURL, keys);
+        var baseURL = new BaseURL(urls.authorizeAccountBaseURL);
+        browserRequestMethod.configureBrowserRequest(baseURL, keys);
         
         Key verifier = browserRequestMethod.go();
         
@@ -151,9 +151,9 @@ public class OauthFlowManager
     }
     
     private void fetchAccessToken(Key verifier) throws IOException, OauthException {
-        BaseURL etradeBaseURL = new BaseURL(urls.oauthBaseURL, urls.accessTokenURI);
+        var baseURL = new BaseURL(urls.oauthBaseURL, urls.accessTokenURI);
         
-        OauthFlowRequest request = new OauthFlowRequest(etradeBaseURL, keys);
+        OauthFlowRequest request = new OauthFlowRequest(baseURL, keys);
         request.setOauthParameters(oauthParameters);
         request.setVerifier(verifier);
 

@@ -153,11 +153,11 @@ public abstract class BaseRequest
      * @throws IOException 
      */
     protected HttpURLConnection getConnection() throws IOException {
-        Parameters allParameters = getAllParameters();
-
         URL fullURL = URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
         logger.log("Full URL", fullURL.toString());
         oauthParameters.resetNonceAndTimestamp();
+
+        Parameters allParameters = getAllParameters();
         
         String signature = SignatureBuilder.buildSignature(fullURL, allParameters, keys.consumerSecret, keys.getTokenSecret(), httpMethod);
         oauthParameters.setSignature(signature);
