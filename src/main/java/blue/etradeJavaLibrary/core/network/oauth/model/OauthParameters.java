@@ -173,6 +173,7 @@ public class OauthParameters extends Parameters
      * This method renews the timestamp and changes the nonce.
      */
     public void resetNonceAndTimestamp() {
+        removeParameter("oauth_signature");
         addTimestamp();
         addParameter("oauth_nonce", generateNonce());
     }

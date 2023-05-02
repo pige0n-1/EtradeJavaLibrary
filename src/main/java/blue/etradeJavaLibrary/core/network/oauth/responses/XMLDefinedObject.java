@@ -3,9 +3,15 @@ package blue.etradeJavaLibrary.core.network.oauth.responses;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringWriter;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
@@ -62,4 +68,19 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
      * @return Document object, representing an XML document
      */
     Document toXMLDocument();
+
+    default String toXMLString() {
+        try {
+            var document = toXMLDocument();
+            var transformerFactor = TransformerFactory.newInstance();
+            var transformer = transformerFactor.newTransformer();
+            var stringWriter = new StringWriter();
+            transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+
+            return stringWriter.getBuffer().toString();
+        }
+        catch (TransformerException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

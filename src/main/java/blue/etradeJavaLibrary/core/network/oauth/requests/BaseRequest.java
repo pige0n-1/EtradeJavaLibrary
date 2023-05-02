@@ -52,6 +52,21 @@ public abstract class BaseRequest
      * The underlying connection object from the Java API that is used to actually send the request
      */
     private HttpURLConnection connection;
+
+    /**
+     * All parameters that are part of the URL path
+     */
+    private PathParameters pathParameters = new PathParameters();
+
+    /**
+     * All parameters that are part of the query portion of the URL
+     */
+    private QueryParameters queryParameters = new QueryParameters();
+
+    /**
+     * The body of the HTTP request in XML format
+     */
+    private BodyParameter requestBody = new BodyParameter();
     
     // Static data fields
     protected static final ProgramLogger logger = ProgramLogger.getNetworkLogger();
@@ -82,6 +97,34 @@ public abstract class BaseRequest
         if (keys.hasRetrievedAToken()) oauthParameters.configure(keys.consumerKey, keys.getToken());
         else oauthParameters.configure(keys.consumerKey);
     }
+
+    /**
+     * Sets the path parameters of this request. The key names in the PathParameters object must match ever variable
+     * name in the BaseURL object, or a RuntimeException will be thrown.
+     * @param pathParameters
+     */
+    protected void setPathParameters(PathParameters pathParameters) {
+        this.pathParameters = pathParameters;
+    }
+
+    /**
+     * Sets the query parameters of this request
+     * @param queryParameters
+     */
+    protected void setQueryParameters(QueryParameters queryParameters) {
+        this.queryParameters = queryParameters;
+    }
+
+    /**
+     * Sets the request body
+     * @param requestBody
+     */
+    protected void setRequestBody(BodyParameter requestBody) {
+        if (httpMethod == HttpMethod.GET || httpMethod == HttpMethod.DELETE)
+            throw new InvalidParameterException("No request body is allowed here.");
+
+        this.requestBody = requestBody;
+    }
     
     /**
      * Send the request to the service provider and returns the response in a BaseResponse object
@@ -90,7 +133,7 @@ public abstract class BaseRequest
      * @throws OauthException if anything goes wrong with the request
      * @throws IOException 
      */
-    protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, OauthException, IOException;
+    protected abstract BaseResponse sendAndGetResponse() throws MalformedURLException, IOException;
     
     /**
      * If a verifier code has been obtained in the Oauth model, it can be added to
@@ -103,81 +146,33 @@ public abstract class BaseRequest
     }
     
     /**
-     * Returns the full URL object, with the query and path parameters added in
-     * @param pathParameters the object that encapsulates all path parameters of the oauth model
-     * @param queryParameters the object that encapsulates all query parameters of the oauth model
-     * @return
-     * @throws MalformedURLException
-     */
-    protected URL buildFullURL(PathParameters pathParameters, QueryParameters queryParameters) throws MalformedURLException {
-        return URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
-    }
-    
-    /**
-     * Returns the full URL object, with the path parameters added in
-     * @param pathParameters the object that encapsulates all path parameters of the oauth model
-     * @return
-     * @throws MalformedURLException
-     */
-    protected URL buildFullURL(PathParameters pathParameters) throws MalformedURLException {
-        return URLBuilder.buildURL(baseURL, pathParameters);
-    }
-    
-    /**
-     * Returns the full URL object, with the query parameters added in
-     * @param queryParameters the object that encapsulates all query parameters of the oauth model
-     * @return
-     * @throws MalformedURLException 
-     */
-    protected URL buildFullURL(QueryParameters queryParameters) throws MalformedURLException {
-        return URLBuilder.buildURL(baseURL, queryParameters);
-    }
-    
-    /**
-     * Returns the full URL object by converting the baseURL to a fullURL. This method is not
-     * strictly needed, but it is added for convenience.
-     * @return
-     * @throws MalformedURLException 
-     */
-    protected URL buildFullURL() throws MalformedURLException {
-        return new URL(baseURL.toString());
-    }
-    
-    /**
-     * Returns the underlying HttpURLConnection object that is formed. The signature
-     * is automatically formed, so the connection can be sent after this point.
-     * @param fullURL
-     * @return
-     * @throws IOException 
-     */
-    protected HttpURLConnection getConnection(URL fullURL) throws IOException {
-        return getConnection(fullURL, new Parameters());
-    }
-    
-    /**
      * Returns the underlying HttpURLConnection. This method also takes in a Parameters object
      * that contains all query parameters and path parameters, or any other parameters, that are used
      * in the signature generation process.
-     * @param fullURL
-     * @param allParameters
      * @return
      * @throws IOException 
      */
-    protected HttpURLConnection getConnection(URL fullURL, Parameters allParameters) throws IOException {
+    protected HttpURLConnection getConnection() throws IOException {
+        Parameters allParameters = getAllParameters();
+
+        URL fullURL = URLBuilder.buildURL(baseURL, pathParameters, queryParameters);
+        logger.log("Full URL", fullURL.toString());
         oauthParameters.resetNonceAndTimestamp();
-        
-        allParameters = Parameters.merge(oauthParameters, allParameters);
         
         String signature = SignatureBuilder.buildSignature(fullURL, allParameters, keys.consumerSecret, keys.getTokenSecret(), httpMethod);
         oauthParameters.setSignature(signature);
         
         connection = (HttpURLConnection)fullURL.openConnection();
+        connection.setRequestMethod(httpMethod.name());
         setAuthorizationHeader();
-        
+
+        if (!requestBody.isEmpty()) addRequestBody(connection);
+        logger.log("connection details", connection.toString());
+
         return connection;
     }
     
-    @Override
+    @Override //TODO: Add PathParameters and QueryParameters
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Base URL: ").append(baseURL.toString());
@@ -208,5 +203,31 @@ public abstract class BaseRequest
         logger.log("Authorization", authorizationString.toString());
 
         connection.addRequestProperty("Authorization", authorizationString.toString());
+    }
+
+    protected void sleep(int milliseconds) {
+        try {
+            Thread.sleep(milliseconds);
+        }
+        catch (Exception ex) {}
+    }
+
+    private Parameters getAllParameters() {
+        return Parameters.merge(pathParameters, queryParameters, oauthParameters, requestBody);
+    }
+
+    private void addRequestBody(HttpURLConnection connection) {
+        logger.log("Adding request body...", requestBody.getValue());
+
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/xml");
+
+        try {
+            var outputStream = connection.getOutputStream();
+            outputStream.write(requestBody.getValue().getBytes());
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

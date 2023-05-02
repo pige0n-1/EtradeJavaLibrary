@@ -2,7 +2,7 @@
 package blue.etradeJavaLibrary.core.network.oauth.coreAlgorithms;
 
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
+import blue.etradeJavaLibrary.core.network.oauth.requests.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.Key;
 import blue.etradeJavaLibrary.core.network.oauth.model.Parameters;
 import java.net.URL;

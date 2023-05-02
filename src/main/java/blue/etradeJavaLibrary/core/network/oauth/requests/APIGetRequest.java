@@ -2,7 +2,6 @@
 package blue.etradeJavaLibrary.core.network.oauth.requests;
 
 import blue.etradeJavaLibrary.core.network.oauth.model.BaseURL;
-import blue.etradeJavaLibrary.core.network.oauth.model.HttpMethod;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthException;
 import blue.etradeJavaLibrary.core.network.oauth.model.OauthKeySet;
 import blue.etradeJavaLibrary.core.network.oauth.model.PathParameters;

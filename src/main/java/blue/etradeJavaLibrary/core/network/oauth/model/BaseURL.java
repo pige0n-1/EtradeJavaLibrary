@@ -3,6 +3,12 @@ package blue.etradeJavaLibrary.core.network.oauth.model;
 
 import java.io.Serializable;
 
+/**
+ * This class is used to represent a base URL. It does not contain any query information. The base URL string that is
+ * used in the constructor can contain variables that are later filled in with PathParameters objects. Simply surround
+ * the variable name with curly brackets in the string, and any path parameters with the same key name will be filled
+ * in automatically.
+ */
 public class BaseURL 
         implements Serializable {
     

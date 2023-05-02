@@ -19,8 +19,8 @@ public final class OauthFlowRequest extends BaseRequest {
     private Key verifier;
     
     // Static data fields
-    private static final int MAX_ATTEMPTS = 5;
-    private static final int WAIT_BETWEEN_RETRY = 3000;
+    public static final int MAX_ATTEMPTS = 5;
+    public static final int MILLISECONDS_BETWEEN_RETRY = 50;
     
     /**
      * Constructs a standard OauthFlowRequest object.
@@ -60,9 +60,7 @@ public final class OauthFlowRequest extends BaseRequest {
         HttpURLConnection connection = null;
         
         try {
-            URL fullURL = buildFullURL();
-            logger.log("Full URL", fullURL.toString());
-            connection = getConnection(fullURL);
+            connection = getConnection();
             
             InputStream connectionResponse = connection.getInputStream();
             logger.log("Connection response", connection.getResponseMessage());
@@ -80,18 +78,11 @@ public final class OauthFlowRequest extends BaseRequest {
             logger.log("Connection response", connection.getResponseCode() + "");
             
             if (attemptNumber < MAX_ATTEMPTS) {
-                sleep(WAIT_BETWEEN_RETRY);
+                sleep(MILLISECONDS_BETWEEN_RETRY);
+
                 return sendAndGetResponse(attemptNumber + 1);
             }
-            else
-                throw new OauthException("Connection to etrade unsuccessful.", ex);
+            else throw new OauthException("Connection to etrade unsuccessful.", ex);
         }
-    }
-    
-    private void sleep(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        }
-        catch (Exception ex) {}
     }
 }

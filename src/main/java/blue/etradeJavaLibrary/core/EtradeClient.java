@@ -14,17 +14,46 @@ import java.io.ObjectOutputStream;
 import java.time.*;
 import java.time.format.*;
 
+/**
+ * This class represents a connection to the E*Trade API. Upon instantiation, the Oauth authentication flow is performed
+ * if an only if it is necessary. Consult the E*Trade API documentation for details on access token renewal and
+ * expiration. EtradeClient implements AutoCloseable, so whenever close() is called, the current instance of
+ * EtradeClient is serialized to a save file, where it can be loaded again. There can only be one instance during
+ * runtime, and it can be retrieved by calling getLiveClient() or getSandboxClient(). These methods both assume
+ * that the consumer keys are stored in system environment variables. For more details, see the KeyAndURLExtractor
+ * class.
+ */
 public final class EtradeClient extends APIManager
         implements AutoCloseable {
     
     // Instance data fields
+    /**
+     * Specifies the environment of the instance object. The two options are LIVE and SANDBOX. Both of these
+     * environments are defined by Etrade and explained in the API documentation.
+     */
     public final EnvironmentType environmentType;
+
+    /**
+     * The name of the .dat file that the EtradeClient object is saved to. It is either named "livesave.dat" or
+     * "sandboxsave.dat".
+     */
     private String saveFileName;
     
     // Static data fields
+    /**
+     * The only instance of EtradeClient at runtime
+     */
     private static EtradeClient currentSession;
-    public transient static boolean loadFromSave = true;
-    protected transient static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
+
+    /**
+     * A public option specifying if EtradeClient objects should be loaded from a save or not
+     */
+    public static boolean loadFromSave = true;
+
+    /**
+     * The only instance of the api logger in this class
+     */
+    protected static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
     /* Private constructor to prevent instantiation */
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
@@ -66,15 +95,32 @@ public final class EtradeClient extends APIManager
         
         return currentSession;
     }
-    
+
+    /**
+     * Returns an instance of EtradeClient in the Live environment. All trades executed with this object will use REAL
+     * money.
+     * @return The last saved instance of EtradeClient or a new instance of EtradeClient in the live environment
+     * @throws NetworkException if something goes wrong with the connection to Etrade
+     */
     public static EtradeClient getLiveClient() throws NetworkException {
         return getClient(EnvironmentType.LIVE);
     }
-    
+
+    /**
+     * Returns an instance of EtradeClient in the Sandbox environment. All trades executed with this object will
+     * NOT use real money, and market data retrieved will NOT be accurate.
+     * @return The last saved instance of EtradeClient or a new instance of EtradeClient in the sandbox environment
+     * @throws NetworkException
+     */
     public static EtradeClient getSandboxClient() throws NetworkException {
         return getClient(EnvironmentType.SANDBOX);
     }
-    
+
+    /**
+     * Returns a list of all the user's accounts
+     * @return an AccountsList object representing all the user's accounts
+     * @throws NetworkException
+     */
     public AccountsList getAccountsList() throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_LIST_URI;
         AccountsList accountsList = new AccountsList();
@@ -91,7 +137,7 @@ public final class EtradeClient extends APIManager
             throw new NetworkException("Accounts list could not be retrieved", ex);
         }
     }
-    
+
     @Override
     public void close() {
         try {
@@ -110,64 +156,8 @@ public final class EtradeClient extends APIManager
     
     
     // Private helper methods
-    
-    
-    private static void establishNewCurrentSession(EnvironmentType environmentType) throws NetworkException {
-        try {
-            currentSession = loadLastSession(environmentType);
-            networkLogger.log("Current environment type", environmentType.name());
-            networkLogger.log("Time of last request", currentSession.formatLastRequestTime());
-        }
-        catch (IOException ex) {
-            networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
-            currentSession = new EtradeClient(environmentType);
-        }
-    }
-    
-    private void saveSession() throws IOException {
-        FileOutputStream file = new FileOutputStream(saveFileName);
-        
-        try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
-            objectOutput.writeObject(this);
-        }
-    }
-    
-    private static EtradeClient loadLastSession(EnvironmentType environmentType) throws IOException {
-        FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
-        
-        try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
-            if (loadFromSave == false) throw new IOException();
-            
-            var client = objectInput.readObject();
-            networkLogger.log("Last EtradeClient session loaded successfully.");
-            
-            return (EtradeClient)client;
-        }
-        
-        catch (ClassNotFoundException ex) {
-            networkLogger.log("Last EtradeClient session could not be loaded.");
-            throw new IOException("Last EtradeClient session could not be loaded.", ex);
-        }
-    }
-    
-    private BaseURLSet getBaseURLSet() throws NetworkException {
-        String environmentBaseURL;
-        if (environmentType == EnvironmentType.SANDBOX)
-            environmentBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
-        else
-            environmentBaseURL = KeyAndURLExtractor.MAIN_BASE_URL;
-        
-        BaseURLSet urls = new BaseURLSet(environmentBaseURL, 
-                environmentBaseURL, 
-                KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI, 
-                KeyAndURLExtractor.OAUTH_VERIFIER_BASE_URL);
-                
-        return urls;
-    }
-    
+
+
     @Override
     protected void renewAccessTokenIfNeeded() throws OauthException {
         if (accessTokenExpired()) {
@@ -179,7 +169,63 @@ public final class EtradeClient extends APIManager
             renewAccessToken();
         }
     }
-    
+
+    private static void establishNewCurrentSession(EnvironmentType environmentType) throws NetworkException {
+        try {
+            currentSession = loadLastSession(environmentType);
+            networkLogger.log("Current environment type", environmentType.name());
+            networkLogger.log("Time of last request", currentSession.formatLastRequestTime());
+        }
+        catch (IOException ex) {
+            networkLogger.log("No saved EtradeClient to retrieve. Creating new instance.");
+            currentSession = new EtradeClient(environmentType);
+        }
+    }
+
+    private void saveSession() throws IOException {
+        FileOutputStream file = new FileOutputStream(saveFileName);
+
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
+            objectOutput.writeObject(this);
+        }
+    }
+
+    private static EtradeClient loadLastSession(EnvironmentType environmentType) throws IOException {
+        FileInputStream file = new FileInputStream(getSaveFileName(environmentType));
+
+        try (ObjectInputStream objectInput = new ObjectInputStream(file)) {
+            if (loadFromSave == false) throw new IOException();
+
+            var client = objectInput.readObject();
+            networkLogger.log("Last EtradeClient session loaded successfully.");
+
+            return (EtradeClient)client;
+        }
+
+        catch (ClassNotFoundException ex) {
+            networkLogger.log("Last EtradeClient session could not be loaded.");
+            throw new IOException("Last EtradeClient session could not be loaded.", ex);
+        }
+    }
+
+    private BaseURLSet getBaseURLSet() throws NetworkException {
+        String environmentBaseURL;
+        if (environmentType == EnvironmentType.SANDBOX)
+            environmentBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
+        else
+            environmentBaseURL = KeyAndURLExtractor.MAIN_BASE_URL;
+
+        BaseURLSet urls = new BaseURLSet(environmentBaseURL,
+                environmentBaseURL,
+                KeyAndURLExtractor.OAUTH_REQUEST_TOKEN_URI,
+                KeyAndURLExtractor.OAUTH_ACCESS_TOKEN_URI,
+                KeyAndURLExtractor.OAUTH_RENEW_ACCESS_TOKEN_URI,
+                KeyAndURLExtractor.OAUTH_REVOKE_ACCESS_TOKEN_URI,
+                KeyAndURLExtractor.OAUTH_VERIFIER_BASE_URL);
+
+        return urls;
+    }
+
     private boolean hasBeenTwoHoursSinceLastRequest() {
         Instant now = Instant.now();
         Duration twoHours = Duration.ofHours(2);

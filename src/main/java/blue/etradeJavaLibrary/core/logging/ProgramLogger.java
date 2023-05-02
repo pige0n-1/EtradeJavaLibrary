@@ -2,6 +2,7 @@
 package blue.etradeJavaLibrary.core.logging;
 
 import java.io.IOException;
+import java.io.File;
 import java.time.*;
 import java.time.format.*;
 import java.util.logging.*;
@@ -32,7 +33,7 @@ public class ProgramLogger {
         
         if (clearPreviousLogs) deleteOldLogFile(fileName);
         
-        FileHandler fileHandler = new MyFileHandler(fileName);
+        var fileHandler = new MyFileHandler(fileName);
         fileHandler.setFormatter(new SimpleLogFormatter());
         
         javaLogger = Logger.getLogger(loggerType.name().toLowerCase());
@@ -76,12 +77,9 @@ public class ProgramLogger {
     
     
     private void deleteOldLogFile(String fileName) {
-        java.io.File logFile = new java.io.File(fileName);
+        var logFile = new java.io.File(fileName);
         
-        if (logFile.exists()) {
-            logFile.delete();
-            System.out.println("Old log file deleted.");
-        }
+        if (logFile.exists()) logFile.delete();
     }
     
     private static void ensureInstantiationHasOccurred() {
@@ -127,7 +125,7 @@ public class ProgramLogger {
         
         private String formatDate() {
             ZoneId currentTimeZone = ZoneId.systemDefault();
-            ZonedDateTime currentTime = Instant.now().atZone(currentTimeZone);
+            var currentTime = Instant.now().atZone(currentTimeZone);
             
             return formatter.format(currentTime);
         }
