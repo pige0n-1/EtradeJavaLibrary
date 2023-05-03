@@ -1,10 +1,10 @@
 
-package blue.etradeJavaLibrary.etradeXMLModel.listAccounts;
+package blue.etradeJavaLibrary.xml.account;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import java.util.ArrayList;
 
-import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
+import blue.etradeJavaLibrary.xml.EtradeObject;
 import org.w3c.dom.*;
 
 /**

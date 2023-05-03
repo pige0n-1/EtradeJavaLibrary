@@ -5,12 +5,11 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import blue.etradeJavaLibrary.etradeXMLModel.accountBalances.BalanceResponse;
-import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.Account;
-import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.AccountsListResponse;
-import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.Transaction;
-import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.TransactionDetailsResponse;
-import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.TransactionListResponse;
+import blue.etradeJavaLibrary.xml.account.BalanceResponse;
+import blue.etradeJavaLibrary.xml.account.Account;
+import blue.etradeJavaLibrary.xml.account.AccountsListResponse;
+import blue.etradeJavaLibrary.xml.transactions.TransactionDetailsResponse;
+import blue.etradeJavaLibrary.xml.transactions.TransactionListResponse;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

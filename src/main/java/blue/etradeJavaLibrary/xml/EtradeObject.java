@@ -1,7 +1,6 @@
-package blue.etradeJavaLibrary.etradeXMLModel;
+package blue.etradeJavaLibrary.xml;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
-import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;

@@ -5,6 +5,8 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.core.network.oauth.requests.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
+import blue.etradeJavaLibrary.xml.XMLDefinedObject;
+
 import java.time.Instant;
 import java.io.IOException;
 import java.io.Serializable;

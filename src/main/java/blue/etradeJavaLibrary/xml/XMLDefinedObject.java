@@ -1,5 +1,5 @@
 
-package blue.etradeJavaLibrary.core.network.oauth.responses;
+package blue.etradeJavaLibrary.xml;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,6 +12,7 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
+import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.SAXException;

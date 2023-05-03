@@ -1,7 +1,7 @@
-package blue.etradeJavaLibrary.etradeXMLModel.listTransactions;
+package blue.etradeJavaLibrary.xml.transactions;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
-import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
+import blue.etradeJavaLibrary.xml.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.util.ArrayList;
