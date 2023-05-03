@@ -4,6 +4,8 @@ package blue.etradeJavaLibrary.etradeXMLModel.listAccounts;
 import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.*;
 
+import java.util.Date;
+
 /**
  * Represents an E*Trade account
  */
@@ -18,7 +20,7 @@ public class Account extends EtradeObject {
     public String accountType;
     public String institutionType;
     public String accountStatus;
-    public long closedDate;
+    public Date closedDate;
     public boolean shareWorksAccount;
     public String shareWorksSource;
     
@@ -41,7 +43,7 @@ public class Account extends EtradeObject {
         accountType = extract("accountType");;
         institutionType = extract("institutionType");;
         accountStatus = extract("accountStatus");;
-        closedDate = extractLong("closedDate");
+        closedDate = new Date(extractLong("closedDate"));
         shareWorksAccount = extractBoolean("shareWorksAccount");
         shareWorksSource = extract("shareWorksSource");
         

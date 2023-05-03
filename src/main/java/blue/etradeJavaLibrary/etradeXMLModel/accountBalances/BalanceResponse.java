@@ -4,12 +4,14 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchExcepti
 import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
+import java.util.Date;
+
 public class BalanceResponse extends EtradeObject<BalanceResponse> {
 
     // Instance data fields
     public String accountId;
     public String institutionType;
-    public long asOfDate;
+    public Date asOfDate;
     public String accountType;
     public String optionLevel;
     public String accountDescription;
@@ -29,7 +31,7 @@ public class BalanceResponse extends EtradeObject<BalanceResponse> {
 
         accountId = extract("accountId");
         institutionType = extract("institutionType");
-        asOfDate = extractLong("asOfDate");
+        asOfDate = new Date(extractLong("asOfDate"));
         accountType = extract("accountType");
         optionLevel = extract("optionLevel");
         accountDescription = extract("accountDescription");

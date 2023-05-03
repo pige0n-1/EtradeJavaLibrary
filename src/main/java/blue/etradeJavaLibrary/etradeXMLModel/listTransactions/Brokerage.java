@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Brokerage extends EtradeObject<Brokerage> {
 
@@ -18,7 +19,7 @@ public class Brokerage extends EtradeObject<Brokerage> {
     public String memo;
     public String checkNo;
     public String orderNo;
-    public Long settlementDate;
+    public Date settlementDate;
 
     @Override
     public Brokerage configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
@@ -33,7 +34,7 @@ public class Brokerage extends EtradeObject<Brokerage> {
         memo = extract("memo");
         checkNo = extract("checkNo");
         orderNo = extract("orderNo");
-        settlementDate = extractLong("settlementDate");
+        settlementDate = new Date(extractLong("settlementDate"));
 
         return this;
     }

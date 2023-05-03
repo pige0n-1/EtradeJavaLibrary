@@ -10,7 +10,6 @@ public class ProductId extends EtradeObject<ProductId> {
     public String symbol;
     public String typeCode;
 
-
     @Override
     public ProductId configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;

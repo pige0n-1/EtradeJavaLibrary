@@ -5,15 +5,15 @@ import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
-import java.net.URL;
+import java.util.Date;
 
 public class Transaction extends EtradeObject<Transaction> {
 
     // Instance data fields
     public long transactionId;
     public String accountId;
-    public long transactionDate;
-    public long postDate;
+    public Date transactionDate;
+    public Date postDate;
     public BigDecimal amount;
     public String description;
     public String transactionType;
@@ -29,8 +29,8 @@ public class Transaction extends EtradeObject<Transaction> {
 
         transactionId = extractLong("transactionId");
         accountId = extract("accountId");
-        transactionDate = extractLong("transactionDate");
-        postDate = extractLong("postDate");
+        transactionDate = new Date(extractLong("transactionDate"));
+        postDate = new Date(extractLong("postDate"));
         amount = extractNumber("amount");
         description = extract("description");
         transactionType = extract("transactionType");

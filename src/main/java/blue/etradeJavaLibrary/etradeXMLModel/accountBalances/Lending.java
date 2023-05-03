@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public class Lending extends EtradeObject<Lending> {
 
@@ -17,8 +18,8 @@ public class Lending extends EtradeObject<Lending> {
     public BigDecimal availableCredit;
     public BigDecimal ytdInterestPaid;
     public BigDecimal lastYtdInterestPaid;
-    public long paymentDueDate;
-    public long lastPaymentReceivedDate;
+    public Date paymentDueDate;
+    public Date lastPaymentReceivedDate;
     public BigDecimal paymentReceivedMtd;
 
     @Override
@@ -33,8 +34,8 @@ public class Lending extends EtradeObject<Lending> {
         availableCredit = extractNumber("availableCredit");
         ytdInterestPaid = extractNumber("ytdInterestPaid");
         lastYtdInterestPaid = extractNumber("lastYtdInterestPaid");
-        paymentDueDate = extractLong("paymentDueDate");
-        lastPaymentReceivedDate = extractLong("lastPaymentReceivedDate");
+        paymentDueDate = new Date(extractLong("paymentDueDate"));
+        lastPaymentReceivedDate = new Date(extractLong("lastPaymentReceivedDate"));
         paymentReceivedMtd = extractNumber("paymentReceivedMtd");
 
         return this;
