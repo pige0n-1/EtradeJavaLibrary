@@ -39,6 +39,8 @@ public class Transaction extends EtradeObject<Transaction> {
         storeId = extractLong("storeId");
         category = extractObject(new Category());
         brokerage = extractObject(new Brokerage(), "brokerage");
+        if (brokerage == null) // Etrade is inconsistent in their XML documents, so "brokerage" may be capitalized or not
+            brokerage = extractObject(new Brokerage(), "Brokerage");
 
         return this;
     }
