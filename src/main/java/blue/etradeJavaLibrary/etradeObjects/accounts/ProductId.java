@@ -1,7 +1,7 @@
-package blue.etradeJavaLibrary.xml.transactions;
+package blue.etradeJavaLibrary.etradeObjects.accounts;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
-import blue.etradeJavaLibrary.xml.EtradeObject;
+import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
 public class ProductId extends EtradeObject<ProductId> {

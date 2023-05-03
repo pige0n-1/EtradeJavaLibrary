@@ -1,5 +1,5 @@
 
-package blue.etradeJavaLibrary.xml;
+package blue.etradeJavaLibrary.etradeObjects;
 
 import java.io.IOException;
 import java.io.InputStream;

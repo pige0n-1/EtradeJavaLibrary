@@ -1,7 +1,7 @@
 
-package blue.etradeJavaLibrary.xml.account;
+package blue.etradeJavaLibrary.etradeObjects.accounts;
 
-import blue.etradeJavaLibrary.xml.EtradeObject;
+import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.*;
 
 import java.util.Date;

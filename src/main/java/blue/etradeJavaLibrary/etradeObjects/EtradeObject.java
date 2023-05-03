@@ -1,4 +1,4 @@
-package blue.etradeJavaLibrary.xml;
+package blue.etradeJavaLibrary.etradeObjects;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
 import org.w3c.dom.Document;
