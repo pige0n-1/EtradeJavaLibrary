@@ -8,6 +8,8 @@ import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.etradeXMLModel.accountBalances.BalanceResponse;
 import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.Account;
 import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.AccountsListResponse;
+import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.Transaction;
+import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.TransactionDetailsResponse;
 import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.TransactionListResponse;
 
 import java.io.FileInputStream;
@@ -169,20 +171,39 @@ public final class EtradeClient extends APIManager
 
     public TransactionListResponse getTransactionsList(Account account) throws NetworkException {
         String accountIdKey = account.accountIdKey;
-        var transactionsListResponse = new TransactionListResponse();
+        var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
 
         try {
-            sendAPIGetRequest(requestURI, pathParameters, transactionsListResponse);
+            sendAPIGetRequest(requestURI, pathParameters, transactionListResponse);
             apiLogger.log("Transactions list retrieved successfully.");
-            apiLogger.log("Response", transactionsListResponse.toString());
+            apiLogger.log("Response", transactionListResponse.toString());
 
-            return transactionsListResponse;
+            return transactionListResponse;
         }
         catch (OauthException ex) {
             apiLogger.log("Transactions list could not be retrieved.");
             throw new NetworkException("Transactions list could not be retrieved.", ex);
+        }
+    }
+
+    public TransactionDetailsResponse getTransactionDetails(Account account, long transactionId) throws NetworkException {
+        String accountIdKey = account.accountIdKey;
+        var transactionDetailsResponse = new TransactionDetailsResponse();
+        String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId + "");
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, transactionDetailsResponse);
+            apiLogger.log("Transaction details retrieved successfully.");
+            apiLogger.log("Response", transactionDetailsResponse.toString());
+
+            return transactionDetailsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Transaction details could not be retrieved.");
+            throw new NetworkException("Transaction details could not be retrieved.");
         }
     }
 

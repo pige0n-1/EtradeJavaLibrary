@@ -17,20 +17,9 @@ public class TransactionListResponse extends EtradeObject<TransactionListRespons
 
         var transactionsNodeList = getList("Transaction");
 
-        // In the instance where there is only one transaction, Etrade does not label it with the <Transaction> tag
-        if (transactionsNodeList.getLength() == 0) addTheOnlyTransaction();
-
         for (int i = 0; i < transactionsNodeList.getLength(); i++)
-            transactions.add(extractObject(new Transaction()));
+            transactions.add(extractObject(new Transaction(), transactionsNodeList.item(i)));
 
         return this;
-    }
-
-
-    // Private helper methods
-
-
-    private void addTheOnlyTransaction() {
-        transactions.add(extractObject(new Transaction(), "TransactionListResponse"));
     }
 }
