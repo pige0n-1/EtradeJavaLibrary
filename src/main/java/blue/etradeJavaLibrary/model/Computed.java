@@ -1,12 +1,11 @@
 package blue.etradeJavaLibrary.model;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
-import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
 
-public class ComputedBalance extends EtradeObject<ComputedBalance> {
+public class Computed extends EtradeObject<Computed> {
 
     // Instance data fields
     public BigDecimal cashAvailableForInvestment;
@@ -32,7 +31,7 @@ public class ComputedBalance extends EtradeObject<ComputedBalance> {
     public PortfolioMargin portfolioMargin;
 
     @Override
-    public ComputedBalance configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+    public Computed configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
         cashAvailableForInvestment = extractNumber("cashAvailableForInvestment");

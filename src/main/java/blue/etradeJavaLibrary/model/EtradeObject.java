@@ -73,7 +73,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     protected <T extends EtradeObject<T>> T extractObject(T emptyObject, Node node) throws ObjectMismatchException{
         try {
             var objectDocument = XMLDefinedObject.convertToDocument(node);
-
+            networkLogger.log("1");
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
         catch (ObjectMismatchException e) {
@@ -85,7 +85,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             var objectList = getList(emptyObject);
             var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
-
+            networkLogger.log("1");
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
         catch (Exception ex) {
