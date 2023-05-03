@@ -39,6 +39,8 @@ public class URLBuilder {
         
         if (baseURLWithVariables.hasUnfilledVariables()) {
             logger.log("There is a mismatch between BaseURL path variables and PathParameters.");
+            logger.log("Path parameters", pathParameters.toString());
+            logger.log("Base URL", baseURL.toString());
             throw new InvalidParameterException("There is a mismatch between base URL path variables and the PathParameters object");
         }
         

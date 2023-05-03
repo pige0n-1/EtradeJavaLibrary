@@ -213,7 +213,8 @@ public abstract class BaseRequest
     }
 
     private Parameters getAllParameters() {
-        return Parameters.merge(pathParameters, queryParameters, oauthParameters, requestBody);
+//        return Parameters.merge(pathParameters, queryParameters, oauthParameters, requestBody);
+        return Parameters.merge(queryParameters, oauthParameters, requestBody);
     }
 
     private void addRequestBody(HttpURLConnection connection) {

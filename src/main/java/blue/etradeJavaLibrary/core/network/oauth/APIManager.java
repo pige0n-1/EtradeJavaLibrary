@@ -51,13 +51,13 @@ public abstract class APIManager
         updateTimeOfLastRequest();
     }
     
-    protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameter, XMLDefinedObject xmlObject) throws OauthException {
+    protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameters, XMLDefinedObject xmlObject) throws OauthException {
         ensureConfigured();
         renewAccessTokenIfNeeded();
         
         try {
             BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
-            APIRequest request = new APIGetRequest(requestBaseURL, keys);
+            APIRequest request = new APIGetRequest(requestBaseURL, pathParameters, queryParameters, keys);
             request.setOauthParameters(oauthFlow.getOauthParameters());
 
             APIResponse response = request.sendAndGetResponse();

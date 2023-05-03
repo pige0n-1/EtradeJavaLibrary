@@ -2,6 +2,8 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 
+import blue.etradeJavaLibrary.core.logging.ProgramLogger;
+
 /**
  * This child class of Parameters is used to represent parameters in the OAuth
  * 1.0a model that are located in the path section of a URL. The URLBuilder
