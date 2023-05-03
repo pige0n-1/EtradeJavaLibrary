@@ -1,7 +1,7 @@
-package blue.etradeJavaLibrary.model;
+package blue.etradeJavaLibrary.etradeXMLModel.accountBalances;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
-import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
+import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;

@@ -19,6 +19,7 @@ public class KeyAndURLExtractor {
     public static final String OAUTH_REVOKE_ACCESS_TOKEN_URI = "/oauth/revoke_access_token";
     public static final String API_ACCOUNT_LIST_URI = "/v1/accounts/list";
     public static final String API_ACCOUNT_BALANCE_URI = "/v1/accounts/{accountIdKey}/balance";
+    public static final String API_LIST_TRANSACTIONS_URI = "/v1/accounts/{accountIdKey}/transactions";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}

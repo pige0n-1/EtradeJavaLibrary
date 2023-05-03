@@ -1,4 +1,4 @@
-package blue.etradeJavaLibrary.model;
+package blue.etradeJavaLibrary.etradeXMLModel;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
 import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
@@ -62,18 +62,34 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     }
 
     protected NodeList getList(EtradeObject emptyObject) {
+        return getList(getClassName(emptyObject));
+    }
+
+    protected NodeList getList(String elementTagName) {
         try {
-            return xmlDocument.getElementsByTagName(getClassName(emptyObject));
+            return xmlDocument.getElementsByTagName(elementTagName);
         }
         catch (Exception ex) {
             return null;
         }
     }
 
-    protected <T extends EtradeObject<T>> T extractObject(T emptyObject, Node node) throws ObjectMismatchException{
+    protected <T extends EtradeObject<T>> T extractObject(T emptyObject, String elementTagName) {
+        try {
+            var objectList = getList(elementTagName);
+            var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
+
+            return emptyObject.configureFromXMLDocument(objectDocument);
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+
+    protected static <T extends EtradeObject<T>> T extractObject(T emptyObject, Node node) throws ObjectMismatchException{
         try {
             var objectDocument = XMLDefinedObject.convertToDocument(node);
-            networkLogger.log("1");
+
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
         catch (ObjectMismatchException e) {
@@ -82,15 +98,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     }
 
     protected <T extends EtradeObject<T>> T extractObject(T emptyObject) throws ObjectMismatchException {
-        try {
-            var objectList = getList(emptyObject);
-            var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
-            networkLogger.log("1");
-            return emptyObject.configureFromXMLDocument(objectDocument);
-        }
-        catch (Exception ex) {
-            return null;
-        }
+        return extractObject(emptyObject, getClassName(emptyObject));
     }
 
     @Override

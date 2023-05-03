@@ -172,10 +172,12 @@ public abstract class BaseRequest
         return connection;
     }
     
-    @Override //TODO: Add PathParameters and QueryParameters
+    @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("Base URL: ").append(baseURL.toString());
+        stringBuilder.append(", Path parameters: ").append(pathParameters);
+        stringBuilder.append(", Query parameters: ").append(queryParameters);
         stringBuilder.append(", Http method: ").append(httpMethod.name());
         stringBuilder.append(", Oauth parameters: ").append(oauthParameters.toString());
         

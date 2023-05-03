@@ -5,7 +5,11 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import blue.etradeJavaLibrary.model.*;
+import blue.etradeJavaLibrary.etradeXMLModel.accountBalances.BalanceResponse;
+import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.Account;
+import blue.etradeJavaLibrary.etradeXMLModel.listAccounts.AccountsListResponse;
+import blue.etradeJavaLibrary.etradeXMLModel.listTransactions.TransactionListResponse;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -160,6 +164,25 @@ public final class EtradeClient extends APIManager
         catch (OauthException ex) {
             apiLogger.log("Account balance could not be retrieved.");
             throw new NetworkException("Account balance could not be retrieved", ex);
+        }
+    }
+
+    public TransactionListResponse getTransactionsList(Account account) throws NetworkException {
+        String accountIdKey = account.accountIdKey;
+        var transactionsListResponse = new TransactionListResponse();
+        String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, transactionsListResponse);
+            apiLogger.log("Transactions list retrieved successfully.");
+            apiLogger.log("Response", transactionsListResponse.toString());
+
+            return transactionsListResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Transactions list could not be retrieved.");
+            throw new NetworkException("Transactions list could not be retrieved.", ex);
         }
     }
 

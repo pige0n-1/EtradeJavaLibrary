@@ -1,6 +1,7 @@
-package blue.etradeJavaLibrary.model;
+package blue.etradeJavaLibrary.etradeXMLModel.listAccounts;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchException;
+import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.Document;
 
 public class AccountsListResponse extends EtradeObject<AccountsListResponse> {

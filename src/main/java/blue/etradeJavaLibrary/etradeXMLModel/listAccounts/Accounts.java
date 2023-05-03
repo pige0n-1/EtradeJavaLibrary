@@ -1,9 +1,10 @@
 
-package blue.etradeJavaLibrary.model;
+package blue.etradeJavaLibrary.etradeXMLModel.listAccounts;
 
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import java.util.ArrayList;
 
+import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.*;
 
 /**
@@ -13,7 +14,7 @@ import org.w3c.dom.*;
 public class Accounts extends EtradeObject<Accounts> {
     
     // Instance data fields
-    private ArrayList<Account> accounts = new ArrayList<>();
+    public ArrayList<Account> accounts = new ArrayList<>();
     
     @Override
     public Accounts configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
@@ -26,10 +27,6 @@ public class Accounts extends EtradeObject<Accounts> {
             accounts.add(extractObject(new Account(), listOfAccounts.item(i)));
         
         return this;
-    }
-
-    public ArrayList<Account> getAccounts() {
-        return accounts;
     }
     
     @Override

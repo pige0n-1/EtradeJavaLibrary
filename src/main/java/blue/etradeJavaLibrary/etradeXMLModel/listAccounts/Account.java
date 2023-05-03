@@ -1,7 +1,7 @@
 
-package blue.etradeJavaLibrary.model;
+package blue.etradeJavaLibrary.etradeXMLModel.listAccounts;
 
-import blue.etradeJavaLibrary.core.network.oauth.responses.XMLDefinedObject;
+import blue.etradeJavaLibrary.etradeXMLModel.EtradeObject;
 import org.w3c.dom.*;
 
 /**
