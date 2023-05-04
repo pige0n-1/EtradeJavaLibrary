@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.lang.Double;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class CompleteView extends EtradeObject<CompleteView> {
@@ -19,7 +20,7 @@ public class CompleteView extends EtradeObject<CompleteView> {
     public Double adjPrevClose;
     public Double volume;
     public Double lastTrade;
-    public Date lastTradeTime;
+    public LocalDate lastTradeTime;
     public Double adjLastTrade;
     public String symbolDescription;
     public Double perform1Month;
@@ -72,8 +73,8 @@ public class CompleteView extends EtradeObject<CompleteView> {
     public Double annualDividend;
     public Double dividend;
     public Double divYield;
-    public Date divPayDate;
-    public Date exDividendDate;
+    public LocalDate divPayDate;
+    public LocalDate exDividendDate;
     public String cusip;
     public String quoteStatus;
 

@@ -4,6 +4,7 @@ package blue.etradeJavaLibrary.etradeObjects.accounts;
 import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -20,7 +21,7 @@ public class Account extends EtradeObject {
     public String accountType;
     public String institutionType;
     public String accountStatus;
-    public Date closedDate;
+    public LocalDate closedDate;
     public Boolean shareWorksAccount;
     public String shareWorksSource;
     

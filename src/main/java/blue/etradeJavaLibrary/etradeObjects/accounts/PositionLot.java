@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.lang.Double;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class PositionLot extends EtradeObject<PositionLot> {
@@ -26,7 +27,7 @@ public class PositionLot extends EtradeObject<PositionLot> {
     public Double availableQty;
     public Long orderNo;
     public Integer legNo;
-    public Date acquiredDate;
+    public LocalDate acquiredDate;
     public Integer locationCode;
     public Double exchangeRate;
     public String settlementCurrency;

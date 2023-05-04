@@ -4,6 +4,7 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchExcepti
 import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,7 +16,7 @@ public class Position extends EtradeObject<Position> {
     public Product product;
     public String osiKey;
     public String symbolDescription;
-    public Date dateAcquired;
+    public LocalDate dateAcquired;
     public Double pricePaid;
     public Double price;
     public Double commissions;
@@ -38,7 +39,7 @@ public class Position extends EtradeObject<Position> {
     public Double todayPricePaid;
     public Double todayQuantity;
     public String quotestatus;
-    public Date dateTimeUTC;
+    public LocalDate dateTimeUTC;
     public Double adjPrevClose;
     public CompleteView complete;
     public String lotsDetails;

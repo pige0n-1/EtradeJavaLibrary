@@ -4,6 +4,7 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchExcepti
 import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public class BalanceResponse extends EtradeObject<BalanceResponse> {
@@ -11,7 +12,7 @@ public class BalanceResponse extends EtradeObject<BalanceResponse> {
     // Instance data fields
     public String accountId;
     public String institutionType;
-    public Date asOfDate;
+    public LocalDate asOfDate;
     public String accountType;
     public String optionLevel;
     public String accountDescription;

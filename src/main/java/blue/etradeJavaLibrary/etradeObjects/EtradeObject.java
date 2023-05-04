@@ -5,6 +5,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 public abstract class EtradeObject<E extends EtradeObject<E>>
@@ -60,9 +61,9 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         }
     }
 
-    protected Date extractDate(String elementTagName) {
+    protected LocalDate extractDate(String elementTagName) {
         try {
-            return new Date(extractLong(elementTagName));
+            return epochMillisecondToLocalDate(extractLong(elementTagName));
         }
         catch (Exception ex) {
             return null;
@@ -128,5 +129,11 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         int lastIndexOfDot = classNameWithDotOperators.lastIndexOf('.');
 
         return classNameWithDotOperators.substring(lastIndexOfDot + 1);
+    }
+
+    private static LocalDate epochMillisecondToLocalDate(long epochMillisecond) {
+        final long MILLISECONDS_TO_DAYS_CONVERSION_DIVISOR = 1000 * 60 * 60 * 24;
+
+        return LocalDate.ofEpochDay(epochMillisecond / MILLISECONDS_TO_DAYS_CONVERSION_DIVISOR);
     }
 }

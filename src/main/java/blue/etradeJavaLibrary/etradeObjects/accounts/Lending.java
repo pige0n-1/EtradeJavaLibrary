@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Lending extends EtradeObject<Lending> {
@@ -18,8 +19,8 @@ public class Lending extends EtradeObject<Lending> {
     public Double availableCredit;
     public Double ytdInterestPaid;
     public Double lastYtdInterestPaid;
-    public Date paymentDueDate;
-    public Date lastPaymentReceivedDate;
+    public LocalDate paymentDueDate;
+    public LocalDate lastPaymentReceivedDate;
     public Double paymentReceivedMtd;
 
     @Override

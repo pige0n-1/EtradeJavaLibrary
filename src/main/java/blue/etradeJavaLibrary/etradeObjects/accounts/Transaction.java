@@ -5,6 +5,7 @@ import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Date;
 
 public class Transaction extends EtradeObject<Transaction> {
@@ -12,8 +13,8 @@ public class Transaction extends EtradeObject<Transaction> {
     // Instance data fields
     public Long transactionId;
     public String accountId;
-    public Date transactionDate;
-    public Date postDate;
+    public LocalDate transactionDate;
+    public LocalDate postDate;
     public Double amount;
     public String description;
     public String transactionType;
