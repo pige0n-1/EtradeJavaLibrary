@@ -12,7 +12,7 @@ import java.util.Date;
 public class Account extends EtradeObject {
     
     // Instance data fields
-    public String accountId;
+    public long accountId;
     public String accountIdKey;
     public String accountMode;
     public String accountDesc;
@@ -35,7 +35,7 @@ public class Account extends EtradeObject {
     public Account configureFromXMLDocument(Document xmlDocument) {
         this.xmlDocument = xmlDocument;
         
-        accountId = extract("accountId");
+        accountId = extractLong("accountId");
         accountIdKey = extract("accountIdKey");;
         accountMode = extract("accountMode");;
         accountDesc = extract("accountDesc");;

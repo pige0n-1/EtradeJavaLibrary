@@ -6,7 +6,6 @@ import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.etradeObjects.accounts.BalanceResponse;
-import blue.etradeJavaLibrary.etradeObjects.accounts.Account;
 import blue.etradeJavaLibrary.etradeObjects.accounts.AccountsListResponse;
 import blue.etradeJavaLibrary.etradeObjects.accounts.TransactionDetailsResponse;
 import blue.etradeJavaLibrary.etradeObjects.accounts.TransactionListResponse;
@@ -16,8 +15,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.*;
+import java.util.Date;
 
 /**
  * This class represents a connection to the E*Trade API. Upon instantiation, the Oauth authentication flow is performed
@@ -167,13 +168,43 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionsList(String accountIdKey) throws NetworkException {
+    public TransactionListResponse getTransactionList(String accountIdKey) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
 
         try {
             sendAPIGetRequest(requestURI, pathParameters, transactionListResponse);
+            apiLogger.log("Transactions list retrieved successfully.");
+            apiLogger.log("Response", transactionListResponse.toString());
+
+            return transactionListResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Transactions list could not be retrieved.");
+            throw new NetworkException("Transactions list could not be retrieved.", ex);
+        }
+    }
+
+    public TransactionListResponse getTransactionList(String accountIdKey, Date startDate, Date endDate) throws NetworkException {
+        return getTransactionList(accountIdKey, startDate, endDate, 50, true);
+    }
+
+    public TransactionListResponse getTransactionList(String accountIdKey, Date startDate, Date endDate, int count, boolean ascending) throws NetworkException {
+        var transactionListResponse = new TransactionListResponse();
+        String startDateString = formatDateMMDDYYYY(startDate);
+        String endDateString = formatDateMMDDYYYY(endDate);
+        String sortOrder = (ascending) ? "ASC" : "DESC";
+        String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("startDate", startDateString);
+        queryParameters.addParameter("endDate", endDateString);
+        queryParameters.addParameter("count", count + "");
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, transactionListResponse);
             apiLogger.log("Transactions list retrieved successfully.");
             apiLogger.log("Response", transactionListResponse.toString());
 
@@ -203,6 +234,26 @@ public final class EtradeClient extends APIManager
         }
     }
 
+    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId, long storeId) throws NetworkException {
+        var transactionDetailsResponse = new TransactionDetailsResponse();
+        String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId + "");
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("storeId", storeId + "");
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, transactionDetailsResponse);
+            apiLogger.log("Transaction details retrieved successfully.");
+            apiLogger.log("Response", transactionDetailsResponse.toString());
+
+            return transactionDetailsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Transaction details could not be retrieved.");
+            throw new NetworkException("Transaction details could not be retrieved.");
+        }
+    }
+
     @Override
     public void close() {
         try {
@@ -218,7 +269,7 @@ public final class EtradeClient extends APIManager
     public String toString() {
         return "EtradeClient session: " + environmentType.name();
     }
-    
+
     
     // Private helper methods
 
@@ -341,5 +392,11 @@ public final class EtradeClient extends APIManager
         var timeOfLastRequestAtThisTimeZone = timeOfLastRequest.atZone(ZoneId.systemDefault());
         
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(timeOfLastRequestAtThisTimeZone);
+    }
+
+    private static String formatDateMMDDYYYY(Date date) {
+        var formatter = new SimpleDateFormat("MMddyyyy");
+
+        return formatter.format(date);
     }
 }
