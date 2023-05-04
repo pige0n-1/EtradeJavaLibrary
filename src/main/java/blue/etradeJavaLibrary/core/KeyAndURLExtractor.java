@@ -10,7 +10,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.Key;
  */
 public class KeyAndURLExtractor {
     
-    public static final String MAIN_BASE_URL = "https://api.etrade.com";
+    public static final String LIVE_BASE_URL = "https://api.etrade.com";
     public static final String SANDBOX_BASE_URL = "https://apisb.etrade.com";
     public static final String OAUTH_VERIFIER_BASE_URL = "https://us.etrade.com/e/t/etws/authorize";
     public static final String OAUTH_ACCESS_TOKEN_URI = "/oauth/access_token";
@@ -21,6 +21,7 @@ public class KeyAndURLExtractor {
     public static final String API_ACCOUNT_BALANCE_URI = "/v1/accounts/{accountIdKey}/balance";
     public static final String API_LIST_TRANSACTIONS_URI = "/v1/accounts/{accountIdKey}/transactions";
     public static final String API_TRANSACTION_DETAILS_URI = "/v1/accounts/{accountIdKey}/transactions/{transactionId}";
+    public static final String API_VIEW_PORTFOLIO_URI = "/v1/accounts/{accountIdKey}/portfolio";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}

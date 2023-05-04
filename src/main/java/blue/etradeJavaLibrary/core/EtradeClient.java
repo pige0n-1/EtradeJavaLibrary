@@ -143,10 +143,9 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public BalanceResponse getAccountBalance(Account account) throws NetworkException {
+    public BalanceResponse getAccountBalance(String accountIdKey) throws NetworkException {
         String instType = "BROKERAGE";
         String realTimeNAV = "true";
-        String accountIdKey = account.accountIdKey;
         var balanceResponse = new BalanceResponse();
 
         String requestURI = KeyAndURLExtractor.API_ACCOUNT_BALANCE_URI;
@@ -168,8 +167,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionsList(Account account) throws NetworkException {
-        String accountIdKey = account.accountIdKey;
+    public TransactionListResponse getTransactionsList(String accountIdKey) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
@@ -187,8 +185,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionDetailsResponse getTransactionDetails(Account account, long transactionId) throws NetworkException {
-        String accountIdKey = account.accountIdKey;
+    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId) throws NetworkException {
         var transactionDetailsResponse = new TransactionDetailsResponse();
         String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId + "");
@@ -281,7 +278,7 @@ public final class EtradeClient extends APIManager
         if (environmentType == EnvironmentType.SANDBOX)
             environmentBaseURL = KeyAndURLExtractor.SANDBOX_BASE_URL;
         else
-            environmentBaseURL = KeyAndURLExtractor.MAIN_BASE_URL;
+            environmentBaseURL = KeyAndURLExtractor.LIVE_BASE_URL;
 
         return new BaseURLSet(environmentBaseURL,
                 environmentBaseURL,

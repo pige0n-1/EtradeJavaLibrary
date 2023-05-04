@@ -23,13 +23,13 @@ public abstract class APIManager
     
     // Static data fields
     protected transient static final ProgramLogger networkLogger = ProgramLogger.getNetworkLogger();
-    
+
     protected APIManager() {}
-    
+
     protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys) throws OauthException {
         configure(baseURLSet, keys, new OauthParameters(), new BrowserRequest());
     }
-    
+
     protected final void configure(BaseURLSet baseURLSet, OauthKeySet keys, OauthParameters oauthParameters, BrowserRequest browserRequestMethod) throws OauthException {
         this.keys = keys;
         this.baseURLSet = baseURLSet;
@@ -77,15 +77,15 @@ public abstract class APIManager
     protected final void sendAPIGetRequest(String requestURI, PathParameters pathParameters, XMLDefinedObject xmlObject) throws OauthException {
         sendAPIGetRequest(requestURI, pathParameters, new QueryParameters(), xmlObject);
     }
-    
+
     protected final void sendAPIGetRequest(String requestURI, QueryParameters queryParameters, XMLDefinedObject xmlObject) throws OauthException {
         sendAPIGetRequest(requestURI, new PathParameters(), queryParameters, xmlObject);
     }
-    
+
     protected final void sendAPIGetRequest(String requestURI, XMLDefinedObject xmlObject) throws OauthException {
         sendAPIGetRequest(requestURI, new PathParameters(), new QueryParameters(), xmlObject);
     }
-    
+
     /**
      * Some service providers make access tokens inactivate or expire after a certain amount of time. This
      * method should check to see if the access token needs to be renewed, and if it does, it should renew it
@@ -96,13 +96,13 @@ public abstract class APIManager
     
     
     // Private helper methods
-    
-    
+
+
     private void ensureConfigured() {
         if (!configured)
             throw new InvalidParameterException("The API manager must be configured before sending a request.");
     }
-    
+
     protected void updateTimeOfLastRequest() {
         timeOfLastRequest = Instant.now();
     }
