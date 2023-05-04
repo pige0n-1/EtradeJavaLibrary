@@ -44,21 +44,21 @@ public class PositionLot extends EtradeObject<PositionLot> {
         positionId = extractLong("positionId");
         positionLotId = extractLong("positionLotId");
         price = extractDouble("price");
-        termCode = extractInt("termCode");
+        termCode = extractInteger("termCode");
         daysGain = extractDouble("daysGain");
         daysGainPct = extractDouble("daysGainPct");
         marketValue = extractDouble("marketValue");
         totalCost = extractDouble("totalCost");
         totalCostForGainPct = extractDouble("totalCostForGainPct");
         totalGain = extractDouble("totalGain");
-        lotSourceCode = extractInt("lotSourceCode");
+        lotSourceCode = extractInteger("lotSourceCode");
         originalQty = extractDouble("originalQty");
         remainingQty = extractDouble("remainingQty");
         availableQty = extractDouble("availableQty");
         orderNo = extractLong("orderNo");
-        legNo = extractInt("legNo");
+        legNo = extractInteger("legNo");
         acquiredDate = new Date(extractLong("acquiredDate"));
-        locationCode = extractInt("locationCode");
+        locationCode = extractInteger("locationCode");
         exchangeRate = extractDouble("exchangeRate");
         settlementCurrency = extract("settlementCurrency");
         paymentCurrency = extract("paymentCurrency");
@@ -66,7 +66,7 @@ public class PositionLot extends EtradeObject<PositionLot> {
         commPerShare = extractDouble("commPerShare");
         feesPerShare = extractDouble("feesPerShare");
         premiumAdj = extractDouble("premiumAdj");
-        shortType = extractInt("shortType");
+        shortType = extractInteger("shortType");
 
         return this;
     }

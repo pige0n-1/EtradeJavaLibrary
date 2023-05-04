@@ -35,7 +35,7 @@ public class BalanceResponse extends EtradeObject<BalanceResponse> {
         accountType = extract("accountType");
         optionLevel = extract("optionLevel");
         accountDescription = extract("accountDescription");
-        quoteMode = extractInt("quoteMode");
+        quoteMode = extractInteger("quoteMode");
         dayTraderStatus = extract("dayTraderStatus");
         accountMode = extract("accountMode");
         accountDesc = extract("accountDesc");

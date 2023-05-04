@@ -130,7 +130,7 @@ public class CompleteView extends EtradeObject<CompleteView> {
         theta = extractDouble("theta");
         vega = extractDouble("vega");
         premium = extractDouble("premium");
-        daysToExpiration = extractInt("daysToExpiration");
+        daysToExpiration = extractInteger("daysToExpiration");
         intrinsicValue = extractDouble("intrinsicValue");
         openInterest = extractDouble("openInterest");
         optionsAdjustedFlag = extractBoolean("optionsAdjustedFlag");

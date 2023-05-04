@@ -5,10 +5,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import blue.etradeJavaLibrary.etradeObjects.accounts.BalanceResponse;
-import blue.etradeJavaLibrary.etradeObjects.accounts.AccountsListResponse;
-import blue.etradeJavaLibrary.etradeObjects.accounts.TransactionDetailsResponse;
-import blue.etradeJavaLibrary.etradeObjects.accounts.TransactionListResponse;
+import blue.etradeJavaLibrary.etradeObjects.accounts.*;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -271,6 +268,32 @@ public final class EtradeClient extends APIManager
         catch (OauthException ex) {
             apiLogger.log("Transaction details could not be retrieved.");
             throw new NetworkException("Transaction details could not be retrieved.");
+        }
+    }
+
+    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending) throws NetworkException {
+        var portfolioResponse = new PortfolioResponse();
+        String requestURI = KeyAndURLExtractor.API_VIEW_PORTFOLIO_URI;
+        String sortOrder = (ascending) ? "ASC" : "DESC";
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count + "");
+        queryParameters.addParameter("sortOrder", sortOrder);
+        queryParameters.addParameter("totalsRequired", "true");
+        queryParameters.addParameter("lotsRequired", "true");
+        queryParameters.addParameter("view", "COMPLETE");
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, portfolioResponse);
+            apiLogger.log("Account portfolio retrieved successfully.");
+            apiLogger.log("Response", portfolioResponse.toString());
+
+            return portfolioResponse;
+        }
+        catch (OauthException e) {
+            apiLogger.log("Account portfolio could not be retrieved.");
+            throw new NetworkException("Account portfolio could not be retrieved.");
         }
     }
 

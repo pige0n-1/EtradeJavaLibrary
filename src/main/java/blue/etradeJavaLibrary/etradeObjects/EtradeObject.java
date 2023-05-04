@@ -5,7 +5,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 public abstract class EtradeObject<E extends EtradeObject<E>>
@@ -34,7 +33,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         }
     }
 
-    protected Integer extractInt(String elementTagName) {
+    protected Integer extractInteger(String elementTagName) {
         try {
             return Integer.parseInt(extract(elementTagName));
         }

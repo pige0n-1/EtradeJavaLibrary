@@ -4,8 +4,6 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchExcepti
 import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
-import java.math.BigDecimal;
-
 public class Product extends EtradeObject<Product> {
 
     // Instance data fields
@@ -28,9 +26,9 @@ public class Product extends EtradeObject<Product> {
         securityType = extract("securityType");
         securitySubType = extract("securitySubType");
         callPut = extract("callPut");
-        expiryYear = extractInt("expiryYear");
-        expiryMonth = extractInt("expiryMonth");
-        expiryDay = extractInt("expiryDay");
+        expiryYear = extractInteger("expiryYear");
+        expiryMonth = extractInteger("expiryMonth");
+        expiryDay = extractInteger("expiryDay");
         strikePrice = extractDouble("strikePrice");
         expiryType = extract("expiryType");
         productId = extractObject(new ProductId());
