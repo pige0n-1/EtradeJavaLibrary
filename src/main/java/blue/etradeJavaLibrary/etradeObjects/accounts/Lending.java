@@ -34,8 +34,8 @@ public class Lending extends EtradeObject<Lending> {
         availableCredit = extractDouble("availableCredit");
         ytdInterestPaid = extractDouble("ytdInterestPaid");
         lastYtdInterestPaid = extractDouble("lastYtdInterestPaid");
-        paymentDueDate = new Date(extractLong("paymentDueDate"));
-        lastPaymentReceivedDate = new Date(extractLong("lastPaymentReceivedDate"));
+        paymentDueDate = extractDate("paymentDueDate");
+        lastPaymentReceivedDate = extractDate("lastPaymentReceivedDate");
         paymentReceivedMtd = extractDouble("paymentReceivedMtd");
 
         return this;

@@ -90,7 +90,7 @@ public class CompleteView extends EtradeObject<CompleteView> {
         adjPrevClose = extractDouble("adjPrevClose");
         volume = extractDouble("volume");
         lastTrade = extractDouble("lastTrade");
-        lastTradeTime = new Date(extractLong("lastTradeTime"));
+        lastTradeTime = extractDate("lastTradeTime");
         adjLastTrade = extractDouble("adjLastTrade");
         symbolDescription = extract("symbolDescription");
         perform1Month = extractDouble("perform1Month");
@@ -143,8 +143,8 @@ public class CompleteView extends EtradeObject<CompleteView> {
         annualDividend = extractDouble("annualDividend");
         dividend = extractDouble("dividend");
         divYield = extractDouble("divYield");
-        divPayDate = new Date(extractLong("divPayDate"));
-        exDividendDate = new Date(extractLong("exDividendDate"));
+        divPayDate = extractDate("divPayDate");
+        exDividendDate = extractDate("exDividendDate");
         cusip = extract("cusip");
         quoteStatus = extract("quoteStatus");
 

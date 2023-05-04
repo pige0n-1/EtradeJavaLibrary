@@ -31,7 +31,7 @@ public class BalanceResponse extends EtradeObject<BalanceResponse> {
 
         accountId = extract("accountId");
         institutionType = extract("institutionType");
-        asOfDate = new Date(extractLong("asOfDate"));
+        asOfDate = extractDate("asOfDate");
         accountType = extract("accountType");
         optionLevel = extract("optionLevel");
         accountDescription = extract("accountDescription");

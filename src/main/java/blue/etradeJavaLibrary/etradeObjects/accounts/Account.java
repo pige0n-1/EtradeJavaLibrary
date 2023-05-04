@@ -43,7 +43,7 @@ public class Account extends EtradeObject {
         accountType = extract("accountType");;
         institutionType = extract("institutionType");;
         accountStatus = extract("accountStatus");;
-        closedDate = new Date(extractLong("closedDate"));
+        closedDate = extractDate("closedDate");
         shareWorksAccount = extractBoolean("shareWorksAccount");
         shareWorksSource = extract("shareWorksSource");
         

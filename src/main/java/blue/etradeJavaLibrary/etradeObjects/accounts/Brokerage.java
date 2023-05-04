@@ -34,7 +34,7 @@ public class Brokerage extends EtradeObject<Brokerage> {
         memo = extract("memo");
         checkNo = extract("checkNo");
         orderNo = extract("orderNo");
-        settlementDate = new Date(extractLong("settlementDate"));
+        settlementDate = extractDate("settlementDate");
 
         return this;
     }

@@ -57,7 +57,7 @@ public class PositionLot extends EtradeObject<PositionLot> {
         availableQty = extractDouble("availableQty");
         orderNo = extractLong("orderNo");
         legNo = extractInteger("legNo");
-        acquiredDate = new Date(extractLong("acquiredDate"));
+        acquiredDate = extractDate("acquiredDate");
         locationCode = extractInteger("locationCode");
         exchangeRate = extractDouble("exchangeRate");
         settlementCurrency = extract("settlementCurrency");

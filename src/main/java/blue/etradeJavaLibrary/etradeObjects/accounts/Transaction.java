@@ -29,8 +29,8 @@ public class Transaction extends EtradeObject<Transaction> {
 
         transactionId = extractLong("transactionId");
         accountId = extract("accountId");
-        transactionDate = new Date(extractLong("transactionDate"));
-        postDate = new Date(extractLong("postDate"));
+        transactionDate = extractDate("transactionDate");
+        postDate = extractDate("postDate");
         amount = extractDouble("amount");
         description = extract("description");
         transactionType = extract("transactionType");
