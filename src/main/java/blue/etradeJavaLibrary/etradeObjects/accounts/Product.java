@@ -13,10 +13,10 @@ public class Product extends EtradeObject<Product> {
     public String securityType;
     public String securitySubType;
     public String callPut;
-    public int expiryYear;
-    public int expiryMonth;
-    public int expiryDay;
-    public BigDecimal strikePrice;
+    public Integer expiryYear;
+    public Integer expiryMonth;
+    public Integer expiryDay;
+    public Double strikePrice;
     public String expiryType;
     public ProductId productId;
 
@@ -31,7 +31,7 @@ public class Product extends EtradeObject<Product> {
         expiryYear = extractInt("expiryYear");
         expiryMonth = extractInt("expiryMonth");
         expiryDay = extractInt("expiryDay");
-        strikePrice = extractNumber("strikePrice");
+        strikePrice = extractDouble("strikePrice");
         expiryType = extract("expiryType");
         productId = extractObject(new ProductId());
 

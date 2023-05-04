@@ -9,19 +9,19 @@ import java.math.BigDecimal;
 public class OpenCalls extends EtradeObject<OpenCalls> {
 
     // Instance data fields
-    public BigDecimal minEquityCall;
-    public BigDecimal fedCall;
-    public BigDecimal cashCall;
-    public BigDecimal houseCall;
+    public Double minEquityCall;
+    public Double fedCall;
+    public Double cashCall;
+    public Double houseCall;
 
     @Override
     public OpenCalls configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        minEquityCall = extractNumber("minEquityCall");
-        fedCall = extractNumber("fedCall");
-        cashCall = extractNumber("cashCall");
-        houseCall = extractNumber("houseCall");
+        minEquityCall = extractDouble("minEquityCall");
+        fedCall = extractDouble("fedCall");
+        cashCall = extractDouble("cashCall");
+        houseCall = extractDouble("houseCall");
 
         return this;
     }

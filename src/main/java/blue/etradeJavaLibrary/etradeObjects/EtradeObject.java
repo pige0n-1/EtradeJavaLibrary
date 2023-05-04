@@ -6,6 +6,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 public abstract class EtradeObject<E extends EtradeObject<E>>
         implements XMLDefinedObject<E> {
@@ -29,7 +30,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
             return Long.parseLong(extract(elementTagName));
         }
         catch (Exception ex) {
-            return 0L;
+            return null;
         }
     }
 
@@ -38,22 +39,31 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
             return Integer.parseInt(extract(elementTagName));
         }
         catch (Exception ex) {
-            return 0;
+            return null;
         }
     }
 
-    protected BigDecimal extractNumber(String elementTagName) {
+    protected Double extractDouble(String elementTagName) {
         try {
-            return new BigDecimal(extract(elementTagName));
+            return Double.parseDouble(extract(elementTagName));
         }
         catch (Exception ex) {
-            return new BigDecimal("0");
+            return null;
         }
     }
 
     protected Boolean extractBoolean(String elementTagName) {
         try {
             return Boolean.parseBoolean(extract(elementTagName));
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+
+    protected Date extractDate(String elementTagName) {
+        try {
+            return new Date(extractLong(elementTagName));
         }
         catch (Exception ex) {
             return null;

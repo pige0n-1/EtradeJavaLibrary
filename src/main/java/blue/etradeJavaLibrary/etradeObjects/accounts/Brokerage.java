@@ -11,11 +11,11 @@ public class Brokerage extends EtradeObject<Brokerage> {
 
     // Instance data fields
     public Product product;
-    public BigDecimal quantity;
-    public BigDecimal price;
+    public Double quantity;
+    public Double price;
     public String settlementCurrency;
     public String paymentCurrency;
-    public BigDecimal fee;
+    public Double fee;
     public String memo;
     public String checkNo;
     public String orderNo;
@@ -26,11 +26,11 @@ public class Brokerage extends EtradeObject<Brokerage> {
         this.xmlDocument = xmlDocument;
 
         product = extractObject(new Product());
-        quantity = extractNumber("quantity");
-        price = extractNumber("price");
+        quantity = extractDouble("quantity");
+        price = extractDouble("price");
         settlementCurrency = extract("settlementCurrency");
         paymentCurrency = extract("paymentCurrency");
-        fee = extractNumber("fee");
+        fee = extractDouble("fee");
         memo = extract("memo");
         checkNo = extract("checkNo");
         orderNo = extract("orderNo");

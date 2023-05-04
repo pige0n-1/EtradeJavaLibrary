@@ -10,33 +10,33 @@ import java.util.Date;
 public class Lending extends EtradeObject<Lending> {
 
     // Instance data fields
-    public BigDecimal currentBalance;
-    public BigDecimal creditLine;
-    public BigDecimal outstandingBalance;
-    public BigDecimal minPaymentDue;
-    public BigDecimal amountPastDue;
-    public BigDecimal availableCredit;
-    public BigDecimal ytdInterestPaid;
-    public BigDecimal lastYtdInterestPaid;
+    public Double currentBalance;
+    public Double creditLine;
+    public Double outstandingBalance;
+    public Double minPaymentDue;
+    public Double amountPastDue;
+    public Double availableCredit;
+    public Double ytdInterestPaid;
+    public Double lastYtdInterestPaid;
     public Date paymentDueDate;
     public Date lastPaymentReceivedDate;
-    public BigDecimal paymentReceivedMtd;
+    public Double paymentReceivedMtd;
 
     @Override
     public Lending configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        currentBalance = extractNumber("currentBalance");
-        creditLine = extractNumber("creditLine");
-        outstandingBalance = extractNumber("outstandingBalance");
-        minPaymentDue = extractNumber("minPaymentDue");
-        amountPastDue = extractNumber("amountPastDue");
-        availableCredit = extractNumber("availableCredit");
-        ytdInterestPaid = extractNumber("ytdInterestPaid");
-        lastYtdInterestPaid = extractNumber("lastYtdInterestPaid");
+        currentBalance = extractDouble("currentBalance");
+        creditLine = extractDouble("creditLine");
+        outstandingBalance = extractDouble("outstandingBalance");
+        minPaymentDue = extractDouble("minPaymentDue");
+        amountPastDue = extractDouble("amountPastDue");
+        availableCredit = extractDouble("availableCredit");
+        ytdInterestPaid = extractDouble("ytdInterestPaid");
+        lastYtdInterestPaid = extractDouble("lastYtdInterestPaid");
         paymentDueDate = new Date(extractLong("paymentDueDate"));
         lastPaymentReceivedDate = new Date(extractLong("lastPaymentReceivedDate"));
-        paymentReceivedMtd = extractNumber("paymentReceivedMtd");
+        paymentReceivedMtd = extractDouble("paymentReceivedMtd");
 
         return this;
     }

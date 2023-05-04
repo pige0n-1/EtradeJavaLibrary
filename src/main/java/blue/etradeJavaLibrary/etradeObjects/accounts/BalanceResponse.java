@@ -15,7 +15,7 @@ public class BalanceResponse extends EtradeObject<BalanceResponse> {
     public String accountType;
     public String optionLevel;
     public String accountDescription;
-    public int quoteMode;
+    public Integer quoteMode;
     public String dayTraderStatus;
     public String accountMode;
     public String accountDesc;

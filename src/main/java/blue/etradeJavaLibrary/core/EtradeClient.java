@@ -186,6 +186,26 @@ public final class EtradeClient extends APIManager
         }
     }
 
+    public TransactionListResponse getTransactionList(String accountIdKey, int count) throws NetworkException {
+        var transactionListResponse = new TransactionListResponse();
+        String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count + "");
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, transactionListResponse);
+            apiLogger.log("Transactions list retrieved successfully.");
+            apiLogger.log("Response", transactionListResponse.toString());
+
+            return transactionListResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Transactions list could not be retrieved.");
+            throw new NetworkException("Transactions list could not be retrieved.", ex);
+        }
+    }
+
     public TransactionListResponse getTransactionList(String accountIdKey, Date startDate, Date endDate) throws NetworkException {
         return getTransactionList(accountIdKey, startDate, endDate, 50, true);
     }

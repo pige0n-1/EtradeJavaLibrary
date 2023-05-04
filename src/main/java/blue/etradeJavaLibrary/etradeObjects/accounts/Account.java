@@ -12,7 +12,7 @@ import java.util.Date;
 public class Account extends EtradeObject {
     
     // Instance data fields
-    public long accountId;
+    public Long accountId;
     public String accountIdKey;
     public String accountMode;
     public String accountDesc;
@@ -21,7 +21,7 @@ public class Account extends EtradeObject {
     public String institutionType;
     public String accountStatus;
     public Date closedDate;
-    public boolean shareWorksAccount;
+    public Boolean shareWorksAccount;
     public String shareWorksSource;
     
     /**

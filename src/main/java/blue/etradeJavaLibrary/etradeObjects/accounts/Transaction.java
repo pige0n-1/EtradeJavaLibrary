@@ -10,16 +10,16 @@ import java.util.Date;
 public class Transaction extends EtradeObject<Transaction> {
 
     // Instance data fields
-    public long transactionId;
+    public Long transactionId;
     public String accountId;
     public Date transactionDate;
     public Date postDate;
-    public BigDecimal amount;
+    public Double amount;
     public String description;
     public String transactionType;
-    public boolean imageFlag;
+    public Boolean imageFlag;
     public String instType;
-    public long storeId;
+    public Long storeId;
     public Category category;
     public Brokerage brokerage;
 
@@ -31,7 +31,7 @@ public class Transaction extends EtradeObject<Transaction> {
         accountId = extract("accountId");
         transactionDate = new Date(extractLong("transactionDate"));
         postDate = new Date(extractLong("postDate"));
-        amount = extractNumber("amount");
+        amount = extractDouble("amount");
         description = extract("description");
         transactionType = extract("transactionType");
         imageFlag = extractBoolean("imageFlag");

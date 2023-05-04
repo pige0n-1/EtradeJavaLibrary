@@ -9,21 +9,21 @@ import java.math.BigDecimal;
 public class RealTimeValues extends EtradeObject<RealTimeValues> {
 
     // Instance data fields
-    public BigDecimal totalAccountValue;
-    public BigDecimal netMv;
-    public BigDecimal netMvLong;
-    public BigDecimal netMvShort;
-    public BigDecimal totalLongValue;
+    public Double totalAccountValue;
+    public Double netMv;
+    public Double netMvLong;
+    public Double netMvShort;
+    public Double totalLongValue;
 
     @Override
     public RealTimeValues configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        totalAccountValue = extractNumber("totalAccountValue");
-        netMv = extractNumber("netMv");
-        netMvLong = extractNumber("netMvLong");
-        netMvShort = extractNumber("netMvShort");
-        totalLongValue = extractNumber("totalLongValue");
+        totalAccountValue = extractDouble("totalAccountValue");
+        netMv = extractDouble("netMv");
+        netMvLong = extractDouble("netMvLong");
+        netMvShort = extractDouble("netMvShort");
+        totalLongValue = extractDouble("totalLongValue");
 
         return this;
     }

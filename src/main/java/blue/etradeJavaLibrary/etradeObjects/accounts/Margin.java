@@ -9,15 +9,15 @@ import java.math.BigDecimal;
 public class Margin extends EtradeObject<Margin> {
 
     // Instance data fields
-    public BigDecimal dtCashOpenOrderReserve;
-    public BigDecimal dtMarginOpenOrderReserve;
+    public Double dtCashOpenOrderReserve;
+    public Double dtMarginOpenOrderReserve;
 
     @Override
     public Margin configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        dtCashOpenOrderReserve = extractNumber("dtCashOpenOrderReserve");
-        dtMarginOpenOrderReserve = extractNumber("dtMarginOpenOrderReserve");
+        dtCashOpenOrderReserve = extractDouble("dtCashOpenOrderReserve");
+        dtMarginOpenOrderReserve = extractDouble("dtMarginOpenOrderReserve");
 
         return this;
     }
