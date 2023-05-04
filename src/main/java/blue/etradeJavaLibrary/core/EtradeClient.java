@@ -271,7 +271,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending, int pageNumber) throws NetworkException {
         var portfolioResponse = new PortfolioResponse();
         String requestURI = KeyAndURLExtractor.API_VIEW_PORTFOLIO_URI;
         String sortOrder = (ascending) ? "ASC" : "DESC";
@@ -283,6 +283,7 @@ public final class EtradeClient extends APIManager
         queryParameters.addParameter("totalsRequired", "true");
         queryParameters.addParameter("lotsRequired", "true");
         queryParameters.addParameter("view", "COMPLETE");
+        queryParameters.addParameter("pageNumber", pageNumber + "");
 
         try {
             sendAPIGetRequest(requestURI, pathParameters, queryParameters, portfolioResponse);
@@ -295,6 +296,14 @@ public final class EtradeClient extends APIManager
             apiLogger.log("Account portfolio could not be retrieved.");
             throw new NetworkException("Account portfolio could not be retrieved.");
         }
+    }
+
+    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending) throws NetworkException {
+        return getAccountPortfolio(accountIdKey, count, ascending, 1);
+    }
+
+    public PortfolioResponse getAccountPortfolio(String accountIdKey) throws NetworkException {
+        return getAccountPortfolio(accountIdKey, 50, false);
     }
 
     @Override

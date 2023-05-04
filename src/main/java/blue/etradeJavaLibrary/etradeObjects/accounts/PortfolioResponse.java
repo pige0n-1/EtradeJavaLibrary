@@ -10,7 +10,7 @@ public class PortfolioResponse extends EtradeObject<PortfolioResponse> {
 
     // Instance data fields
     public Totals totals;
-    public ArrayList<AccountPortfolio> accountPortfolio;
+    public ArrayList<AccountPortfolio> accountPortfolio = new ArrayList<>();
 
     @Override
     public PortfolioResponse configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {

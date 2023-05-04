@@ -2,7 +2,8 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 
-import blue.etradeJavaLibrary.core.logging.ProgramLogger;
+import java.util.Arrays;
+import java.util.Iterator;
 
 /**
  * This child class of Parameters is used to represent parameters in the OAuth
@@ -10,11 +11,9 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
  * class takes in an object of this class and a BaseURL object, as well as
  * QueryParameters, to construct a full URL object. The BaseURL object must have
  * all the names of the path parameters embedded in it, with each one being
- * surrounded with curly brackets 
- * (example: "https://etrade.com/accounts/{accountNumber}").
- * The corresponding PathParameters object would have a parameter with a key
- * called "accountNumber". These must match exactly, or an exception will be
- * thrown.
+ * surrounded with curly brackets The corresponding PathParameters object would
+ * have a parameter with a key with the same name. These must match exactly,
+ * or an exception will be thrown.
  */
 public class PathParameters extends Parameters {
     
@@ -44,5 +43,46 @@ public class PathParameters extends Parameters {
     public PathParameters(String key1, String value1, String key2, String value2) {
         addParameter(key1, value1);
         addParameter(key2, value2);
+    }
+
+    /**
+     * Adds the specified key and a list of values. The values are represented as follows:
+     * "value1,value2,value3,...,valuex" where is x is the length of the values array.
+     * @param key
+     * @param values
+     */
+    public void addParameter(String key, String... values) {
+        StringBuilder valueString = new StringBuilder();
+
+        Iterator<String> valuesIterator = Arrays.stream(values).iterator();
+        while (valuesIterator.hasNext()) {
+            valueString.append(valuesIterator.next());
+            if (valuesIterator.hasNext()) valueString.append(",");
+        }
+
+        addParameter(key, valueString);
+    }
+
+    /**
+     * Adds the specified key and a list of values. The values are represented as follows:
+     * "value1,value2,value3,...,valuex" where is x is the length of the values array.
+     * @param key
+     * @param values
+     */
+    public void addParameter(String key, int... values) {
+        String[] stringValues = new String[values.length];
+        for (int i = 0; i < values.length; i++)
+            stringValues[i] = values[i] + "";
+
+        addParameter(key, stringValues);
+    }
+
+    /**
+     * Adds the key and the string value of the object passed
+     * @param key
+     * @param value
+     */
+    public void addParameter(String key, Object value) {
+        addParameter(key, value.toString());
     }
 }

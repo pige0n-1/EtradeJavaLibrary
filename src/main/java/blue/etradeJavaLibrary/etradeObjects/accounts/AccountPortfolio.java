@@ -13,7 +13,7 @@ public class AccountPortfolio extends EtradeObject<AccountPortfolio> {
     public String next;
     public Integer totalNoOfPages;
     public String nextPageNo;
-    public ArrayList<Position> position;
+    public ArrayList<Position> position = new ArrayList<>();
 
     @Override
     public AccountPortfolio configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
@@ -21,7 +21,7 @@ public class AccountPortfolio extends EtradeObject<AccountPortfolio> {
 
         accountId = extract("accountId");
         next = extract("next");
-        totalNoOfPages = extractInteger("totalNoOfPages");
+        totalNoOfPages = extractInteger("totalPages");
         nextPageNo = extract("nextPageNo");
         var positionNodeList = getList(new Position());
         for (int i = 0; i < positionNodeList.getLength(); i++)
