@@ -57,24 +57,6 @@ public class Account extends EtradeObject {
     }
     
     @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Account:\n");
-        stringBuilder.append("accountId: ").append(accountId).append("\n");
-        stringBuilder.append("accountIdKey: ").append(accountIdKey).append("\n");
-        stringBuilder.append("accountMode: ").append(accountMode).append("\n");
-        stringBuilder.append("accountDesc: ").append(accountDesc).append("\n");
-        stringBuilder.append("accountName: ").append(accountName).append("\n");
-        stringBuilder.append("accountType: ").append(accountType).append("\n");
-        stringBuilder.append("institutionType: ").append(institutionType).append("\n");
-        stringBuilder.append("accountStatus: ").append(accountStatus).append("\n");
-        stringBuilder.append("closedDate: ").append(closedDate).append("\n");
-        stringBuilder.append("shareWorksAccount: ").append(shareWorksAccount).append("\n");
-        stringBuilder.append("shareWorksSource: ").append(shareWorksSource);
-        
-        return stringBuilder.toString();
-    }
-    
-    @Override
     public boolean equals(Object otherObject) {
         if (otherObject instanceof Account otherAccount) 
             return otherAccount.accountIdKey.equals(this.accountIdKey);

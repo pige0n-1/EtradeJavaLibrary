@@ -31,6 +31,15 @@ public class PathParameters extends Parameters {
     public PathParameters(String key, String value) {
         addParameter(key, value);
     }
+
+    /**
+     * Creates a PathParameters with one parameter
+     * @param key
+     * @param value
+     */
+    public PathParameters(String key, long value) {
+        addParameter(key, value + "");
+    }
     
     /**
      * A convenient constructor for a PathParameters that starts
@@ -41,6 +50,11 @@ public class PathParameters extends Parameters {
      * @param value2 
      */
     public PathParameters(String key1, String value1, String key2, String value2) {
+        addParameter(key1, value1);
+        addParameter(key2, value2);
+    }
+
+    public PathParameters(String key1, long value1, String key2, long value2) {
         addParameter(key1, value1);
         addParameter(key2, value2);
     }
@@ -69,12 +83,21 @@ public class PathParameters extends Parameters {
      * @param key
      * @param values
      */
-    public void addParameter(String key, int... values) {
+    public void addParameter(String key, long... values) {
         String[] stringValues = new String[values.length];
         for (int i = 0; i < values.length; i++)
             stringValues[i] = values[i] + "";
 
         addParameter(key, stringValues);
+    }
+
+    /**
+     * Adds the specified key and value
+     * @param key
+     * @param value
+     */
+    public void addParameter(String key, long value) {
+        addParameter(key, value + "");
     }
 
     /**

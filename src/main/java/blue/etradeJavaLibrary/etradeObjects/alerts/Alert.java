@@ -4,11 +4,13 @@ import blue.etradeJavaLibrary.core.network.oauth.responses.ObjectMismatchExcepti
 import blue.etradeJavaLibrary.etradeObjects.EtradeObject;
 import org.w3c.dom.Document;
 
+import java.time.LocalDateTime;
+
 public class Alert extends EtradeObject<Alert> {
 
     // Instance data fields
     public Long id;
-    public Long createTime;
+    public LocalDateTime createTime;
     public String subject;
     public String status;
 
@@ -17,7 +19,7 @@ public class Alert extends EtradeObject<Alert> {
         this.xmlDocument = xmlDocument;
 
         id = extractLong("id");
-        createTime = extractLong("createTime");
+        createTime = extractTime("createTime");
         subject = extract("subject");
         status = extract("status");
 

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class AccountPortfolio extends EtradeObject<AccountPortfolio> {
 
     // Instance data fields
-    public String accountId;
+    public Long accountId;
     public String next;
     public Integer totalNoOfPages;
     public String nextPageNo;
@@ -19,7 +19,7 @@ public class AccountPortfolio extends EtradeObject<AccountPortfolio> {
     public AccountPortfolio configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        accountId = extract("accountId");
+        accountId = extractLong("accountId");
         next = extract("next");
         totalNoOfPages = extractInteger("totalPages");
         nextPageNo = extract("nextPageNo");

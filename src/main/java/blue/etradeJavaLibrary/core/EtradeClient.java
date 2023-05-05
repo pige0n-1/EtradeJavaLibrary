@@ -7,6 +7,7 @@ import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.etradeObjects.accounts.*;
 import blue.etradeJavaLibrary.etradeObjects.alerts.Alert;
+import blue.etradeJavaLibrary.etradeObjects.alerts.AlertDetailsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
 
 import javax.management.Query;
@@ -144,7 +145,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public BalanceResponse getAccountBalance(String accountIdKey) throws NetworkException {
+    public BalanceResponse getAccountBalance(long accountIdKey) throws NetworkException {
         String instType = "BROKERAGE";
         String realTimeNAV = "true";
         var balanceResponse = new BalanceResponse();
@@ -168,7 +169,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(String accountIdKey) throws NetworkException {
+    public TransactionListResponse getTransactionList(long accountIdKey) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
@@ -186,7 +187,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(String accountIdKey, int count) throws NetworkException {
+    public TransactionListResponse getTransactionList(long accountIdKey, int count) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
@@ -206,11 +207,11 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(String accountIdKey, Date startDate, Date endDate) throws NetworkException {
+    public TransactionListResponse getTransactionList(long accountIdKey, LocalDate startDate, LocalDate endDate) throws NetworkException {
         return getTransactionList(accountIdKey, startDate, endDate, 50, true);
     }
 
-    public TransactionListResponse getTransactionList(String accountIdKey, Date startDate, Date endDate, int count, boolean ascending) throws NetworkException {
+    public TransactionListResponse getTransactionList(long accountIdKey, LocalDate startDate, LocalDate endDate, int count, boolean ascending) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String startDateString = formatDateMMDDYYYY(startDate);
         String endDateString = formatDateMMDDYYYY(endDate);
@@ -236,10 +237,10 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId) throws NetworkException {
+    public TransactionDetailsResponse getTransactionDetails(long accountIdKey, long transactionId) throws NetworkException {
         var transactionDetailsResponse = new TransactionDetailsResponse();
         String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
-        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId + "");
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId);
 
         try {
             sendAPIGetRequest(requestURI, pathParameters, transactionDetailsResponse);
@@ -254,10 +255,10 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId, long storeId) throws NetworkException {
+    public TransactionDetailsResponse getTransactionDetails(long accountIdKey, long transactionId, long storeId) throws NetworkException {
         var transactionDetailsResponse = new TransactionDetailsResponse();
         String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
-        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId + "");
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId);
         var queryParameters = new QueryParameters();
         queryParameters.addParameter("storeId", storeId + "");
 
@@ -274,7 +275,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending, int pageNumber) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(long accountIdKey, int count, boolean ascending, int pageNumber) throws NetworkException {
         var portfolioResponse = new PortfolioResponse();
         String requestURI = KeyAndURLExtractor.API_VIEW_PORTFOLIO_URI;
         String sortOrder = (ascending) ? "ASC" : "DESC";
@@ -301,11 +302,11 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(long accountIdKey, int count, boolean ascending) throws NetworkException {
         return getAccountPortfolio(accountIdKey, count, ascending, 1);
     }
 
-    public PortfolioResponse getAccountPortfolio(String accountIdKey) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(long accountIdKey) throws NetworkException {
         return getAccountPortfolio(accountIdKey, 50, true);
     }
 
@@ -369,6 +370,54 @@ public final class EtradeClient extends APIManager
 
     public AlertsResponse getAccountAlerts() throws NetworkException {
         return getAccountAlerts(25);
+    }
+
+    public AlertsResponse getAlerts(int count, boolean ascending) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_VIEW_ALERTS_URI;
+        var alertsResponse = new AlertsResponse();
+        String direction = (ascending) ? "ASC" : "DESC";
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count);
+        queryParameters.addParameter("direction", direction);
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, alertsResponse);
+            apiLogger.log("All alerts retrieved successfully.");
+            apiLogger.log("Response", alertsResponse.toString());
+
+            return alertsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("All alerts could not be retrieved.");
+            throw new NetworkException("All alerts could not be retrieved.");
+        }
+    }
+
+    public AlertsResponse getAlerts(int count) throws NetworkException {
+        return getAlerts(count, true);
+    }
+
+    public AlertsResponse getAlerts() throws NetworkException {
+        return getAlerts(25, true);
+    }
+
+    public AlertDetailsResponse getAlertDetails(long alertId) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_ALERT_DETAILS_URI;
+        var alertDetailsResponse = new AlertDetailsResponse();
+        var pathParameters = new PathParameters("id", alertId);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, alertDetailsResponse);
+            apiLogger.log("Alert details retrieved successfully");
+            apiLogger.log("Response", alertDetailsResponse.toString());
+
+            return alertDetailsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Alert details could not be retrieved");
+            throw new NetworkException("Alert details could not be retrieved");
+        }
     }
 
     @Override
@@ -511,8 +560,8 @@ public final class EtradeClient extends APIManager
         return DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT).format(timeOfLastRequestAtThisTimeZone);
     }
 
-    private static String formatDateMMDDYYYY(Date date) {
-        var formatter = new SimpleDateFormat("MMddyyyy");
+    private static String formatDateMMDDYYYY(LocalDate date) {
+        var formatter = DateTimeFormatter.ofPattern("MMddyyyy");
 
         return formatter.format(date);
     }

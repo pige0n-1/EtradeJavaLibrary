@@ -28,14 +28,4 @@ public class Accounts extends EtradeObject<Accounts> {
         
         return this;
     }
-    
-    @Override
-    public String toString() {
-        StringBuilder stringBuilder = new StringBuilder("Accounts list:\n");
-        
-        for (Account account : accounts)
-            stringBuilder.append(account.toString()).append("\n");
-        
-        return stringBuilder.toString();
-    }
 }

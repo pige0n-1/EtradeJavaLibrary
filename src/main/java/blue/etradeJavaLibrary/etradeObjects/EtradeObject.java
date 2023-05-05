@@ -6,6 +6,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Date;
 
 public abstract class EtradeObject<E extends EtradeObject<E>>
@@ -64,6 +66,15 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     protected LocalDate extractDate(String elementTagName) {
         try {
             return epochMillisecondToLocalDate(extractLong(elementTagName));
+        }
+        catch (Exception ex) {
+            return null;
+        }
+    }
+
+    protected LocalDateTime extractTime(String elementTagName) {
+        try {
+            return epochMillisecondToLocalDateTime(extractLong(elementTagName));
         }
         catch (Exception ex) {
             return null;
@@ -135,5 +146,9 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         final long MILLISECONDS_TO_DAYS_CONVERSION_DIVISOR = 1000 * 60 * 60 * 24;
 
         return LocalDate.ofEpochDay(epochMillisecond / MILLISECONDS_TO_DAYS_CONVERSION_DIVISOR);
+    }
+
+    private static LocalDateTime epochMillisecondToLocalDateTime(long epochMillisecond) {
+        return LocalDateTime.ofEpochSecond(epochMillisecond, 0, ZoneOffset.ofHours(0));
     }
 }
