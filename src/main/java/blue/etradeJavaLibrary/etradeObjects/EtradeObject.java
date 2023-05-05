@@ -22,7 +22,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return xmlDocument.getElementsByTagName(elementTagName).item(0).getTextContent();
         }
-        catch (NullPointerException e) {
+        catch (Throwable e) {
             return null;
         }
     }
@@ -31,7 +31,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return Long.parseLong(extract(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -40,7 +40,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return Integer.parseInt(extract(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -49,7 +49,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return Double.parseDouble(extract(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -58,7 +58,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return Boolean.parseBoolean(extract(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -67,7 +67,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return epochMillisecondToLocalDate(extractLong(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -76,7 +76,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return epochMillisecondToLocalDateTime(extractLong(elementTagName));
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -89,7 +89,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         try {
             return xmlDocument.getElementsByTagName(elementTagName);
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -101,7 +101,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
 
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
-        catch (Exception ex) {
+        catch (Throwable ex) {
             return null;
         }
     }
@@ -112,7 +112,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
 
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
-        catch (ObjectMismatchException e) {
+        catch (Throwable e) {
             return null;
         }
     }

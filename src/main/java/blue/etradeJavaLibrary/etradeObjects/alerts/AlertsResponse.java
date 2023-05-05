@@ -14,10 +14,14 @@ public class AlertsResponse extends EtradeObject<AlertsResponse> {
 
     @Override
     public AlertsResponse configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
+
         this.xmlDocument = xmlDocument;
 
         totalAlerts = extractLong("totalAlerts");
         var nodeList = getList(new Alert());
+
+        if (nodeList == null) return this; // Etrade sends an empty string if there are no alerts
+
         for (int i = 0; i < nodeList.getLength(); i++)
             alerts.add(extractObject(new Alert(), nodeList.item(i)));
 

@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.*;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -147,7 +148,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public BalanceResponse getAccountBalance(long accountIdKey) throws NetworkException {
+    public BalanceResponse getAccountBalance(String accountIdKey) throws NetworkException {
         String instType = "BROKERAGE";
         String realTimeNAV = "true";
         var balanceResponse = new BalanceResponse();
@@ -171,7 +172,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(long accountIdKey) throws NetworkException {
+    public TransactionListResponse getTransactionList(String accountIdKey) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
@@ -189,7 +190,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(long accountIdKey, int count) throws NetworkException {
+    public TransactionListResponse getTransactionList(String accountIdKey, int count) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String requestURI = KeyAndURLExtractor.API_LIST_TRANSACTIONS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
@@ -209,11 +210,11 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionListResponse getTransactionList(long accountIdKey, LocalDate startDate, LocalDate endDate) throws NetworkException {
+    public TransactionListResponse getTransactionList(String accountIdKey, LocalDate startDate, LocalDate endDate) throws NetworkException {
         return getTransactionList(accountIdKey, startDate, endDate, 50, true);
     }
 
-    public TransactionListResponse getTransactionList(long accountIdKey, LocalDate startDate, LocalDate endDate, int count, boolean ascending) throws NetworkException {
+    public TransactionListResponse getTransactionList(String accountIdKey, LocalDate startDate, LocalDate endDate, int count, boolean ascending) throws NetworkException {
         var transactionListResponse = new TransactionListResponse();
         String startDateString = formatDateMMDDYYYY(startDate);
         String endDateString = formatDateMMDDYYYY(endDate);
@@ -239,7 +240,7 @@ public final class EtradeClient extends APIManager
         }
     }
 
-    public TransactionDetailsResponse getTransactionDetails(long accountIdKey, long transactionId) throws NetworkException {
+    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId) throws NetworkException {
         var transactionDetailsResponse = new TransactionDetailsResponse();
         String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId);
@@ -253,11 +254,11 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Transaction details could not be retrieved.");
-            throw new NetworkException("Transaction details could not be retrieved.");
+            throw new NetworkException("Transaction details could not be retrieved.", ex);
         }
     }
 
-    public TransactionDetailsResponse getTransactionDetails(long accountIdKey, long transactionId, long storeId) throws NetworkException {
+    public TransactionDetailsResponse getTransactionDetails(String accountIdKey, long transactionId, long storeId) throws NetworkException {
         var transactionDetailsResponse = new TransactionDetailsResponse();
         String requestURI = KeyAndURLExtractor.API_TRANSACTION_DETAILS_URI;
         var pathParameters = new PathParameters("accountIdKey", accountIdKey, "transactionId", transactionId);
@@ -273,11 +274,11 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Transaction details could not be retrieved.");
-            throw new NetworkException("Transaction details could not be retrieved.");
+            throw new NetworkException("Transaction details could not be retrieved.", ex);
         }
     }
 
-    public PortfolioResponse getAccountPortfolio(long accountIdKey, int count, boolean ascending, int pageNumber) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending, int pageNumber) throws NetworkException {
         var portfolioResponse = new PortfolioResponse();
         String requestURI = KeyAndURLExtractor.API_VIEW_PORTFOLIO_URI;
         String sortOrder = (ascending) ? "ASC" : "DESC";
@@ -298,17 +299,17 @@ public final class EtradeClient extends APIManager
 
             return portfolioResponse;
         }
-        catch (OauthException e) {
+        catch (OauthException ex) {
             apiLogger.log("Account portfolio could not be retrieved.");
-            throw new NetworkException("Account portfolio could not be retrieved.");
+            throw new NetworkException("Account portfolio could not be retrieved.", ex);
         }
     }
 
-    public PortfolioResponse getAccountPortfolio(long accountIdKey, int count, boolean ascending) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(String accountIdKey, int count, boolean ascending) throws NetworkException {
         return getAccountPortfolio(accountIdKey, count, ascending, 1);
     }
 
-    public PortfolioResponse getAccountPortfolio(long accountIdKey) throws NetworkException {
+    public PortfolioResponse getAccountPortfolio(String accountIdKey) throws NetworkException {
         return getAccountPortfolio(accountIdKey, 50, true);
     }
 
@@ -331,7 +332,7 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Stock alerts could not be retrieved.");
-            throw new NetworkException("Stock alerts could not be retrieved.");
+            throw new NetworkException("Stock alerts could not be retrieved.", ex);
         }
     }
 
@@ -362,7 +363,7 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Account alerts could not be retrieved.");
-            throw new NetworkException("Account alerts could not be retrieved.");
+            throw new NetworkException("Account alerts could not be retrieved.", ex);
         }
     }
 
@@ -392,7 +393,7 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("All alerts could not be retrieved.");
-            throw new NetworkException("All alerts could not be retrieved.");
+            throw new NetworkException("All alerts could not be retrieved.", ex);
         }
     }
 
@@ -418,7 +419,7 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Alert details could not be retrieved");
-            throw new NetworkException("Alert details could not be retrieved");
+            throw new NetworkException("Alert details could not be retrieved", ex);
         }
     }
 
@@ -437,8 +438,16 @@ public final class EtradeClient extends APIManager
         }
         catch (OauthException ex) {
             apiLogger.log("Alerts could not be deleted.");
-            throw new NetworkException("Alerts could not be deleted.");
+            throw new NetworkException("Alerts could not be deleted.", ex);
         }
+    }
+
+    public DeleteAlertsResponse deleteAlerts(ArrayList<? extends Alert> alerts) throws NetworkException {
+        long[] alertIds = new long[alerts.size()];
+        for (int i = 0; i < alerts.size(); i++)
+            alertIds[i] = alerts.get(i).id;
+
+        return deleteAlerts(alertIds);
     }
 
     @Override

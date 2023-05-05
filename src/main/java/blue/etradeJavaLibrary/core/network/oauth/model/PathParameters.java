@@ -13,14 +13,20 @@ import java.util.Iterator;
  * all the names of the path parameters embedded in it, with each one being
  * surrounded with curly brackets The corresponding PathParameters object would
  * have a parameter with a key with the same name. These must match exactly,
- * or an exception will be thrown.
+ * or an exception will be thrown. By default, PathParameters does not encode
+ * to RFC3986 percent-encoding standards.
  */
 public class PathParameters extends Parameters {
+
+    // Static data fields
+    private static final boolean RFC3986_ENCODED = false;
     
     /**
      * Constructs an empty PathParameters object
      */
-    public PathParameters() {}
+    public PathParameters() {
+        super(RFC3986_ENCODED);
+    }
     
     /**
      * A convenient constructor for a PathParameters that starts
@@ -29,6 +35,7 @@ public class PathParameters extends Parameters {
      * @param value 
      */
     public PathParameters(String key, String value) {
+        super(RFC3986_ENCODED);
         addParameter(key, value);
     }
 
@@ -38,6 +45,7 @@ public class PathParameters extends Parameters {
      * @param value
      */
     public PathParameters(String key, long value) {
+        super(RFC3986_ENCODED);
         addParameter(key, value + "");
     }
     
@@ -50,13 +58,49 @@ public class PathParameters extends Parameters {
      * @param value2 
      */
     public PathParameters(String key1, String value1, String key2, String value2) {
+        super(RFC3986_ENCODED);
         addParameter(key1, value1);
         addParameter(key2, value2);
     }
 
+    /**
+     * Constructs a PathParameters with a starting two keys and two values
+     * @param key1
+     * @param value1
+     * @param key2
+     * @param value2
+     */
     public PathParameters(String key1, long value1, String key2, long value2) {
+        super(RFC3986_ENCODED);
         addParameter(key1, value1);
         addParameter(key2, value2);
+    }
+
+    /**
+     * Constructs a PathParameters with a starting two keys and two values
+     * @param key1
+     * @param value1
+     * @param key2
+     * @param value2
+     */
+    public PathParameters(String key1, String value1, String key2, long value2) {
+        super(RFC3986_ENCODED);
+        addParameter(key1, value1);
+        addParameter(key2, value2);
+    }
+
+    /**
+     * Adds the specified key and a list of values. The values are represented as follows:
+     * "value1,value2,value3,...,valuex" where is x is the length of the values array.
+     * @param key
+     * @param values
+     */
+    public PathParameters(String key, String... values) {
+        String[] stringValues = new String[values.length];
+        for (int i = 0; i < values.length; i++)
+            stringValues[i] = values[i];
+
+        addParameter(key, stringValues);
     }
 
     /**

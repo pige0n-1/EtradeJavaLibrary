@@ -39,7 +39,10 @@ public class APIResponse extends BaseResponse<Document> {
         try {
             return XMLDefinedObject.parseXML(getConnectionResponseStream());
         }
-        catch (SAXException | IOException ex) {
+        catch (SAXException ex) {
+            return null;
+        }
+        catch (IOException ex) {
             throw new OauthException("The response document could not be parsed.", ex);
         }
     }
