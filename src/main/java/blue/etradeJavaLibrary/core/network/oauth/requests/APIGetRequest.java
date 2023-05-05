@@ -14,19 +14,19 @@ import blue.etradeJavaLibrary.core.network.oauth.model.QueryParameters;
  */
 public final class APIGetRequest extends APIRequest {
 
-    public APIGetRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, OauthKeySet keys) throws OauthException {
+    public APIGetRequest(BaseURL baseURL, PathParameters pathParameters, QueryParameters queryParameters, OauthKeySet keys) {
         super(baseURL, pathParameters, queryParameters, keys, HttpMethod.GET);
     }
 
-    public APIGetRequest(BaseURL baseURL, PathParameters pathParameters, OauthKeySet keys) throws OauthException {
+    public APIGetRequest(BaseURL baseURL, PathParameters pathParameters, OauthKeySet keys) {
         super(baseURL, pathParameters, keys, HttpMethod.GET);
     }
 
-    public APIGetRequest(BaseURL baseURL, QueryParameters queryParameters, OauthKeySet keys) throws OauthException {
+    public APIGetRequest(BaseURL baseURL, QueryParameters queryParameters, OauthKeySet keys) {
         super(baseURL, queryParameters, keys, HttpMethod.GET);
     }
     
-    public APIGetRequest(BaseURL baseURL, OauthKeySet keys) throws OauthException {
+    public APIGetRequest(BaseURL baseURL, OauthKeySet keys) {
         super(baseURL, keys, HttpMethod.GET);
     }
 }

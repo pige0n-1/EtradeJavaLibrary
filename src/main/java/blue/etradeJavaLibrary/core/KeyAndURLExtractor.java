@@ -24,6 +24,7 @@ public class KeyAndURLExtractor {
     public static final String API_VIEW_PORTFOLIO_URI = "/v1/accounts/{accountIdKey}/portfolio";
     public static final String API_VIEW_ALERTS_URI = "/v1/user/alerts";
     public static final String API_ALERT_DETAILS_URI = "/v1/user/alerts/{id}";
+    public static final String API_DELETE_ALERTS_URI = "/v1/user/alerts/{idList}";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}

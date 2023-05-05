@@ -86,6 +86,39 @@ public abstract class APIManager
         sendAPIGetRequest(requestURI, new PathParameters(), new QueryParameters(), xmlObject);
     }
 
+    protected final void sendAPIDeleteRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameters, XMLDefinedObject xmlObject) throws OauthException {
+        ensureConfigured();
+        renewAccessTokenIfNeeded();
+
+        try {
+            BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
+            APIRequest request = new APIDeleteRequest(requestBaseURL, pathParameters, queryParameters, keys);
+            request.setOauthParameters(oauthFlow.getOauthParameters());
+
+            APIResponse response = request.sendAndGetResponse();
+            updateTimeOfLastRequest();
+
+            response.parseIntoXMLDefinedObject(xmlObject);
+            networkLogger.log("API request success.");
+        }
+        catch (IOException | ObjectMismatchException ex) {
+            networkLogger.log("API request failure.");
+            throw new OauthException("API request could not be sent.", ex);
+        }
+    }
+
+    protected final void sendAPIDeleteRequest(String requestURI, PathParameters pathParameters, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIDeleteRequest(requestURI, pathParameters, new QueryParameters(), xmlObject);
+    }
+
+    protected final void sendAPIDeleteRequest(String requestURI, QueryParameters queryParameters, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIDeleteRequest(requestURI, new PathParameters(), queryParameters, xmlObject);
+    }
+
+    protected final void sendAPIDeleteRequest(String requestURI, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIDeleteRequest(requestURI, new PathParameters(), new QueryParameters(), xmlObject);
+    }
+
     /**
      * Some service providers make access tokens inactivate or expire after a certain amount of time. This
      * method should check to see if the access token needs to be renewed, and if it does, it should renew it

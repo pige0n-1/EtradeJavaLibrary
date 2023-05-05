@@ -9,6 +9,7 @@ import blue.etradeJavaLibrary.etradeObjects.accounts.*;
 import blue.etradeJavaLibrary.etradeObjects.alerts.Alert;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertDetailsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
+import blue.etradeJavaLibrary.etradeObjects.alerts.DeleteAlertsResponse;
 
 import javax.management.Query;
 import java.io.FileInputStream;
@@ -16,6 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.*;
@@ -417,6 +419,25 @@ public final class EtradeClient extends APIManager
         catch (OauthException ex) {
             apiLogger.log("Alert details could not be retrieved");
             throw new NetworkException("Alert details could not be retrieved");
+        }
+    }
+
+    public DeleteAlertsResponse deleteAlerts(long... alertIds) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_DELETE_ALERTS_URI;
+        var deleteAlertsResponse = new DeleteAlertsResponse();
+        var pathParameters = new PathParameters();
+        pathParameters.addParameter("idList", alertIds);
+
+        try {
+            sendAPIDeleteRequest(requestURI, pathParameters, deleteAlertsResponse);
+            apiLogger.log("Alerts deleted successfully.");
+            apiLogger.log("Response", deleteAlertsResponse.toString());
+
+            return deleteAlertsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Alerts could not be deleted.");
+            throw new NetworkException("Alerts could not be deleted.");
         }
     }
 
