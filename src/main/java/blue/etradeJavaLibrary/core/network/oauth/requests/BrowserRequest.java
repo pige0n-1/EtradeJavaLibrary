@@ -75,12 +75,10 @@ public class BrowserRequest
      * @throws OauthException 
      */
     public Key go() throws IOException, OauthException {
-        if (configured) {
-            Desktop.getDesktop().browse(fullURI);
-            return getVerifierUserInput();
-        }
-        else
-            throw new OauthException("BrowserRequest cannot be sent before configured.");
+        if (configured) throw new OauthException("BrowserRequest cannot be sent before configured.");
+
+        Desktop.getDesktop().browse(fullURI);
+        return getVerifierUserInput();
     }
     
     public URI getFullURI() {

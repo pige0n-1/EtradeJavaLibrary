@@ -61,6 +61,22 @@ public class KeyAndURLExtractor {
         String keyString = extractSystemEnvironmentVariable("etradeSandboxConsumerSecret");
         return new Key(keyString);
     }
+
+    /**
+     * Returns the username for E*Trade that is stored in the user environment variable 'etradeUsername'
+     * @return
+     */
+    public static String getEtradeUsername() {
+        return extractSystemEnvironmentVariable("etradeUsername");
+    }
+
+    /**
+     * Returns the password for E*Trade that is stored in the user environment variable 'etradePassword'
+     * @return
+     */
+    public static String getEtradePassword() {
+        return extractSystemEnvironmentVariable("etradePassword");
+    }
     
     
     // Private helper methods
