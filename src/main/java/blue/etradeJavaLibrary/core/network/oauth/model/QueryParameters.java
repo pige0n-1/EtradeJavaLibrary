@@ -31,4 +31,13 @@ public class QueryParameters extends Parameters {
     public void addParameter(String key, Key value) {
         addParameter(key, value.getValue());
     }
+
+    /**
+     * Adds a key and value pair to the parameters collection
+     * @param key
+     * @param value
+     */
+    public void addParameter(String key, int value) {
+        addParameter(key, value + "");
+    }
 }

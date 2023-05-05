@@ -6,7 +6,10 @@ import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import blue.etradeJavaLibrary.etradeObjects.accounts.*;
+import blue.etradeJavaLibrary.etradeObjects.alerts.Alert;
+import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
 
+import javax.management.Query;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -303,7 +306,69 @@ public final class EtradeClient extends APIManager
     }
 
     public PortfolioResponse getAccountPortfolio(String accountIdKey) throws NetworkException {
-        return getAccountPortfolio(accountIdKey, 50, false);
+        return getAccountPortfolio(accountIdKey, 50, true);
+    }
+
+    public AlertsResponse getStockAlerts(int count, boolean ascending) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_VIEW_ALERTS_URI;
+        var alertsResponse = new AlertsResponse();
+        String direction = (ascending) ? "ASC" : "DESC";
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count);
+        queryParameters.addParameter("direction", direction);
+        queryParameters.addParameter("category", "STOCK");
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, alertsResponse);
+            apiLogger.log("Stock alerts retrieved successfully.");
+            apiLogger.log("Response", alertsResponse.toString());
+
+            return alertsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Stock alerts could not be retrieved.");
+            throw new NetworkException("Stock alerts could not be retrieved.");
+        }
+    }
+
+    public AlertsResponse getStockAlerts(int count) throws NetworkException {
+        return getStockAlerts(count, true);
+    }
+
+    public AlertsResponse getStockAlerts() throws NetworkException {
+        return getStockAlerts(25);
+    }
+
+    public AlertsResponse getAccountAlerts(int count, boolean ascending) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_VIEW_ALERTS_URI;
+        var alertsResponse = new AlertsResponse();
+        String direction = (ascending) ? "ASC" : "DESC";
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count);
+        queryParameters.addParameter("direction", direction);
+        queryParameters.addParameter("category", "ACCOUNT");
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, alertsResponse);
+            apiLogger.log("Account alerts retrieved successfully.");
+            apiLogger.log("Response", alertsResponse.toString());
+
+            return alertsResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Account alerts could not be retrieved.");
+            throw new NetworkException("Account alerts could not be retrieved.");
+        }
+    }
+
+    public AlertsResponse getAccountAlerts(int count) throws NetworkException {
+        return getAccountAlerts(25, true);
+    }
+
+    public AlertsResponse getAccountAlerts() throws NetworkException {
+        return getAccountAlerts(25);
     }
 
     @Override
