@@ -451,6 +451,13 @@ public final class EtradeClient extends APIManager
         return deleteAlerts(alertIds);
     }
 
+    /**
+     * Option symbols must be in the following format: "underlier:year:month:day:optionType:strikePrice". Up to 50
+     * symbols can be sent at once.
+     * @param symbols
+     * @return
+     * @throws NetworkException
+     */
     public QuoteResponse getQuotes(String... symbols) throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_GET_QUOTES_URI;
         var quoteResponse = new QuoteResponse();
