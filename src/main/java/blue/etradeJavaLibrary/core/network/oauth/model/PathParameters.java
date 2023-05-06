@@ -96,6 +96,7 @@ public class PathParameters extends Parameters {
      * @param values
      */
     public PathParameters(String key, String... values) {
+        super(RFC3986_ENCODED);
         String[] stringValues = new String[values.length];
         for (int i = 0; i < values.length; i++)
             stringValues[i] = values[i];

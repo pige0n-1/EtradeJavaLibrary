@@ -10,6 +10,7 @@ import blue.etradeJavaLibrary.etradeObjects.alerts.Alert;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertDetailsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.DeleteAlertsResponse;
+import blue.etradeJavaLibrary.etradeObjects.market.QuoteResponse;
 
 import javax.management.Query;
 import java.io.FileInputStream;
@@ -448,6 +449,29 @@ public final class EtradeClient extends APIManager
             alertIds[i] = alerts.get(i).id;
 
         return deleteAlerts(alertIds);
+    }
+
+    public QuoteResponse getQuotes(String... symbols) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_QUOTES_URI;
+        var quoteResponse = new QuoteResponse();
+        boolean overrideSymbolCount = symbols.length > 25;
+
+        var pathParameters = new PathParameters("symbols", symbols);
+        var queryParameters = new QueryParameters();
+        if (overrideSymbolCount) queryParameters.addParameter("overrideSymbolCount", "true");
+        queryParameters.addParameter("requireEarningsDate", "true");
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, quoteResponse);
+            apiLogger.log("Quotes received successfully", java.util.Arrays.toString(symbols));
+            apiLogger.log("Response", quoteResponse.toString());
+
+            return quoteResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Quotes could not be retrieved.");
+            throw new NetworkException("Quotes could not be retrieved.", ex);
+        }
     }
 
     @Override
