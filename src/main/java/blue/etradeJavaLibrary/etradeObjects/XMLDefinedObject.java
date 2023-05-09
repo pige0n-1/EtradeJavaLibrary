@@ -56,13 +56,23 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
         }
     }
 
-    static Document convertToDocument(Node accountNode) {
+    /**
+     * A simple utility method to convert an org.w3c.dom.Node object to an org.w3c.dom.Document object. A Document
+     * object encapsulates an XML document, and the Node class is the super class in the java API. This method is
+     * useful when the using the getElementsByTagName method in the Document class. That method returns a NodeList
+     * object, which holds a list of Node objects. Each Node object can be converted into a Document object, which is
+     * the type that is useful to instances of XMLDefinedObject, since they can be configured only from a Document
+     * object.
+     * @param xmlNode the Node object that represents an XML object
+     * @return a standalone XML Document object that contains the same information as the Node object
+     */
+    static Document convertToDocument(Node xmlNode) {
         final boolean RECURSIVELY_IMPORT_NODE = true;
 
         try {
             DocumentBuilder documentBuilder = XMLDefinedObject.documentBuilderFactory.newDocumentBuilder();
             Document document = documentBuilder.newDocument();
-            Node importedAccountNode = document.importNode(accountNode, RECURSIVELY_IMPORT_NODE);
+            Node importedAccountNode = document.importNode(xmlNode, RECURSIVELY_IMPORT_NODE);
             document.appendChild(importedAccountNode);
 
             return document;
@@ -73,7 +83,7 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
     }
 
     /**
-     * Takes in an xml Document object to configure the implementing object.
+     * Takes in an XML Document object to configure the implementing object.
      * In this model, this can be used to configure the instance after constructing the object.
      * @param xmlDocument a Document object from the java API, which is the output from the parseXML method
      * @return the instance object, strictly for convenience
@@ -82,11 +92,17 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
     O configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException;
     
     /**
-     * Converts this object into Document form.
+     * Converts this object into Document form. This method does not track any changes to instance variables after
+     * instantiation, and it does not build an entirely new XML document. It only returns the XML document that was
+     * set upon instantiation.
      * @return Document object, representing an XML document
      */
     Document toXMLDocument();
 
+    /**
+     * Converts the instance object to an XML string
+     * @return the XML String representation
+     */
     default String toXMLString() {
         try {
             var document = toXMLDocument();
@@ -97,8 +113,27 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
 
             return stringWriter.getBuffer().toString();
         }
-        catch (TransformerException e) {
-            throw new RuntimeException(e);
+        catch (TransformerException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Converts a Document object to String
+     * @param xmlDocument the Document object
+     * @return the XML String object
+     */
+    static String toString(Document xmlDocument) {
+        try {
+            var transformerFactor = TransformerFactory.newInstance();
+            var transformer = transformerFactor.newTransformer();
+            var stringWriter = new StringWriter();
+            transformer.transform(new DOMSource(xmlDocument), new StreamResult(stringWriter));
+
+            return stringWriter.getBuffer().toString();
+        }
+        catch (TransformerException ex) {
+            throw new RuntimeException(ex);
         }
     }
 }

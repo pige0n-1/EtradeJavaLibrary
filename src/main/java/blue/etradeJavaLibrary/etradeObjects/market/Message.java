@@ -15,7 +15,7 @@ public class Message extends EtradeObject<Message> {
     public Message configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        description = extract("hasMiniOptions");
+        description = extract("description");
         code = extractInteger("code");
         type = extract("type");
 

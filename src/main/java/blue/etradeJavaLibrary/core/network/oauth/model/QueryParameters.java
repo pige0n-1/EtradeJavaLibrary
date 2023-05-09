@@ -2,6 +2,9 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
 
+import java.util.Arrays;
+import java.util.Iterator;
+
 /**
  * This class represents parameters in the OAuth 1.0a model that reside in the 
  * query portion of a URL. There is an optional data field to turn of RFC3986
@@ -37,7 +40,7 @@ public class QueryParameters extends Parameters {
      * @param key
      * @param value
      */
-    public void addParameter(String key, int value) {
+    public void addParameter(String key, long value) {
         addParameter(key, value + "");
     }
 
@@ -49,5 +52,37 @@ public class QueryParameters extends Parameters {
     public void addParameter(String key, boolean value) {
         var valueString = (value) ? "true" : "false";
         addParameter(key, valueString);
+    }
+
+    /**
+     * Adds the specified key and a list of values. The values are represented as follows:
+     * "value1,value2,value3,...,valuex" where is x is the length of the values array.
+     * @param key
+     * @param values
+     */
+    public void addParameter(String key, long... values) {
+        String[] stringValues = new String[values.length];
+        for (int i = 0; i < values.length; i++)
+            stringValues[i] = values[i] + "";
+
+        addParameter(key, stringValues);
+    }
+
+    /**
+     * Adds the specified key and a list of values. The values are represented as follows:
+     * "value1,value2,value3,...,valuex" where is x is the length of the values array.
+     * @param key
+     * @param values
+     */
+    public void addParameter(String key, String... values) {
+        StringBuilder valueString = new StringBuilder();
+
+        Iterator<String> valuesIterator = Arrays.stream(values).iterator();
+        while (valuesIterator.hasNext()) {
+            valueString.append(valuesIterator.next());
+            if (valuesIterator.hasNext()) valueString.append(",");
+        }
+
+        addParameter(key, valueString.toString());
     }
 }

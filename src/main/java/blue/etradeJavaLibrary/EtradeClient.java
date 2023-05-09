@@ -15,6 +15,7 @@ import blue.etradeJavaLibrary.etradeObjects.market.LookupResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.OptionChainResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.OptionExpireDateResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.QuoteResponse;
+import blue.etradeJavaLibrary.etradeObjects.order.OrdersResponse;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -640,6 +641,76 @@ public final class EtradeClient extends APIManager
         return getOptionExpirationDates(symbol, "ALL");
     }
 
+    /**
+     * The count parameters can be up to 100
+     * @param accountIdKey
+     * @param count
+     * @return
+     * @throws NetworkException
+     */
+    public OrdersResponse getOrders(String accountIdKey, int count) throws NetworkException {
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("count", count);
+
+        return getOrders(accountIdKey, queryParameters);
+    }
+
+    public OrdersResponse getOrders(String accountIdKey, int count, long marker) throws NetworkException {
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("marker", marker);
+        queryParameters.addParameter("count", count);
+
+        return getOrders(accountIdKey, queryParameters);
+    }
+
+    /**
+     * The status parameter can be the following options: OPEN, EXECUTED, CANCELLED, INDIVIDUAL_FILLS, CANCEL_REQUESTED,
+     * EXPIRED, REJECTED
+     * @param accountIdKey
+     * @param status
+     * @return
+     * @throws NetworkException
+     */
+    public OrdersResponse getOrders(String accountIdKey, String status) throws NetworkException {
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("status", status);
+
+        return getOrders(accountIdKey, queryParameters);
+    }
+
+    public OrdersResponse getOrders(String accountIdKey, String status, LocalDate fromDate, LocalDate toDate) throws NetworkException {
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("status", status);
+        queryParameters.addParameter("fromDate", formatDateMMDDYYYY(fromDate));
+        queryParameters.addParameter("toDate", formatDateMMDDYYYY(toDate));
+        queryParameters.addParameter("count", 100);
+
+        return getOrders(accountIdKey, queryParameters);
+    }
+
+    /**
+     * Up to 25 symbols can be added
+     * @param accountIdKey
+     * @param fromDate
+     * @param toDate
+     * @param symbols
+     * @return
+     * @throws NetworkException
+     */
+    public OrdersResponse getOrders(String accountIdKey, LocalDate fromDate, LocalDate toDate, String... symbols) throws NetworkException {
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbols);
+        queryParameters.addParameter("fromDate", formatDateMMDDYYYY(fromDate));
+        queryParameters.addParameter("toDate", formatDateMMDDYYYY(toDate));
+        queryParameters.addParameter("count", 100);
+
+        return getOrders(accountIdKey, queryParameters);
+    }
+
+    public OrdersResponse getOrders(String accountIdKey) throws NetworkException {
+        return getOrders(accountIdKey, new QueryParameters());
+    }
+
     @Override
     public void close() {
         try {
@@ -659,6 +730,25 @@ public final class EtradeClient extends APIManager
     
     // Private helper methods
 
+
+    private OrdersResponse getOrders(String accountIdKey, QueryParameters queryParameters) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_LIST_ORDERS_URI;
+        var ordersResponse = new OrdersResponse();
+
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, queryParameters, ordersResponse);
+            apiLogger.log("Orders fetched successfully.");
+            apiLogger.log("Response", ordersResponse.toString());
+
+            return ordersResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve orders.");
+            throw new NetworkException("Could not retrieve orders.", ex);
+        }
+    }
 
     @Override
     protected void renewAccessTokenIfNeeded() throws OauthException {
