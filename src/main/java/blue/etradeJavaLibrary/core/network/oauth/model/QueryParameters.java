@@ -40,4 +40,14 @@ public class QueryParameters extends Parameters {
     public void addParameter(String key, int value) {
         addParameter(key, value + "");
     }
+
+    /**
+     * Adds a key and value pair to the parameters collection. The value is either "true" or "false"
+     * @param key
+     * @param value
+     */
+    public void addParameter(String key, boolean value) {
+        var valueString = (value) ? "true" : "false";
+        addParameter(key, valueString);
+    }
 }

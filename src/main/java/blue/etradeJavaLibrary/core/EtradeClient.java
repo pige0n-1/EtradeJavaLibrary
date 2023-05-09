@@ -10,20 +10,18 @@ import blue.etradeJavaLibrary.etradeObjects.alerts.Alert;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertDetailsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.DeleteAlertsResponse;
+import blue.etradeJavaLibrary.etradeObjects.market.LookupResponse;
+import blue.etradeJavaLibrary.etradeObjects.market.OptionChainResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.QuoteResponse;
 
-import javax.management.Query;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.*;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * This class represents a connection to the E*Trade API. Upon instantiation, the Oauth authentication flow is performed
@@ -479,6 +477,125 @@ public final class EtradeClient extends APIManager
             apiLogger.log("Quotes could not be retrieved.");
             throw new NetworkException("Quotes could not be retrieved.", ex);
         }
+    }
+
+    public LookupResponse lookUpProduct(String search) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_LOOK_UP_PRODUCT_URI;
+        var lookupResponse = new LookupResponse();
+
+        var pathParameters = new PathParameters("search", search);
+
+        try {
+            sendAPIGetRequest(requestURI, pathParameters, lookupResponse);
+            apiLogger.log("Looked up product successfully.");
+            apiLogger.log("Response", lookupResponse.toString());
+
+            return lookupResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not look up product");
+            throw new NetworkException("Could not look up product", ex);
+        }
+    }
+
+    public OptionChainResponse getOptionChains(String symbol, boolean includeWeekly) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_OPTION_CHAINS_URI;
+        var optionChainResponse = new OptionChainResponse();
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbol);
+        queryParameters.addParameter("includeWeekly", includeWeekly);
+        queryParameters.addParameter("priceType", "ALL");
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, optionChainResponse);
+            apiLogger.log("Retrieved option chain successfully.");
+            apiLogger.log("Response", optionChainResponse.toString());
+
+            return optionChainResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve option chain.");
+            throw new NetworkException("Could not retrieve option chain.", ex);
+        }
+    }
+
+    public OptionChainResponse getOptionChains(String symbol, int expiryYear) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_OPTION_CHAINS_URI;
+        var optionChainResponse = new OptionChainResponse();
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbol);
+        queryParameters.addParameter("includeWeekly", true);
+        queryParameters.addParameter("priceType", "ALL");
+        queryParameters.addParameter("expiryYear", expiryYear);
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, optionChainResponse);
+            apiLogger.log("Retrieved option chain successfully.");
+            apiLogger.log("Response", optionChainResponse.toString());
+
+            return optionChainResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve option chain.");
+            throw new NetworkException("Could not retrieve option chain.", ex);
+        }
+    }
+
+    public OptionChainResponse getOptionChains(String symbol, int expiryYear, int expiryMonth) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_OPTION_CHAINS_URI;
+        var optionChainResponse = new OptionChainResponse();
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbol);
+        queryParameters.addParameter("includeWeekly", true);
+        queryParameters.addParameter("priceType", "ALL");
+        queryParameters.addParameter("expiryYear", expiryYear);
+        queryParameters.addParameter("expiryMonth", expiryMonth);
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, optionChainResponse);
+            apiLogger.log("Retrieved option chain successfully.");
+            apiLogger.log("Response", optionChainResponse.toString());
+
+            return optionChainResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve option chain.");
+            throw new NetworkException("Could not retrieve option chain.", ex);
+        }
+    }
+
+    public OptionChainResponse getOptionChains(String symbol, int expiryYear, int expiryMonth, int expiryDay) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_OPTION_CHAINS_URI;
+        var optionChainResponse = new OptionChainResponse();
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbol);
+        queryParameters.addParameter("includeWeekly", true);
+        queryParameters.addParameter("priceType", "ALL");
+        queryParameters.addParameter("expiryYear", expiryYear);
+        queryParameters.addParameter("expiryMonth", expiryMonth);
+        queryParameters.addParameter("expiryDay", expiryDay);
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, optionChainResponse);
+            apiLogger.log("Retrieved option chain successfully.");
+            apiLogger.log("Response", optionChainResponse.toString());
+
+            return optionChainResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve option chain.");
+            throw new NetworkException("Could not retrieve option chain.", ex);
+        }
+    }
+
+    public OptionChainResponse getOptionChains(String symbol) throws NetworkException {
+        final boolean INCLUDE_WEEKLY = true;
+
+        return getOptionChains(symbol, INCLUDE_WEEKLY);
     }
 
     @Override
