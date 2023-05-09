@@ -6,7 +6,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import java.io.IOException;
 import java.io.InputStream;
 
-import blue.etradeJavaLibrary.etradeObjects.XMLDefinedObject;
+import blue.etradeJavaLibrary.model.etradeObjects.XMLDefinedObject;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 

@@ -1,6 +1,6 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
-import blue.etradeJavaLibrary.etradeObjects.XMLDefinedObject;
+import blue.etradeJavaLibrary.model.etradeObjects.XMLDefinedObject;
 
 /**
  * Holds one parameter: the request body
