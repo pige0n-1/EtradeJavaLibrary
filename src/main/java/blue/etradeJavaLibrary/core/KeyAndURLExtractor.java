@@ -29,6 +29,7 @@ public class KeyAndURLExtractor {
     public static final String API_LOOK_UP_PRODUCT_URI = "/v1/market/lookup/{search}";
     public static final String API_GET_OPTION_CHAINS_URI = "/v1/market/optionchains";
     public static final String API_GET_OPTION_EXPIRE_DATE_URI = "/v1/market/optionexpiredate";
+    public static final String API_LIST_ORDERS_URI = "/v1/accounts/{accountIdKey}/orders";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}
@@ -39,6 +40,10 @@ public class KeyAndURLExtractor {
      */
     public static Key getConsumerKey() {
         String keyString = extractSystemEnvironmentVariable("etradeConsumerKey");
+
+        if (keyString == null)
+            throw new RuntimeException("No consumer key was found in an environment variable");
+
         return new Key(keyString);
     }
 
@@ -48,6 +53,10 @@ public class KeyAndURLExtractor {
      */
     public static Key getConsumerSecret() {
         String keyString = extractSystemEnvironmentVariable("etradeConsumerSecret");
+
+        if (keyString == null)
+            throw new RuntimeException("No consumer secret was found in an environment variable");
+
         return new Key(keyString);
     }
 

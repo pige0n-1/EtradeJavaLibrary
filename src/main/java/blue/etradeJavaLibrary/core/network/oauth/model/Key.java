@@ -46,4 +46,8 @@ public class Key implements Serializable {
     public String toString() {
         return "Key: " + getValue();
     }
+
+    public boolean isEmpty() {
+        return value.equals("");
+    }
 }

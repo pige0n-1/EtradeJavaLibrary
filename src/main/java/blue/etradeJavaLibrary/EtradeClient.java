@@ -1,6 +1,7 @@
 
-package blue.etradeJavaLibrary.core;
+package blue.etradeJavaLibrary;
 
+import blue.etradeJavaLibrary.core.KeyAndURLExtractor;
 import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
