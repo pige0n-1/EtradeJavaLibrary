@@ -6,6 +6,7 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
+import blue.etradeJavaLibrary.model.PreviewOrder;
 import blue.etradeJavaLibrary.model.etradeObjects.accounts.*;
 import blue.etradeJavaLibrary.model.etradeObjects.alerts.Alert;
 import blue.etradeJavaLibrary.model.etradeObjects.alerts.AlertDetailsResponse;
@@ -16,6 +17,7 @@ import blue.etradeJavaLibrary.model.etradeObjects.market.OptionChainResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.market.OptionExpireDateResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.market.QuoteResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.order.OrdersResponse;
+import blue.etradeJavaLibrary.model.etradeObjects.order.PreviewOrderResponse;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -709,6 +711,10 @@ public final class EtradeClient extends APIManager
 
     public OrdersResponse getOrders(String accountIdKey) throws NetworkException {
         return getOrders(accountIdKey, new QueryParameters());
+    }
+
+    public PreviewOrderResponse previewOrder(String accountIdKey, PreviewOrder previewOrder) throws NetworkException {
+        return null;
     }
 
     @Override

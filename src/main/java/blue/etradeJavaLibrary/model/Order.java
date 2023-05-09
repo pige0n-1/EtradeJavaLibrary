@@ -1,12 +1,11 @@
 package blue.etradeJavaLibrary.model;
 
-public class Order {
+import blue.etradeJavaLibrary.model.etradeObjects.order.PlaceOrderRequest;
 
-    /* Prevent instantiation */
-    private Order() {}
+public class Order extends PreviewOrder {
 
-    public static class OrderBuilder {
-
-        public OrderBuilder(Long accountId) {}
+    /* Prevent instantiation outside the package */
+    Order(PlaceOrderRequest placeOrderRequest) {
+        super(placeOrderRequest);
     }
 }
