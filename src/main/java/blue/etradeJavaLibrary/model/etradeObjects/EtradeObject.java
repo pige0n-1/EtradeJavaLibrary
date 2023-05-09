@@ -96,7 +96,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     protected <T extends EtradeObject<T>> T extractObject(T emptyObject, String elementTagName) {
         try {
             var objectList = getList(elementTagName);
-            var objectDocument = convertToDocument(objectList.item(0));
+            var objectDocument = XMLDefinedObject.convertToDocument(objectList.item(0));
 
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
@@ -107,7 +107,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
 
     protected static <T extends EtradeObject<T>> T extractObject(T emptyObject, Node node) throws ObjectMismatchException{
         try {
-            var objectDocument = convertToDocument(node);
+            var objectDocument = XMLDefinedObject.convertToDocument(node);
 
             return emptyObject.configureFromXMLDocument(objectDocument);
         }
