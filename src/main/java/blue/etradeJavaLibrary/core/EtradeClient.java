@@ -12,6 +12,7 @@ import blue.etradeJavaLibrary.etradeObjects.alerts.AlertsResponse;
 import blue.etradeJavaLibrary.etradeObjects.alerts.DeleteAlertsResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.LookupResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.OptionChainResponse;
+import blue.etradeJavaLibrary.etradeObjects.market.OptionExpireDateResponse;
 import blue.etradeJavaLibrary.etradeObjects.market.QuoteResponse;
 
 import java.io.FileInputStream;
@@ -520,6 +521,13 @@ public final class EtradeClient extends APIManager
         }
     }
 
+    /**
+     * The year is represented as the full year number (ex: 2023)
+     * @param symbol
+     * @param expiryYear
+     * @return
+     * @throws NetworkException
+     */
     public OptionChainResponse getOptionChains(String symbol, int expiryYear) throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_GET_OPTION_CHAINS_URI;
         var optionChainResponse = new OptionChainResponse();
@@ -596,6 +604,39 @@ public final class EtradeClient extends APIManager
         final boolean INCLUDE_WEEKLY = true;
 
         return getOptionChains(symbol, INCLUDE_WEEKLY);
+    }
+
+    /**
+     * The expiryType can be any of the following strings: UNSPECIFIED, DAILY, WEEKLY, MONTHLY, QUARTERLY, VIX, ALL,
+     * MONTHEND
+     * @param symbol
+     * @param expiryType
+     * @return
+     * @throws NetworkException
+     */
+    public OptionExpireDateResponse getOptionExpirationDates(String symbol, String expiryType) throws NetworkException {
+        String requestURI = KeyAndURLExtractor.API_GET_OPTION_EXPIRE_DATE_URI;
+        var optionExpireDateResponse = new OptionExpireDateResponse();
+
+        var queryParameters = new QueryParameters();
+        queryParameters.addParameter("symbol", symbol);
+        queryParameters.addParameter("expiryType", expiryType);
+
+        try {
+            sendAPIGetRequest(requestURI, queryParameters, optionExpireDateResponse);
+            apiLogger.log("Option expiration dates retrieved successfully.");
+            apiLogger.log("Response", optionExpireDateResponse.toString());
+
+            return optionExpireDateResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not retrieve option expiration dates.");
+            throw new NetworkException("Could not retrieve option expiration dates.", ex);
+        }
+    }
+
+    public OptionExpireDateResponse getOptionExpirationDates(String symbol) throws NetworkException {
+        return getOptionExpirationDates(symbol, "ALL");
     }
 
     @Override

@@ -28,6 +28,7 @@ public class KeyAndURLExtractor {
     public static final String API_GET_QUOTES_URI = "/v1/market/quote/{symbols}";
     public static final String API_LOOK_UP_PRODUCT_URI = "/v1/market/lookup/{search}";
     public static final String API_GET_OPTION_CHAINS_URI = "/v1/market/optionchains";
+    public static final String API_GET_OPTION_EXPIRE_DATE_URI = "/v1/market/optionexpiredate";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}
