@@ -10,7 +10,7 @@ public class PreviewOrderRequest implements XMLBuildable {
     // Instance data fields
     public String orderType;
     public ArrayList<OrderDetail> order = new ArrayList<>();
-    public String clientOrderId;
+    public String clientOrderId; // TODO: ensure this field is created in OrderBuilder
 
     @Override
     public XMLDataFields getDataFields() {
