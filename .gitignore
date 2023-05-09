@@ -12,3 +12,4 @@
 # IDE configs
 /.idea
 /nb-configuration.xml
+*.jar

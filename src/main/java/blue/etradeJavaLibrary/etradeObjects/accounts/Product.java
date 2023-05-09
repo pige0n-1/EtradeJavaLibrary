@@ -31,7 +31,7 @@ public class Product extends EtradeObject<Product> {
         expiryDay = extractInteger("expiryDay");
         strikePrice = extractDouble("strikePrice");
         expiryType = extract("expiryType");
-        productId = extractObject(new ProductId());
+        productId = extractObject(new ProductId(), "productId");
 
         return this;
     }

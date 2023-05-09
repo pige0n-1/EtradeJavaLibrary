@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class Order extends EtradeObject<Order> {
 
     // Instance data fields
-    public Long orderId;
+    public Integer orderId;
     public String details;
     public String orderType;
     public Double totalOrderValue;
@@ -21,7 +21,7 @@ public class Order extends EtradeObject<Order> {
     public Order configureFromXMLDocument(Document xmlDocument) throws ObjectMismatchException {
         this.xmlDocument = xmlDocument;
 
-        orderId = extractLong("orderId");
+        orderId = extractInteger("orderId");
         details = extract("details");
         orderType = extract("orderType");
         totalOrderValue = extractDouble("totalOrderValue");

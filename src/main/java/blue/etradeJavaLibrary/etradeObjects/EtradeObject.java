@@ -8,7 +8,6 @@ import org.w3c.dom.NodeList;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Date;
 
 public abstract class EtradeObject<E extends EtradeObject<E>>
         implements XMLDefinedObject<E> {
@@ -81,7 +80,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
         }
     }
 
-    protected NodeList getList(EtradeObject emptyObject) {
+    protected NodeList getList(EtradeObject<?> emptyObject) {
         return getList(getClassName(emptyObject));
     }
 
@@ -149,6 +148,6 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     }
 
     private static LocalDateTime epochMillisecondToLocalDateTime(long epochMillisecond) {
-        return LocalDateTime.ofEpochSecond(epochMillisecond, 0, ZoneOffset.ofHours(0));
+        return LocalDateTime.ofEpochSecond(epochMillisecond / 1000, 0, ZoneOffset.ofHours(0));
     }
 }
