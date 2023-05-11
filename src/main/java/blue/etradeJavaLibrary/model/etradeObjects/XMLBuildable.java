@@ -29,9 +29,13 @@ public interface XMLBuildable {
         Document xmlDocument = documentBuilder.newDocument();
         xmlDocument.setXmlStandalone(true);
 
-        Element parentElement = xmlDocument.createElement(getXMLClassName());
+        Element parentElement = xmlDocument.createElement(getXMLClassName()); // This parent element holds all instance data fields
         xmlDocument.appendChild(parentElement);
 
+        /* All data fields can be represented as a mapping from a String to an Object. The String is essentially the
+        variable nam, and the Object can be anything that the data field holds. Here we are iterating through every
+        entry in the Map between Strings and Objects.
+         */
         for (Map.Entry<String, ?> dataFieldEntry : dataFields)
             addDataFieldToXMLDocument(xmlDocument, parentElement, dataFieldEntry);
 

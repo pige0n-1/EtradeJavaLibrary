@@ -6,7 +6,6 @@ import blue.etradeJavaLibrary.core.logging.ProgramLogger;
 import blue.etradeJavaLibrary.core.network.*;
 import blue.etradeJavaLibrary.core.network.oauth.*;
 import blue.etradeJavaLibrary.core.network.oauth.model.*;
-import blue.etradeJavaLibrary.model.PreviewOrder;
 import blue.etradeJavaLibrary.model.etradeObjects.accounts.*;
 import blue.etradeJavaLibrary.model.etradeObjects.alerts.Alert;
 import blue.etradeJavaLibrary.model.etradeObjects.alerts.AlertDetailsResponse;
@@ -16,6 +15,7 @@ import blue.etradeJavaLibrary.model.etradeObjects.market.LookupResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.market.OptionChainResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.market.OptionExpireDateResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.market.QuoteResponse;
+import blue.etradeJavaLibrary.model.etradeObjects.order.OrderRequest;
 import blue.etradeJavaLibrary.model.etradeObjects.order.OrdersResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.order.PreviewOrderResponse;
 
@@ -715,12 +715,12 @@ public final class EtradeClient extends APIManager
         return getOrders(accountIdKey, new QueryParameters());
     }
 
-    public PreviewOrderResponse previewOrder(String accountIdKey, PreviewOrder previewOrder) throws NetworkException, ParserConfigurationException {
+    public PreviewOrderResponse previewOrder(String accountIdKey, OrderRequest previewOrder) throws NetworkException, ParserConfigurationException {
         String requestURI = KeyAndURLExtractor.API_PREVIEW_ORDER_URI;
         var previewOrderResponse = new PreviewOrderResponse();
 
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
-        var bodyParameter = new BodyParameter("PreviewOrderRequest", previewOrder.getOrderRequest());
+        var bodyParameter = new BodyParameter("PreviewOrderRequest", previewOrder);
 
         try {
             sendAPIPostRequest(requestURI, pathParameters, bodyParameter, previewOrderResponse);
