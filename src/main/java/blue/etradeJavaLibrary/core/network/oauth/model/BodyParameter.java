@@ -1,9 +1,14 @@
 package blue.etradeJavaLibrary.core.network.oauth.model;
 
+import blue.etradeJavaLibrary.model.etradeObjects.XMLBuildable;
 import blue.etradeJavaLibrary.model.etradeObjects.XMLDefinedObject;
 
+import javax.xml.parsers.ParserConfigurationException;
+
 /**
- * Holds one parameter: the request body
+ * A BodyParameter is a traditional parameter in the Oauth model, but it is specific to the HTTP request body. The
+ * body parameter represents the entire body of an HTTP request. A request only holds one body, so this class only holds
+ * up to one parameter. This instance of Parameters is not RFC3986 percent-encoded.
  */
 public class BodyParameter extends Parameters {
 
@@ -22,10 +27,11 @@ public class BodyParameter extends Parameters {
      * @param key
      * @param body
      */
-    public BodyParameter(String key, XMLDefinedObject body) {
+    public BodyParameter(String key, XMLBuildable body) throws ParserConfigurationException {
         super(RFC3986_ENCODED);
-        body.toXMLDocument().setXmlStandalone(true);
-        addParameter(key, body.toXMLString());
+        var xmlDocument = body.buildXMLFromDataFields();
+
+        addParameter(key, XMLDefinedObject.toString(xmlDocument));
     }
 
     /**

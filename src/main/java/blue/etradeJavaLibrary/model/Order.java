@@ -8,4 +8,9 @@ public class Order extends PreviewOrder {
     Order(PlaceOrderRequest placeOrderRequest) {
         super(placeOrderRequest);
     }
+
+    @Override
+    public PlaceOrderRequest getOrderRequest() {
+        return (PlaceOrderRequest)super.getOrderRequest();
+    }
 }

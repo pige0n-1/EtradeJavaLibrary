@@ -7,6 +7,7 @@ import blue.etradeJavaLibrary.core.network.oauth.requests.*;
 import blue.etradeJavaLibrary.core.network.oauth.responses.*;
 import blue.etradeJavaLibrary.model.etradeObjects.XMLDefinedObject;
 
+import javax.management.Query;
 import java.time.Instant;
 import java.io.IOException;
 import java.io.Serializable;
@@ -66,11 +67,11 @@ public abstract class APIManager
             updateTimeOfLastRequest();
                 
             response.parseIntoXMLDefinedObject(xmlObject);
-            networkLogger.log("API request success.");
+            networkLogger.log("API GET request success.");
         }
         catch (IOException | ObjectMismatchException ex) {
-            networkLogger.log("API request failure.");
-            throw new OauthException("API request could not be sent.", ex);
+            networkLogger.log("API GET request failure.");
+            throw new OauthException("API GET request could not be sent.", ex);
         }
     }
     
@@ -117,6 +118,39 @@ public abstract class APIManager
 
     protected final void sendAPIDeleteRequest(String requestURI, XMLDefinedObject xmlObject) throws OauthException {
         sendAPIDeleteRequest(requestURI, new PathParameters(), new QueryParameters(), xmlObject);
+    }
+
+    protected final void sendAPIPostRequest(String requestURI, PathParameters pathParameters, QueryParameters queryParameters, BodyParameter bodyParameter, XMLDefinedObject xmlObject) throws OauthException {
+        ensureConfigured();
+        renewAccessToken();
+
+        try {
+            BaseURL requestBaseURL = new BaseURL(baseURLSet.apiBaseURL, requestURI);
+            APIRequest request = new APIPostRequest(requestBaseURL, pathParameters, queryParameters, bodyParameter, keys);
+            request.setOauthParameters(oauthFlow.getOauthParameters());
+
+            APIResponse response = request.sendAndGetResponse();
+            updateTimeOfLastRequest();
+
+            response.parseIntoXMLDefinedObject(xmlObject);
+            networkLogger.log("API POST request success.");
+        }
+        catch (IOException | ObjectMismatchException ex) {
+            networkLogger.log("API POST request failure.");
+            throw new OauthException("API POST request could not be sent.", ex);
+        }
+    }
+
+    protected final void sendAPIPostRequest(String requestURI, PathParameters pathParameters, BodyParameter bodyParameter, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIPostRequest(requestURI, pathParameters, new QueryParameters(), bodyParameter, xmlObject);
+    }
+
+    protected final void sendAPIPostRequest(String requestURI, QueryParameters queryParameters, BodyParameter bodyParameter, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIPostRequest(requestURI, new PathParameters(), queryParameters, bodyParameter, xmlObject);
+    }
+
+    protected final void sendAPIPostRequest(String requestURI, BodyParameter bodyParameter, XMLDefinedObject xmlObject) throws OauthException {
+        sendAPIPostRequest(requestURI, new PathParameters(), new QueryParameters(), bodyParameter, xmlObject);
     }
 
     /**

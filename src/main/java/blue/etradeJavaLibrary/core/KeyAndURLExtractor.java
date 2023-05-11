@@ -30,6 +30,7 @@ public class KeyAndURLExtractor {
     public static final String API_GET_OPTION_CHAINS_URI = "/v1/market/optionchains";
     public static final String API_GET_OPTION_EXPIRE_DATE_URI = "/v1/market/optionexpiredate";
     public static final String API_LIST_ORDERS_URI = "/v1/accounts/{accountIdKey}/orders";
+    public static final String API_PREVIEW_ORDER_URI = "/v1/accounts/{accountIdKey}/orders/preview";
 
     /* Prevent instantiation */
     private KeyAndURLExtractor() {}

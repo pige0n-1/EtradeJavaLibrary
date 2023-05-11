@@ -121,7 +121,7 @@ public abstract class EtradeObject<E extends EtradeObject<E>>
     }
 
     @Override
-    public Document toXMLDocument() {
+    public Document getXMLDocument() {
         return xmlDocument;
     }
 

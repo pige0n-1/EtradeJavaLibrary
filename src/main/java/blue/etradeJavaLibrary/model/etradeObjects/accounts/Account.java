@@ -51,7 +51,7 @@ public class Account extends EtradeObject {
     }
     
     @Override
-    public Document toXMLDocument() {
+    public Document getXMLDocument() {
         return xmlDocument;
     }
     

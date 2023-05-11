@@ -19,6 +19,8 @@ import blue.etradeJavaLibrary.model.etradeObjects.market.QuoteResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.order.OrdersResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.order.PreviewOrderResponse;
 
+import javax.management.Query;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -713,8 +715,24 @@ public final class EtradeClient extends APIManager
         return getOrders(accountIdKey, new QueryParameters());
     }
 
-    public PreviewOrderResponse previewOrder(String accountIdKey, PreviewOrder previewOrder) throws NetworkException {
-        return null;
+    public PreviewOrderResponse previewOrder(String accountIdKey, PreviewOrder previewOrder) throws NetworkException, ParserConfigurationException {
+        String requestURI = KeyAndURLExtractor.API_PREVIEW_ORDER_URI;
+        var previewOrderResponse = new PreviewOrderResponse();
+
+        var pathParameters = new PathParameters("accountIdKey", accountIdKey);
+        var bodyParameter = new BodyParameter("PreviewOrderRequest", previewOrder.getOrderRequest());
+
+        try {
+            sendAPIPostRequest(requestURI, pathParameters, bodyParameter, previewOrderResponse);
+            apiLogger.log("Preview order request successful");
+            apiLogger.log("Response", previewOrderResponse.toIndentedString());
+
+            return previewOrderResponse;
+        }
+        catch (OauthException ex) {
+            apiLogger.log("Could not send the preview order request.");
+            throw new NetworkException("Could not send the preview order request.", ex);
+        }
     }
 
     @Override

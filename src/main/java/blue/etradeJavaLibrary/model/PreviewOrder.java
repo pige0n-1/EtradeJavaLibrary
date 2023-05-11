@@ -1,5 +1,6 @@
 package blue.etradeJavaLibrary.model;
 
+import blue.etradeJavaLibrary.model.etradeObjects.XMLBuildable;
 import blue.etradeJavaLibrary.model.etradeObjects.order.PreviewOrderRequest;
 import org.w3c.dom.Document;
 
@@ -15,12 +16,7 @@ public class PreviewOrder {
         this.previewOrderRequest = previewOrderRequest;
     }
 
-    public Document getDocument() {
-        try {
-            return previewOrderRequest.buildXMLFromDataFields();
-        }
-        catch (ParserConfigurationException ex) {
-            throw new RuntimeException(ex);
-        }
+    public PreviewOrderRequest getOrderRequest() {
+        return previewOrderRequest;
     }
 }

@@ -11,4 +11,9 @@ public class PlaceOrderRequest extends PreviewOrderRequest {
     public XMLDataFields getDataFields() {
         return super.getDataFields().addXMLObjectField("PreviewIds", previewIds);
     }
+
+    @Override
+    public String getXMLClassName() {
+        return "PlaceOrderRequest";
+    }
 }

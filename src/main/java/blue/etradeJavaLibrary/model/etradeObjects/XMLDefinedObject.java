@@ -98,25 +98,18 @@ public interface XMLDefinedObject<O extends XMLDefinedObject> {
      * set upon instantiation.
      * @return Document object, representing an XML document
      */
-    Document toXMLDocument();
+    Document getXMLDocument();
 
     /**
      * Converts the instance object to an XML string
      * @return the XML String representation
      */
     default String toXMLString() {
-        try {
-            var document = toXMLDocument();
-            var transformerFactor = TransformerFactory.newInstance();
-            var transformer = transformerFactor.newTransformer();
-            var stringWriter = new StringWriter();
-            transformer.transform(new DOMSource(document), new StreamResult(stringWriter));
+        return toString(getXMLDocument());
+    }
 
-            return stringWriter.getBuffer().toString();
-        }
-        catch (TransformerException ex) {
-            throw new RuntimeException(ex);
-        }
+    default String toIndentedString() {
+        return toIndentedString(getXMLDocument());
     }
 
     /**
