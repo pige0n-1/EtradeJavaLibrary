@@ -39,7 +39,8 @@ public abstract class APIManager
         oauthFlow.setBrowserRequest(browserRequestMethod);
         configured = true;
         
-        getNewAccessToken();
+        if (keys.hasRetrievedAToken()) renewAccessToken();
+        else getNewAccessToken();
     }
     
     protected final void renewAccessToken() throws OauthException {

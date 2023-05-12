@@ -8,7 +8,7 @@ import java.io.Serializable;
  * in the Oauth 1.0a model
  */
 public class OauthKeySet 
-        implements Serializable {
+        implements Serializable, Cloneable {
     
     // Instance data fields
     /**
@@ -105,5 +105,15 @@ public class OauthKeySet
         this.token = new Key();
         this.tokenSecret = new Key();
         retrievedAccessToken = false;
+    }
+
+    @Override
+    public OauthKeySet clone() {
+        try {
+            return (OauthKeySet) super.clone();
+        }
+        catch (CloneNotSupportedException ex) {
+            return null;
+        }
     }
 }

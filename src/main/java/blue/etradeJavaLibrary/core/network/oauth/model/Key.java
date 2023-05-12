@@ -8,7 +8,8 @@ import java.io.Serializable;
  * model. The key value is encapsulated in order to validate the key and
  * maintain rigidity of the program.
  */
-public class Key implements Serializable {
+public class Key
+        implements Serializable {
     
     // Instance data fields
     /**

@@ -19,7 +19,6 @@ import blue.etradeJavaLibrary.model.etradeObjects.order.OrderRequest;
 import blue.etradeJavaLibrary.model.etradeObjects.order.OrdersResponse;
 import blue.etradeJavaLibrary.model.etradeObjects.order.PreviewOrderResponse;
 
-import javax.management.Query;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -54,6 +53,11 @@ public final class EtradeClient extends APIManager
      * "sandboxsave.dat".
      */
     private String saveFileName;
+
+    /**
+     * The field that contains the consumer key, consumer secret, access token, and token secret keys
+     */
+    private OauthKeySet keys;
     
     // Static data fields
     /**
@@ -69,26 +73,32 @@ public final class EtradeClient extends APIManager
     /**
      * The only instance of the api logger in this class
      */
-    protected static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
+    private static final ProgramLogger apiLogger = ProgramLogger.getAPILogger();
     
     /* Private constructor to prevent instantiation */
     private EtradeClient(EnvironmentType environmentType) throws NetworkException {
+        this(environmentType, getKeys(environmentType));
+    }
+
+    /* Private constructor to prevent instantiation */
+    private EtradeClient(EnvironmentType environmentType, OauthKeySet keys) throws NetworkException {
         this.environmentType = environmentType;
+        this.keys = keys;
+
         networkLogger.log("Current environment type", environmentType.name());
         setSaveFileName();
-        
+
         try {
             var etradeOauthParameters = new EtradeOauthParameters();
-
-            super.configure(getBaseURLSet(), getKeys(), etradeOauthParameters,new EtradeBrowserRequest());
+            super.configure(getBaseURLSet(), keys, etradeOauthParameters, new EtradeBrowserRequest());
         }
         catch (OauthException ex) {
             throw new NetworkException("Could not log into Etrade.", ex);
         }
-        
+
         networkLogger.log("Time of last request", formatLastRequestTime());
         networkLogger.log("Logged into Etrade successfully");
-        
+
         currentSession = this;
     }
     
@@ -130,6 +140,34 @@ public final class EtradeClient extends APIManager
      */
     public static EtradeClient getSandboxClient() throws NetworkException {
         return getClient(EnvironmentType.SANDBOX);
+    }
+
+    /**
+     * If the Oauth authentication flow has already been achieved, and an access token has been obtained, this factory
+     * method can be used to create a new EtradeClient instance. The EtradeClient will attempt to renew the access token
+     * to ensure it is working, and if not, the Oauth authentication flow will begin again.
+     */
+    public static EtradeClient fromAccessToken(EnvironmentType environmentType, Key accessToken, Key tokenSecret) throws NetworkException {
+        var keys = getKeys(environmentType);
+        keys.setToken(accessToken, tokenSecret);
+
+        return new EtradeClient(environmentType, keys);
+    }
+
+    /**
+     * If the Oauth authentication flow has already been achieved, and an access token has been obtained, this factory
+     * method can be used to create a new EtradeClient instance. The EtradeClient will attempt to renew the access token
+     * to ensure it is working, and if not, the Oauth authentication flow will begin again.
+     */
+    public static EtradeClient fromKeySet(EnvironmentType environmentType, OauthKeySet keys) throws NetworkException {
+        return new EtradeClient(environmentType, keys);
+    }
+
+    /**
+     * Returns a clone of the OauthKeySet object that holds all session keys
+     */
+    public OauthKeySet getKeys() {
+        return keys.clone();
     }
 
     /**
@@ -715,21 +753,21 @@ public final class EtradeClient extends APIManager
         return getOrders(accountIdKey, new QueryParameters());
     }
 
-    public PreviewOrderResponse previewOrder(String accountIdKey, OrderRequest previewOrder) throws NetworkException, ParserConfigurationException {
+    public PreviewOrderResponse previewOrder(String accountIdKey, OrderRequest previewOrder) throws NetworkException {
         String requestURI = KeyAndURLExtractor.API_PREVIEW_ORDER_URI;
         var previewOrderResponse = new PreviewOrderResponse();
-
         var pathParameters = new PathParameters("accountIdKey", accountIdKey);
-        var bodyParameter = new BodyParameter("PreviewOrderRequest", previewOrder);
 
         try {
+            var bodyParameter = new BodyParameter("PreviewOrderRequest", previewOrder);
+
             sendAPIPostRequest(requestURI, pathParameters, bodyParameter, previewOrderResponse);
             apiLogger.log("Preview order request successful");
             apiLogger.log("Response", previewOrderResponse.toIndentedString());
 
             return previewOrderResponse;
         }
-        catch (OauthException ex) {
+        catch (OauthException | ParserConfigurationException ex) {
             apiLogger.log("Could not send the preview order request.");
             throw new NetworkException("Could not send the preview order request.", ex);
         }
@@ -872,7 +910,7 @@ public final class EtradeClient extends APIManager
         return environmentType.name().toLowerCase() + "save.dat";
     }
     
-    private OauthKeySet getKeys() {
+    private static OauthKeySet getKeys(EnvironmentType environmentType) {
         Key consumerKey;
         Key consumerSecret;
         

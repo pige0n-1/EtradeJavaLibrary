@@ -144,6 +144,6 @@ public class OrderDetail extends EtradeObject<OrderDetail>
 
     @Override
     public String getXMLClassName() {
-        return "OrderDetail";
+        return "Order";
     }
 }

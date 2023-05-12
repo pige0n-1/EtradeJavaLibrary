@@ -31,8 +31,6 @@ public class OauthFlowManager
     public OauthFlowManager(BaseURLSet urls, OauthKeySet keys) {
         this.urls = urls;
         this.keys = keys;
-        
-        if (keys.hasRetrievedAToken()) keys.removeToken();
     }
     
     /**
