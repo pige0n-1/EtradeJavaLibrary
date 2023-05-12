@@ -21,8 +21,8 @@ public class ProgramLogger {
     private final Logger javaLogger;
     
     // Static data fields
-    private static final String NETWORK_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/network_log.txt";
-    private static final String API_LOG_FILE_NAME = "src/main/java/blue/etradeJavaLibrary/core/logging/api_log.txt";
+    private static final String NETWORK_LOG_FILE_NAME = "network_log.txt";
+    private static final String API_LOG_FILE_NAME = "api_log.txt";
     private static final Level DEFAULT_LEVEL = Level.FINE;
     private static ProgramLogger networkInstanceOfProgramLogger;
     private static ProgramLogger apiInstanceOfProgramLogger;
@@ -122,6 +122,7 @@ public class ProgramLogger {
         
         catch (IOException ex) {
             System.out.println("Warning: program logging not functional.");
+            loggingAllowed = false;
         }
     }
     

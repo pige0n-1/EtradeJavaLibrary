@@ -837,10 +837,15 @@ public final class EtradeClient extends APIManager
     }
 
     private void saveSession() throws IOException {
-        var file = new FileOutputStream(saveFileName);
+        var etradeClientFile = new FileOutputStream(saveFileName);
+        var keysFile = new FileOutputStream("keys.dat");
 
-        try (ObjectOutputStream objectOutput = new ObjectOutputStream(file)) {
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(etradeClientFile)) {
             objectOutput.writeObject(this);
+        }
+
+        try (ObjectOutputStream objectOutput = new ObjectOutputStream(keysFile)) {
+            objectOutput.writeObject(keys);
         }
     }
 
