@@ -7,6 +7,7 @@ import blue.etradeJavaLibrary.core.network.oauth.model.*;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -75,12 +76,17 @@ public class BrowserRequest
      * @throws OauthException 
      */
     public Key go() throws IOException, OauthException {
-        if (configured) {
+        if (!configured) throw new OauthException("BrowserRequest cannot be sent before configured.");
+
+        try {
             Desktop.getDesktop().browse(fullURI);
-            return getVerifierUserInput();
         }
-        else
-            throw new OauthException("BrowserRequest cannot be sent before configured.");
+        catch (UnsupportedOperationException ex) {
+            // if the OS is linux open a linux browser
+            if (System.getProperty("os.name").toLowerCase().contains("nux")) openLinuxBrowser();
+        }
+
+        return getVerifierUserInput();
     }
     
     public URI getFullURI() {
@@ -93,7 +99,12 @@ public class BrowserRequest
     
     
     // Private helper methods
-    
+
+
+    private void openLinuxBrowser() throws IOException {
+        var runtime = Runtime.getRuntime();
+        runtime.exec(new String[] {"xdg-open", fullURI.toString()});
+    }
     
     private void configure(BaseURL baseURL, OauthKeySet keys) throws OauthException {
         if (!keys.hasRetrievedAToken())
