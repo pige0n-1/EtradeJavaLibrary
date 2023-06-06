@@ -13,3 +13,4 @@
 /.idea
 /nb-configuration.xml
 *.jar
+/keys.dat

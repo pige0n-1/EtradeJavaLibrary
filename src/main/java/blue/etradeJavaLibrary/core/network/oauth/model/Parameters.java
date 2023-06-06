@@ -101,9 +101,9 @@ public class Parameters implements Iterable<Parameters.Parameter> {
         while (iterator.hasNext()) {
             Parameter parameter = iterator.next();
             
-            parametersString.append(parameter.getKey());
-            parametersString.append("=");
-            parametersString.append(parameter.getValue());
+            parametersString.append(parameter.getKey())
+                    .append("=")
+                    .append(parameter.getValue());
             
             if (iterator.hasNext()) parametersString.append(", ");
         }
